@@ -5,7 +5,7 @@
     font: 10px sans-serif;
     margin: auto;
     position: relative;
-    width: 960px;
+    width: 1280px;
   }
 
   text {
@@ -35,7 +35,8 @@
     top: 10px;
   }
 </style>
-  <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000">
+  <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Length">
+  <input type="number" id="weight-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="1000" min="9" placeholder="Weight (plf)">
 <body>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
@@ -43,11 +44,15 @@
 var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
-var MAX_UNBRACED = 140; // ft
+var MAX_UNBRACED = 101; // ft
 var UNBRACED_STEP = 1; // ft
 
+// User inputs
+var START_LENGTH = null;
+var USER_WEIGHT = null;
+
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
+    width = 1280 - margin.left - margin.right,
     height = window.innerHeight - margin.top - margin.bottom - 10;
 
 var x0 = d3.scale.linear()
@@ -86,7 +91,7 @@ d3.csv('data.csv', function(error, data) {
   W_BEAMS = beams.filter(getWSections);
   W_BEAMS.forEach(calculateProperties);
 
-  var special = calculateSpecialProperties(W_BEAMS);
+  var special = calculateSpecialProperties(W_BEAMS, {});
   x0.domain([0, MAX_UNBRACED]);
   y.domain([0, special.yBound]);
 
@@ -109,32 +114,29 @@ d3.csv('data.csv', function(error, data) {
       .style('text-anchor', 'end')
       .text('Available Moment (k-ft) - No Phi applied yet');
 
-  var engineer = svg.selectAll('.w-group')
+  var wGroup = svg.selectAll('.w-group')
       .data(W_BEAMS)
     .enter().append('g')
       .attr('class', function(d){ return 'g w-group ' + d.key;})
       .attr('stroke-width', function(d, i){
-        if (i === Math.round(Math.random()*W_BEAMS.length)){ return 3; }
+        // if (i === Math.round(Math.random()*W_BEAMS.length)){ return 3; }
         return 1;
       })
-      .attr('opacity', function(d, i){
-        if (i === Math.round(Math.random()*W_BEAMS.length)){ return 1; }
-        return 0.10;
-      })
 
-  engineer.selectAll('path')
+  wGroup.selectAll('path')
       .data(function(d) { return d.values; })
     .enter().append('path')
-      .attr('d', function(d){ return line(d.MnValues); });
+      .attr('d', function(d){ return line(d.MnValues); })
+      .attr('opacity', 0.1);
 });
 
 function updateLength() {
-  newLength = +document.getElementById('length-input').value;
-  startLength = Math.max(0, newLength - 3);
-  endLength = (newLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, newLength + 3);
+  userLength = +document.getElementById('length-input').value;
+  START_LENGTH = Math.max(0, userLength - 10);
+  endLength = (userLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, userLength + 10);
 
-  x0.domain([startLength, endLength]);
-  var special = calculateSpecialProperties(W_BEAMS, startLength);
+  x0.domain([START_LENGTH, endLength]);
+  var special = calculateSpecialProperties(W_BEAMS, {});
   y.domain([0, special.yBound]);
 
   d3.selectAll('.x.axis')
@@ -149,18 +151,62 @@ function updateLength() {
     .x(function(d){ return x0(d.length);})
     .y(function(d){ return y(d.Mn);});
 
-  var engineer = d3.selectAll('.w-group')
+  var wGroup = d3.selectAll('.w-group')
       .data(W_BEAMS)
 
-  engineer.selectAll('path')
+  wGroup.selectAll('path')
       .data(function(d) { return d.values; })
       .transition().duration(2000)
       .attr('d', function(d){ return line(d.MnValues); });
 
 }
 
+function updateWeight() {
+  USER_WEIGHT = +document.getElementById('weight-input').value;
+  var special = calculateSpecialProperties(W_BEAMS, {});
+  y.domain([0, special.yBound]);
+
+  d3.selectAll('.y.axis')
+    .transition().duration(2000)
+    .call(yAxis);
+
+  line = d3.svg.line()
+    .x(function(d){ return x0(d.length);})
+    .y(function(d){ return y(d.Mn);});
+
+  var wGroup = d3.selectAll('.w-group')
+      .data(W_BEAMS)
+
+  wGroup.selectAll('path')
+      .data(function(d) { return d.values; })
+      .transition().duration(2000)
+      .attr('d', function(d){ return line(d.MnValues); })
+      .attr('opacity', filterBeams)
+      .attr('stroke-width', function(d){
+        if (USER_WEIGHT && +d.W <= USER_WEIGHT) return 1.5;
+      });
+
+  wGroup.selectAll('path')
+      .data(function(d) { return d.values; })
+    .enter().append('path')
+      .attr('d', function(d){ return line(d.MnValues); });
+
+  wGroup.selectAll('path')
+      .data(function(d) { return d.values; })
+    .exit().remove();
+
+}
+
 function getWSections (data){
   return (data.key.slice(0,1) === 'W') && (data.key.slice(0,2) !== 'WT');
+}
+
+function filterBeams (d){
+  if (USER_WEIGHT){
+    if (+d.W <= USER_WEIGHT) return 0.4;
+    return 0.03;
+  }
+  return 0.1;
 }
 
 function calculateProperties (beamGroup){
@@ -196,17 +242,23 @@ function calculateProperties (beamGroup){
   })
 }
 
-function calculateSpecialProperties(beams, startLength){
-  startLength = startLength || 0;
-  var special = beams.reduce(function(pv, cv){
+function calculateSpecialProperties(beams, options){
+  var startLength = START_LENGTH || 0;
+  var maxWeight = !!USER_WEIGHT ? Math.max(9, USER_WEIGHT) : Infinity;
+  var special = beams.slice().reduce(function(pv, cv){
     var groupMax = cv.values.reduce(function(pv, cv){
-      return Math.max(pv, cv.MnFunction(startLength));
+      if (+cv.W > maxWeight){
+        return pv;
+      } else {
+        return Math.max(pv, cv.MnFunction(startLength));
+      }
     }, 0);
 
     pv.yMax = Math.max(pv.yMax, groupMax);
     return pv;
   }, {yMax: 0});
-  special.yBound = Math.ceil(special.yMax / 12 / 500) * 500;
+  var roundingBuffer = special.yMax * 0.01;
+  special.yBound = Math.ceil(special.yMax / 12 / roundingBuffer) * roundingBuffer;
   return special;
 }
 </script>
