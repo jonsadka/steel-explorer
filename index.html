@@ -26,7 +26,7 @@
   .w-group {
     fill: none;
     stroke-width: 1px;
-    stroke: #AFAFAF;
+    stroke: gray;
   }
 
   input {
@@ -121,7 +121,7 @@ d3.csv('data.csv', function(error, data) {
       .data(function(d) { return d.values; })
     .enter().append('path')
       .attr('d', function(d){ return line(d.MnValues); })
-      .attr('opacity', 0.1);
+      .attr('opacity', 0.15);
 });
 
 function updateLength() {
@@ -185,7 +185,7 @@ function updateWeight() {
       .transition().duration(2000).delay(1000)
       .attr('d', function(d){ return line(d.MnValues); })
       .attr('stroke-width', function(d){
-        if (USER_WEIGHT && +d.W <= USER_WEIGHT) return 1.5;
+        if (USER_WEIGHT && +d.W <= USER_WEIGHT) return 1.25;
       });
 }
 
@@ -196,7 +196,7 @@ function getWSections (data){
 function filterBeams (d){
   if (USER_WEIGHT){
     if (+d.W <= USER_WEIGHT) return 0.4;
-    return 0.03;
+    return 0.07;
   }
   return 0.1;
 }
