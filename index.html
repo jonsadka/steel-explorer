@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  body {
+    font: 10px sans-serif;
+    margin: auto;
+    position: relative;
+    width: 960px;
+  }
+
+  text {
+    font: 10px sans-serif;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .bar {
+    fill: steelblue;
+  }
+
+  .x.axis path {
+    display: none;
+  }
+
+  form {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+var DEFAULT_Fy = 50; // ksi
+var DEFAULT_E = 29000; // ksi
+var DEFAULT_Cb = 1; //
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom - 10;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var globalData = [];
+d3.csv("data.csv", function(error, data) {
+  if (error) throw error;
+
+  var beams = d3.nest()
+    .key(function(d){ return d.AISC_Manual_Label.split('X')[0]; })
+    .entries(data)
+
+  var W_BEAMS = beams.filter(getWSections)
+  W_BEAMS.forEach(calculateProperties)
+
+  console.log(W_BEAMS[8].values[14].AISC_Manual_Label);
+  console.log(W_BEAMS[8].values[14].Mp / 12 * 0.9); // k-ft
+  console.log('Lb', W_BEAMS[8].values[14].Lp, W_BEAMS[8].values[14].Lr);
+  console.log('Mn at 16\': ', 0.9*W_BEAMS[8].values[14].MnFunction(16)/12);
+
+  // countType = d3.keys(data[0]).filter(function(key) { return key !== "Engineer"; });
+  // data.forEach(function(d) {
+  //   d.counts = countType.map(function(name) { return {name: name, value: +d[name]}; });
+  // })
+  // globalData = data.slice();
+  // data = data.sort(function(a, b){
+  //   return +b[sortType] - +a[sortType];
+  // })
+
+  // x0.domain(data.map(function(d) { return d.Engineer; }));
+  // x1.domain(countType).rangeRoundBands([0, x0.rangeBand()]);
+  // y.domain([0, d3.max(data, function(d) { return d3.max(d.counts, function(d) { return d.value; }); })]);
+
+  // svg.append("g")
+  //     .attr("class", "x axis")
+  //     .attr("transform", "translate(0," + height + ")")
+  //     .call(xAxis);
+
+  // svg.append("g")
+  //     .attr("class", "y axis")
+  //     .call(yAxis)
+  //   .append("text")
+  //     .attr("transform", "rotate(-90)")
+  //     .attr("y", 6)
+  //     .attr("dy", ".71em")
+  //     .style("text-anchor", "end")
+  //     .text("Count");
+
+  // var engineer = svg.selectAll(".engineer")
+  //     .data(data)
+  //   .enter().append("g")
+  //     .attr("class", "g engineer")
+  //     .attr("transform", function(d) { return "translate(" + x0(d.Engineer) + ",0)"; });
+
+  // engineer.selectAll("rect")
+  //     .data(function(d) { return d.counts; })
+  //   .enter().append("rect")
+  //     .attr("width", x1.rangeBand())
+  //     .attr("height", 0)
+  //     .attr("x", function(d) { return x1(d.name); })
+  //     .attr("y", function(d) { return y(0); })
+  //     .style("fill", function(d) { return color(d.name); })
+  //     .style("opacity", function(d) {
+  //       if (d.name === sortType) return 1;
+  //       return 0.15;
+  //     })
+  //     .transition().duration(1000)
+  //     .attr("height", function(d) { return height - y(d.value); })
+  //     .attr("y", function(d) { return y(d.value); })
+
+  // var legend = svg.selectAll(".legend")
+  //     .data(countType.slice().reverse())
+  //   .enter().append("g")
+  //     .attr("class", "legend")
+  //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // legend.append("rect")
+  //     .attr("x", width - 18)
+  //     .attr("width", 18)
+  //     .attr("height", 18)
+  //     .style("fill", color);
+
+  // legend.append("text")
+  //     .attr("x", width - 24)
+  //     .attr("y", 9)
+  //     .attr("dy", ".35em")
+  //     .style("text-anchor", "end")
+  //     .text(function(d) { return d; });
+
+});
+
+function getWSections (data){
+  return (data.key.slice(0,1) === 'W') && (data.key.slice(0,2) !== 'WT');
+}
+
+function calculateProperties (beamGroup){
+  beamGroup.values.forEach(function(bm){
+    bm.Mp = DEFAULT_Fy * +bm.Zx; // kip-in
+    bm.Lp = 1.76 * +bm.ry * Math.sqrt(DEFAULT_E / DEFAULT_Fy) / 12; // ft. [AISC 16.1-48 (F2-5)]
+    var c = 1;                                                 // [AISC 16.1-48 (F2-8a)]
+    bm.Lr = 1.95 * +bm.rts * (DEFAULT_E / (0.7 * DEFAULT_Fy))  // ft. [AISC 16.1-48 (F2-6)]
+                  * Math.sqrt(+bm.J * c / (+bm.Sx * +bm.ho))
+                  * Math.sqrt(1 + Math.sqrt(1 + 6.76 * Math.pow(
+                    0.7 * DEFAULT_Fy * +bm.Sx * +bm.ho / (DEFAULT_E * +bm.J * c)
+                  , 2))) / 12;
+    // Returns Mn
+    // Lb expected in feet
+    bm.MnFunction = function(Lb){
+      var Frc = (DEFAULT_Cb * Math.pow(Math.PI, 2) * DEFAULT_E / Math.pow(Lb/+bm.rts, 2)) // kip-in. [AISC 16.1-47 (F2-4)]
+                * Math.sqrt(1 + 0.078 * +bm.J * c / (+bm.Sx * +bm.ho) * Math.pow(Lb/+bm.rts, 2));
+      if (Lb <= bm.Lp){
+        return bm.Mp;
+      } else if (bm.Lp < Lb && Lb <= bm.Lr){
+        console.log('case 2');
+        return Math.min(bm.Mp,
+          DEFAULT_Cb * (bm.Mp - (bm.Mp - 0.7 * DEFAULT_Fy * +bm.Sx) * (Lb - bm.Lp)/(bm.Lr - bm.Lp))
+        );
+      } else {
+        console.log('case 3');
+        return Math.min(bm.Mp, Fcr * +bm.Sx);
+      }
+    }
+  })
+}
+</script>
