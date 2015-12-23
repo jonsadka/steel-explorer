@@ -26,6 +26,7 @@
   .w-group {
     fill: none;
     stroke-width: 1px;
+    stroke: blue;
   }
 
   form {
@@ -34,6 +35,7 @@
     top: 10px;
   }
 </style>
+  <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000">
 <body>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
@@ -41,12 +43,12 @@
 var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
-var MAX_UNBRACED = 100; // ft
+var MAX_UNBRACED = 140; // ft
 var UNBRACED_STEP = 1; // ft
 
 var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom - 10;
+    height = window.innerHeight - margin.top - margin.bottom - 10;
 
 var x0 = d3.scale.linear()
     .range([0, width], .1);
@@ -73,7 +75,7 @@ var svg = d3.select('body').append('svg')
   .append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-var globalData = [];
+var W_BEAMS = [];
 d3.csv('data.csv', function(error, data) {
   if (error) throw error;
 
@@ -81,8 +83,8 @@ d3.csv('data.csv', function(error, data) {
     .key(function(d){ return d.AISC_Manual_Label.split('X')[0]; })
     .entries(data)
 
-  var W_BEAMS = beams.filter(getWSections)
-  W_BEAMS.forEach(calculateProperties)
+  W_BEAMS = beams.filter(getWSections);
+  W_BEAMS.forEach(calculateProperties);
 
   // countType = d3.keys(data[0]).filter(function(key) { return key !== 'Engineer'; });
   // data.forEach(function(d) {
@@ -94,7 +96,7 @@ d3.csv('data.csv', function(error, data) {
   // })
 
   x0.domain([0, MAX_UNBRACED]);
-  y.domain([0, 150000]);
+  y.domain([0, 13000]);
 
   svg.append('g')
       .attr('class', 'x axis')
@@ -113,28 +115,50 @@ d3.csv('data.csv', function(error, data) {
       .attr('y', 6)
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
-      .text('Available Moment (k-in)');
+      .text('Available Moment (k-ft) - No Phi applied yet');
 
   var engineer = svg.selectAll('.w-group')
       .data(W_BEAMS)
     .enter().append('g')
-      .attr('class', 'g w-group')
-      .attr('stroke', function(){return '#'+Math.floor(Math.random()*16777215).toString(16);})
-      // .attr('transform', function(d) { return 'translate(' + x0(d.Engineer) + ',0)'; });
+      .attr('class', function(d){ return 'g w-group ' + d.key;})
+      .attr('stroke-width', function(d, i){
+        if (i === Math.round(Math.random()*W_BEAMS.length)){ return 3; }
+        return 1;
+      })
+      .attr('opacity', function(d, i){
+        if (i === Math.round(Math.random()*W_BEAMS.length)){ return 1; }
+        return 0.10;
+      })
 
   engineer.selectAll('path')
       .data(function(d) { return d.values; })
     .enter().append('path')
-      .attr('d', function(d, i){
-        // if (d.AISC_Manual_Label !== 'W21X68'){
-          // return
-        // }
-        var XY = d3.range(0, MAX_UNBRACED, UNBRACED_STEP).map(function(length){
-          return { length: length, Mn: d.MnFunction(length) }
-        })
-        return line(XY);
-      })
+      .attr('d', function(d){ return line(d.MnValues); });
 });
+
+function updateLength() {
+  newLength = +document.getElementById('length-input').value;
+  startLength = Math.max(0, newLength - 5);
+  endLength = (newLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, newLength + 5);
+
+  x0.domain([startLength, endLength]);
+  d3.selectAll('.x.axis')
+    .transition().duration(2000)
+    .call(xAxis);
+
+  line = d3.svg.line()
+    .x(function(d){ return x0(d.length);})
+    .y(function(d){ return y(d.Mn);});
+
+  var engineer = d3.selectAll('.w-group')
+      .data(W_BEAMS)
+
+  engineer.selectAll('path')
+      .data(function(d) { return d.values; })
+      .transition().duration(2000)
+      .attr('d', function(d){ return line(d.MnValues); });
+
+}
 
 function getWSections (data){
   return (data.key.slice(0,1) === 'W') && (data.key.slice(0,2) !== 'WT');
@@ -165,6 +189,11 @@ function calculateProperties (beamGroup){
         return Math.min(bm.Mp, Fcr * +bm.Sx);
       }
     }
+    bm.MnValues = d3.range(0, MAX_UNBRACED, UNBRACED_STEP).map(function(length){
+      return { length: length, Mn: bm.MnFunction(length)/12 }
+    })
+
+
   })
 }
 </script>
