@@ -86,17 +86,9 @@ d3.csv('data.csv', function(error, data) {
   W_BEAMS = beams.filter(getWSections);
   W_BEAMS.forEach(calculateProperties);
 
-  // countType = d3.keys(data[0]).filter(function(key) { return key !== 'Engineer'; });
-  // data.forEach(function(d) {
-  //   d.counts = countType.map(function(name) { return {name: name, value: +d[name]}; });
-  // })
-  // globalData = data.slice();
-  // data = data.sort(function(a, b){
-  //   return +b[sortType] - +a[sortType];
-  // })
-
+  var special = calculateSpecialProperties(W_BEAMS);
   x0.domain([0, MAX_UNBRACED]);
-  y.domain([0, 13000]);
+  y.domain([0, special.yBound]);
 
   svg.append('g')
       .attr('class', 'x axis')
@@ -138,13 +130,20 @@ d3.csv('data.csv', function(error, data) {
 
 function updateLength() {
   newLength = +document.getElementById('length-input').value;
-  startLength = Math.max(0, newLength - 5);
-  endLength = (newLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, newLength + 5);
+  startLength = Math.max(0, newLength - 3);
+  endLength = (newLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, newLength + 3);
 
   x0.domain([startLength, endLength]);
+  var special = calculateSpecialProperties(W_BEAMS, startLength);
+  y.domain([0, special.yBound]);
+
   d3.selectAll('.x.axis')
     .transition().duration(2000)
     .call(xAxis);
+
+  d3.selectAll('.y.axis')
+    .transition().duration(2000)
+    .call(yAxis);
 
   line = d3.svg.line()
     .x(function(d){ return x0(d.length);})
@@ -195,5 +194,19 @@ function calculateProperties (beamGroup){
 
 
   })
+}
+
+function calculateSpecialProperties(beams, startLength){
+  startLength = startLength || 0;
+  var special = beams.reduce(function(pv, cv){
+    var groupMax = cv.values.reduce(function(pv, cv){
+      return Math.max(pv, cv.MnFunction(startLength));
+    }, 0);
+
+    pv.yMax = Math.max(pv.yMax, groupMax);
+    return pv;
+  }, {yMax: 0});
+  special.yBound = Math.ceil(special.yMax / 12 / 500) * 500;
+  return special;
 }
 </script>
