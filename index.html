@@ -26,17 +26,16 @@
   .w-group {
     fill: none;
     stroke-width: 1px;
-    stroke: blue;
+    stroke: #AFAFAF;
   }
 
-  form {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+  input {
+    width: 150px;
   }
+
 </style>
-  <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Length">
-  <input type="number" id="weight-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="1000" min="9" placeholder="Weight (plf)">
+  <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Unbraced beam length (ft)">
+  <input type="number" id="weight-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="1000" min="9" placeholder="Max beam weight (plf)">
 <body>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
@@ -44,7 +43,7 @@
 var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
-var MAX_UNBRACED = 101; // ft
+var MAX_UNBRACED = 81; // ft
 var UNBRACED_STEP = 1; // ft
 
 // User inputs
@@ -68,7 +67,6 @@ var xAxis = d3.svg.axis()
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient('left');
-    // .tickFormat(d3.format('.2s'));
 
 var line = d3.svg.line()
     .x(function(d){ return x0(d.length);})
@@ -112,16 +110,12 @@ d3.csv('data.csv', function(error, data) {
       .attr('y', 6)
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
-      .text('Available Moment (k-ft) - No Phi applied yet');
+      .text('Available Moment (k-ft) - Phi not yet applied');
 
   var wGroup = svg.selectAll('.w-group')
       .data(W_BEAMS)
     .enter().append('g')
       .attr('class', function(d){ return 'g w-group ' + d.key;})
-      .attr('stroke-width', function(d, i){
-        // if (i === Math.round(Math.random()*W_BEAMS.length)){ return 3; }
-        return 1;
-      })
 
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
@@ -132,6 +126,7 @@ d3.csv('data.csv', function(error, data) {
 
 function updateLength() {
   userLength = +document.getElementById('length-input').value;
+  if (START_LENGTH === (userLength - 10)) return;
   START_LENGTH = Math.max(0, userLength - 10);
   endLength = (userLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, userLength + 10);
 
@@ -158,16 +153,16 @@ function updateLength() {
       .data(function(d) { return d.values; })
       .transition().duration(2000)
       .attr('d', function(d){ return line(d.MnValues); });
-
 }
 
 function updateWeight() {
+  if (USER_WEIGHT === +document.getElementById('weight-input').value) return;
   USER_WEIGHT = +document.getElementById('weight-input').value;
   var special = calculateSpecialProperties(W_BEAMS, {});
   y.domain([0, special.yBound]);
 
   d3.selectAll('.y.axis')
-    .transition().duration(2000)
+    .transition().duration(2000).delay(1000)
     .call(yAxis);
 
   line = d3.svg.line()
@@ -179,22 +174,19 @@ function updateWeight() {
 
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
-      .transition().duration(2000)
-      .attr('d', function(d){ return line(d.MnValues); })
+      .transition().duration(1000)
       .attr('opacity', filterBeams)
+      .attr('stroke', function(d){
+        if (USER_WEIGHT && +d.W <= USER_WEIGHT) return '#00A1DC';
+      })
+
+  wGroup.selectAll('path')
+      .data(function(d) { return d.values; })
+      .transition().duration(2000).delay(1000)
+      .attr('d', function(d){ return line(d.MnValues); })
       .attr('stroke-width', function(d){
         if (USER_WEIGHT && +d.W <= USER_WEIGHT) return 1.5;
       });
-
-  wGroup.selectAll('path')
-      .data(function(d) { return d.values; })
-    .enter().append('path')
-      .attr('d', function(d){ return line(d.MnValues); });
-
-  wGroup.selectAll('path')
-      .data(function(d) { return d.values; })
-    .exit().remove();
-
 }
 
 function getWSections (data){
