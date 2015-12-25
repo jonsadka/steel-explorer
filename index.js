@@ -17,7 +17,11 @@ var CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
 var COL_1_WIDTH = CHARTS_WIDTH * 0.5;
 var COL_2_WIDTH = CHARTS_WIDTH * 0.5;
 
+// CACHED GLOBAL PROPERTIES
 var W_BEAMS = [];
+var SPECIAL = null;
+
+
 d3.csv('data.csv', function(error, data) {
   if (error) throw error;
 
@@ -27,6 +31,7 @@ d3.csv('data.csv', function(error, data) {
 
   W_BEAMS = beams.filter(getWSections);
   W_BEAMS.forEach(calculateProperties);
+  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
   initializeMomentChart();
 });
@@ -75,3 +80,43 @@ function calculateProperties (beamGroup){
 
   })
 }
+
+function updateLength() {
+  userLength = +document.getElementById('length-input').value;
+  if (START_LENGTH === (userLength - 10)) return;
+  START_LENGTH = Math.max(0, userLength - 10);
+  endLength = (userLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, userLength + 10);
+
+  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
+
+  mUpdateLength();
+}
+
+function updateWeight() {
+  if (USER_WEIGHT === +document.getElementById('weight-input').value) return;
+  USER_WEIGHT = +document.getElementById('weight-input').value;
+  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
+
+  mUpdateWeight();
+}
+
+function calculateSpecialProperties(beams, options){
+  var startLength = START_LENGTH || 0;
+  var maxWeight = !!USER_WEIGHT ? Math.max(9, USER_WEIGHT) : Infinity;
+  var special = beams.slice().reduce(function(pv, cv){
+    var groupMax = cv.values.reduce(function(pv, cv){
+      if (+cv.W > maxWeight){
+        return pv;
+      } else {
+        return Math.max(pv, cv.MnFunction(startLength));
+      }
+    }, 0);
+
+    pv.yMax = Math.max(pv.yMax, groupMax);
+    return pv;
+  }, {yMax: 0});
+  var roundingBuffer = special.yMax * 0.01;
+  special.yBound = Math.ceil(special.yMax / 12 / roundingBuffer) * roundingBuffer;
+  return special;
+}
+

@@ -27,9 +27,8 @@ var mSvg = d3.select('#top-row').append('svg')
     .attr('transform', 'translate(' + mMargin.left + ',' + mMargin.top + ')');
 
 function initializeMomentChart(){
-  var special = calculateSpecialProperties(W_BEAMS, {});
   mx0.domain([0, MAX_UNBRACED]);
-  my0.domain([0, special.yBound]);
+  my0.domain([0, SPECIAL.yBound]);
 
   mSvg.append('g')
       .attr('class', 'x axis')
@@ -63,15 +62,9 @@ function initializeMomentChart(){
       .attr('opacity', 0.15);
 }
 
-function updateLength() {
-  userLength = +document.getElementById('length-input').value;
-  if (START_LENGTH === (userLength - 10)) return;
-  START_LENGTH = Math.max(0, userLength - 10);
-  endLength = (userLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, userLength + 10);
-
+function mUpdateLength() {
   mx0.domain([START_LENGTH, endLength]);
-  var special = calculateSpecialProperties(W_BEAMS, {});
-  my0.domain([0, special.yBound]);
+  my0.domain([0, SPECIAL.yBound]);
 
   d3.selectAll('.x.axis')
     .transition().duration(2000)
@@ -94,11 +87,8 @@ function updateLength() {
       .attr('d', function(d){ return mLine(d.MnValues); });
 }
 
-function updateWeight() {
-  if (USER_WEIGHT === +document.getElementById('weight-input').value) return;
-  USER_WEIGHT = +document.getElementById('weight-input').value;
-  var special = calculateSpecialProperties(W_BEAMS, {});
-  my0.domain([0, special.yBound]);
+function mUpdateWeight() {
+  my0.domain([0, SPECIAL.yBound]);
 
   d3.selectAll('.y.axis')
     .transition().duration(2000).delay(1000)
@@ -126,24 +116,4 @@ function updateWeight() {
       .attr('stroke-width', function(d){
         if (USER_WEIGHT && +d.W <= USER_WEIGHT) return 1.25;
       });
-}
-
-function calculateSpecialProperties(beams, options){
-  var startLength = START_LENGTH || 0;
-  var maxWeight = !!USER_WEIGHT ? Math.max(9, USER_WEIGHT) : Infinity;
-  var special = beams.slice().reduce(function(pv, cv){
-    var groupMax = cv.values.reduce(function(pv, cv){
-      if (+cv.W > maxWeight){
-        return pv;
-      } else {
-        return Math.max(pv, cv.MnFunction(startLength));
-      }
-    }, 0);
-
-    pv.yMax = Math.max(pv.yMax, groupMax);
-    return pv;
-  }, {yMax: 0});
-  var roundingBuffer = special.yMax * 0.01;
-  special.yBound = Math.ceil(special.yMax / 12 / roundingBuffer) * roundingBuffer;
-  return special;
 }
