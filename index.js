@@ -9,9 +9,13 @@ var START_LENGTH = null;
 var USER_WEIGHT = null;
 
 // HEIGHTS
-var chartsHeight = window.innerHeight;
-var ROW_1_HEIGHT = 0.6 * chartsHeight;
-var ROW_2_HEIGHT = 0.4 * chartsHeight;
+var CHARTS_HEIGHT = window.innerHeight;
+var ROW_1_HEIGHT = 0.6 * CHARTS_HEIGHT;
+var ROW_2_HEIGHT = 0.4 * CHARTS_HEIGHT;
+// WIDTHS
+var CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
+var COL_1_WIDTH = CHARTS_WIDTH * 0.5;
+var COL_2_WIDTH = CHARTS_WIDTH * 0.5;
 
 var W_BEAMS = [];
 d3.csv('data.csv', function(error, data) {

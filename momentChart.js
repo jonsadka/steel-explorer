@@ -1,48 +1,48 @@
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = document.getElementById('right-column').offsetWidth - margin.left - margin.right,
-    height = ROW_1_HEIGHT - margin.top - margin.bottom - 10;
+var mMargin = {top: 20, right: 20, bottom: 30, left: 40},
+    mWidth = CHARTS_WIDTH - mMargin.left - mMargin.right,
+    mHeight = ROW_1_HEIGHT - mMargin.top - mMargin.bottom - 10;
 
-var x0 = d3.scale.linear()
-    .range([0, width], .1);
+var mx0 = d3.scale.linear()
+    .range([0, mWidth], .1);
 
-var y = d3.scale.linear()
-    .range([height, 0]);
+var my0 = d3.scale.linear()
+    .range([mHeight, 0]);
 
-var xAxis = d3.svg.axis()
-    .scale(x0)
+var mXAxis = d3.svg.axis()
+    .scale(mx0)
     .orient('bottom');
 
-var yAxis = d3.svg.axis()
-    .scale(y)
+var mYAxis = d3.svg.axis()
+    .scale(my0)
     .orient('left');
 
-var line = d3.svg.line()
-    .x(function(d){ return x0(d.length);})
-    .y(function(d){ return y(d.Mn);});
+var mLine = d3.svg.line()
+    .x(function(d){ return mx0(d.length);})
+    .y(function(d){ return my0(d.Mn);});
 
-var svg = d3.select('#row-1').append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
+var mSvg = d3.select('#top-row').append('svg')
+    .attr('width', mWidth + mMargin.left + mMargin.right)
+    .attr('height', mHeight + mMargin.top + mMargin.bottom)
   .append('g')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+    .attr('transform', 'translate(' + mMargin.left + ',' + mMargin.top + ')');
 
 function initializeMomentChart(){
   var special = calculateSpecialProperties(W_BEAMS, {});
-  x0.domain([0, MAX_UNBRACED]);
-  y.domain([0, special.yBound]);
+  mx0.domain([0, MAX_UNBRACED]);
+  my0.domain([0, special.yBound]);
 
-  svg.append('g')
+  mSvg.append('g')
       .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height + ')')
-      .call(xAxis)
+      .attr('transform', 'translate(0,' + mHeight + ')')
+      .call(mXAxis)
     .append('text')
-      .attr('x', width)
+      .attr('x', mWidth)
       .style('text-anchor', 'end')
       .text('Unbraced Length');
 
-  svg.append('g')
+  mSvg.append('g')
       .attr('class', 'y axis')
-      .call(yAxis)
+      .call(mYAxis)
     .append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', 6)
@@ -50,15 +50,16 @@ function initializeMomentChart(){
       .style('text-anchor', 'end')
       .text('Available Moment (k-ft) - Phi not yet applied');
 
-  var wGroup = svg.selectAll('.w-group')
+  var wGroup = mSvg.selectAll('.w-group')
       .data(W_BEAMS)
     .enter().append('g')
       .attr('class', function(d){ return 'g w-group ' + d.key;})
 
-  wGroup.selectAll('path')
+  wGroup.selectAll('.w-beam')
       .data(function(d) { return d.values; })
     .enter().append('path')
-      .attr('d', function(d){ return line(d.MnValues); })
+      .attr('class', function(d){ return 'w-beam X' + d.W;})
+      .attr('d', function(d){ return mLine(d.MnValues); })
       .attr('opacity', 0.15);
 }
 
@@ -68,44 +69,44 @@ function updateLength() {
   START_LENGTH = Math.max(0, userLength - 10);
   endLength = (userLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, userLength + 10);
 
-  x0.domain([START_LENGTH, endLength]);
+  mx0.domain([START_LENGTH, endLength]);
   var special = calculateSpecialProperties(W_BEAMS, {});
-  y.domain([0, special.yBound]);
+  my0.domain([0, special.yBound]);
 
   d3.selectAll('.x.axis')
     .transition().duration(2000)
-    .call(xAxis);
+    .call(mXAxis);
 
   d3.selectAll('.y.axis')
     .transition().duration(2000)
-    .call(yAxis);
+    .call(mYAxis);
 
-  line = d3.svg.line()
-    .x(function(d){ return x0(d.length);})
-    .y(function(d){ return y(d.Mn);});
+  mLine = d3.svg.line()
+    .x(function(d){ return mx0(d.length);})
+    .y(function(d){ return my0(d.Mn);});
 
   var wGroup = d3.selectAll('.w-group')
       .data(W_BEAMS)
 
-  wGroup.selectAll('path')
+  wGroup.selectAll('path.w-beam')
       .data(function(d) { return d.values; })
       .transition().duration(2000)
-      .attr('d', function(d){ return line(d.MnValues); });
+      .attr('d', function(d){ return mLine(d.MnValues); });
 }
 
 function updateWeight() {
   if (USER_WEIGHT === +document.getElementById('weight-input').value) return;
   USER_WEIGHT = +document.getElementById('weight-input').value;
   var special = calculateSpecialProperties(W_BEAMS, {});
-  y.domain([0, special.yBound]);
+  my0.domain([0, special.yBound]);
 
   d3.selectAll('.y.axis')
     .transition().duration(2000).delay(1000)
-    .call(yAxis);
+    .call(mYAxis);
 
-  line = d3.svg.line()
-    .x(function(d){ return x0(d.length);})
-    .y(function(d){ return y(d.Mn);});
+  mLine = d3.svg.line()
+    .x(function(d){ return mx0(d.length);})
+    .y(function(d){ return my0(d.Mn);});
 
   var wGroup = d3.selectAll('.w-group')
       .data(W_BEAMS)
@@ -121,7 +122,7 @@ function updateWeight() {
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
       .transition().duration(2000).delay(1000)
-      .attr('d', function(d){ return line(d.MnValues); })
+      .attr('d', function(d){ return mLine(d.MnValues); })
       .attr('stroke-width', function(d){
         if (USER_WEIGHT && +d.W <= USER_WEIGHT) return 1.25;
       });
