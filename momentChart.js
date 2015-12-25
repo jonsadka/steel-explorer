@@ -30,6 +30,51 @@ function initializeMomentChart(){
   mx0.domain([0, MAX_UNBRACED]);
   my0.domain([0, SPECIAL.yBound]);
 
+  var wGroup = mSvg.selectAll('.w-group')
+      .data(W_BEAMS)
+    .enter().append('g')
+      .attr('class', function(d){ return 'g w-group ' + d.key;})
+
+  wGroup.selectAll('.w-beam')
+      .data(function(d) { return d.values; })
+    .enter().append('path')
+      .attr('class', function(d){ return 'w-beam X' + d.W;})
+      .attr('d', function(d){ return mLine(d.MnValues); })
+      .attr('opacity', 0.15);
+
+  mSvg.append('rect')
+      .attr('class', 'covers')
+      .attr('transform', 'translate(' + -mMargin.left + ',' + 0 + ')')
+      .attr({
+        x: 0,
+        y: 0,
+        height: mHeight + mMargin.bottom,
+        width: mMargin.left,
+        fill: 'white'
+      })
+
+  mSvg.append('rect')
+      .attr('class', 'covers')
+      .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
+      .attr({
+        x: -mMargin.left,
+        y: -mMargin.top,
+        height: mMargin.top,
+        width: wMargin.left + mWidth + mMargin.right,
+        fill: 'white'
+      })
+
+  mSvg.append('rect')
+      .attr('class', 'covers')
+      .attr('transform', 'translate(' + mWidth + ',' + 0 + ')')
+      .attr({
+        x: 0,
+        y: 0,
+        height: mHeight + mMargin.bottom,
+        width: mMargin.right,
+        fill: 'white'
+      })
+
   mSvg.append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + mHeight + ')')
@@ -49,17 +94,6 @@ function initializeMomentChart(){
       .style('text-anchor', 'end')
       .text('Available Moment (k-ft) - Phi not yet applied');
 
-  var wGroup = mSvg.selectAll('.w-group')
-      .data(W_BEAMS)
-    .enter().append('g')
-      .attr('class', function(d){ return 'g w-group ' + d.key;})
-
-  wGroup.selectAll('.w-beam')
-      .data(function(d) { return d.values; })
-    .enter().append('path')
-      .attr('class', function(d){ return 'w-beam X' + d.W;})
-      .attr('d', function(d){ return mLine(d.MnValues); })
-      .attr('opacity', 0.15);
 }
 
 function mUpdateLength() {

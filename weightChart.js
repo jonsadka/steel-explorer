@@ -3,7 +3,7 @@ var wMargin = {top: 20, right: 20, bottom: 30, left: 40},
     wHeight = ROW_2_HEIGHT - wMargin.top - wMargin.bottom - 10;
 
 var wSvg = d3.select('#bottom-left').append('svg')
-    .attr('width', mWidth + mMargin.left + mMargin.right)
-    .attr('height', mHeight + mMargin.top + mMargin.bottom)
+    .attr('width', wWidth + wMargin.left + wMargin.right)
+    .attr('height', wHeight + wMargin.top + wMargin.bottom)
   .append('g')
-    .attr('transform', 'translate(' + mMargin.left + ',' + mMargin.top + ')');
+    .attr('transform', 'translate(' + wMargin.left + ',' + wMargin.top + ')');

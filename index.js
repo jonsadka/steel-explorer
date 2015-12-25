@@ -10,8 +10,8 @@ var USER_WEIGHT = null;
 
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight;
-var ROW_1_HEIGHT = 0.6 * CHARTS_HEIGHT;
-var ROW_2_HEIGHT = 0.4 * CHARTS_HEIGHT;
+var ROW_1_HEIGHT = 0.55 * CHARTS_HEIGHT;
+var ROW_2_HEIGHT = 0.45 * CHARTS_HEIGHT;
 // WIDTHS
 var CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
 var COL_1_WIDTH = CHARTS_WIDTH * 0.5;
@@ -83,9 +83,9 @@ function calculateProperties (beamGroup){
 
 function updateLength() {
   userLength = +document.getElementById('length-input').value;
-  if (START_LENGTH === (userLength - 10)) return;
-  START_LENGTH = Math.max(0, userLength - 10);
-  endLength = (userLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, userLength + 10);
+  if (START_LENGTH === (userLength - 2)) return;
+  START_LENGTH = Math.max(0, userLength - 2);
+  endLength = (userLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, userLength + 2);
 
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
@@ -115,7 +115,7 @@ function calculateSpecialProperties(beams, options){
     pv.yMax = Math.max(pv.yMax, groupMax);
     return pv;
   }, {yMax: 0});
-  var roundingBuffer = special.yMax * 0.01;
+  var roundingBuffer = special.yMax * 0.005;
   special.yBound = Math.ceil(special.yMax / 12 / roundingBuffer) * roundingBuffer;
   return special;
 }
