@@ -28,7 +28,7 @@ var mSvg = d3.select('#top-row').append('svg')
 
 function initializeMomentChart(){
   mx0.domain([0, MAX_UNBRACED]);
-  my0.domain([0, SPECIAL.yBound]);
+  my0.domain([SPECIAL.yBoundMin, SPECIAL.yBoundMax]);
 
   var wGroup = mSvg.selectAll('.w-group')
       .data(W_BEAMS)
@@ -98,7 +98,7 @@ function initializeMomentChart(){
 
 function mUpdateLength() {
   mx0.domain([START_LENGTH, endLength]);
-  my0.domain([0, SPECIAL.yBound]);
+  my0.domain([SPECIAL.yBoundMin, SPECIAL.yBoundMax]);
 
   d3.selectAll('.x.axis')
     .transition().duration(2000)
@@ -122,7 +122,7 @@ function mUpdateLength() {
 }
 
 function mUpdateWeight() {
-  my0.domain([0, SPECIAL.yBound]);
+  my0.domain([SPECIAL.yBoundMin, SPECIAL.yBoundMax]);
 
   d3.selectAll('.y.axis')
     .transition().duration(2000).delay(1000)
@@ -138,16 +138,24 @@ function mUpdateWeight() {
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
       .transition().duration(1000)
-      .attr('opacity', filterBeams)
-      .attr('stroke', function(d){
-        if (USER_WEIGHT && +d.W <= USER_WEIGHT) return '#00A1DC';
-      })
+      .attr('opacity', filterOpacity)
+      .attr('stroke', filterStroke)
+      .attr('stroke-width', filterStrokeWidth);
 
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
       .transition().duration(2000).delay(1000)
-      .attr('d', function(d){ return mLine(d.MnValues); })
-      .attr('stroke-width', function(d){
-        if (USER_WEIGHT && +d.W <= USER_WEIGHT) return 1.25;
-      });
+      .attr('d', function(d){ return mLine(d.MnValues); });
+}
+
+function filterOpacity(d){
+  return validateBeam(d, {valid: 0.5, invalid: 0.09, nullState: 0.09});
+}
+
+function filterStroke(d){
+  return validateBeam(d, {valid: '#00A1DC'});
+}
+
+function filterStrokeWidth(d){
+  return validateBeam(d, {valid: 1.25});
 }
