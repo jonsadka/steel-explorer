@@ -8,6 +8,8 @@ var UNBRACED_STEP = 1; // ft
 var START_LENGTH = null;
 var USER_WEIGHT_MAX = null;
 var USER_WEIGHT_MIN = null;
+var USER_I_MAX = null;
+var USER_I_MIN = null;
 
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight;
@@ -21,7 +23,7 @@ var COL_2_WIDTH = CHARTS_WIDTH * 0.5;
 // CACHED GLOBAL PROPERTIES
 var W_BEAMS = [];
 var SPECIAL = null;
-
+var PHI = 0.9;
 
 d3.csv('data.csv', function(error, data) {
   if (error) throw error;
@@ -35,6 +37,7 @@ d3.csv('data.csv', function(error, data) {
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
   initializeMomentChart();
+  initializeIChart();
 });
 
 function getWSections (data){
@@ -104,32 +107,65 @@ function updateWeight() {
   mUpdateWeight();
 }
 
+function updateI() {
+  var NEW_USER_I_MIN = +document.getElementById('I-min-input').value;
+  var NEW_USER_I_MAX = +document.getElementById('I-max-input').value;
+  if (USER_I_MAX === NEW_USER_I_MAX && USER_I_MIN === NEW_USER_I_MIN) return;
+  USER_I_MIN = NEW_USER_I_MIN;
+  USER_I_MAX = NEW_USER_I_MAX;
+  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
+
+  iUpdateI();
+}
+
 function calculateSpecialProperties(beams, options){
   var startLength = START_LENGTH || 0;
   var endLength = 61;
   var maxWeight = !!USER_WEIGHT_MAX ? Math.max(9, USER_WEIGHT_MAX) : Infinity;
   var minWeight = !!USER_WEIGHT_MIN ? Math.min(900, USER_WEIGHT_MIN) : 0;
+  var maxI = !!USER_I_MAX ? Math.max(10, USER_I_MAX) : Infinity;
+  var minI = !!USER_I_MIN ? Math.min(70000, USER_I_MIN) : 0;
+
   var special = beams.slice().reduce(function(pv, cv){
 
     var groupStats = cv.values.reduce(function(pv, cv){
       if (minWeight <= +cv.W && +cv.W <= maxWeight){
-        pv.min = Math.min(pv.min, cv.MnFunction(endLength));
-        pv.max = Math.max(pv.max, cv.MnFunction(startLength));
+        pv.yMin = Math.min(pv.yMin, cv.MnFunction(endLength));
+        pv.yMax = Math.max(pv.yMax, cv.MnFunction(startLength));
+      }
+      if (minI <= +cv.Ix && +cv.Ix <= maxI){
+        pv.iMin = Math.min(pv.iMin, cv.MnFunction(endLength));
+        pv.iMax = Math.max(pv.iMax, cv.MnFunction(startLength));
       }
       return pv
-    }, {min: Infinity, max: 0});
+    }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0});
 
-    pv.yMin = Math.min(pv.yMin, groupStats.min);
-    pv.yMax = Math.max(pv.yMax, groupStats.max);
+    pv.yMin = Math.min(pv.yMin, groupStats.yMin);
+    pv.yMax = Math.max(pv.yMax, groupStats.yMax);
+    pv.iMin = Math.min(pv.iMin, groupStats.iMin);
+    pv.iMax = Math.max(pv.iMax, groupStats.iMax);
     return pv;
 
-  }, {yMin: Infinity, yMax: 0});
+  }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0});
 
   special.yMin = special.yMin / 12; // convert from k-in to k-ft
   special.yMax = special.yMax / 12; // convert from k-in to k-ft
   //Add padding to x and y axis
   special.yBoundMin = Math.floor(special.yMin - special.yMin * 0.01);
   special.yBoundMax = Math.ceil(special.yMax + special.yMax * 0.01);
+  //Add padding to x and y axis
+  special.iBoundMin = Math.floor(special.iMin - special.iMin * 0.01);
+  special.iBoundMax = Math.ceil(special.iMax + special.iMax * 0.01);
   return special;
 }
 
+d3.selectAll('input').on('change', updateDesignType);
+
+function updateDesignType() {
+  var designType = this.value;
+  if (designType === 'LRFD'){
+    PHI = 0.9;
+  } else if (designType === 'ASD'){
+    PHI = 999999;
+  }
+}

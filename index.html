@@ -71,13 +71,23 @@
 </style>
   <div id="left-column">
     <div>
-      ASD/LRFD Toggle goes here
+      min max moment goes here
+    </div>
+    <div>
+      <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
+      <!-- <label><input type="radio" name="mode" value="ASD">ASD</label> -->
     </div>
     <div>
       Weight: <input type="number" id="weight-min-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
       plf
       <input type="number" id="weight-max-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
       plf
+    </div>
+    <div>
+      Ix: <input type="number" id="I-min-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
+      in<sup>4</sup>
+      <input type="number" id="I-max-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
+      in<sup>4</sup>
     </div>
     <div>
       Length: <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Unbraced beam length">
@@ -97,5 +107,5 @@
 <body>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="./index.js"></script>
+<script src="./iChart.js"></script>
 <script src="./momentChart.js"></script>
-<script src="./weightChart.js"></script>

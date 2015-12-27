@@ -18,7 +18,7 @@ var mYAxis = d3.svg.axis()
 
 var mLine = d3.svg.line()
     .x(function(d){ return mx0(d.length);})
-    .y(function(d){ return my0(d.Mn);});
+    .y(function(d){ return my0(d.Mn * PHI);});
 
 var mSvg = d3.select('#top-row').append('svg')
     .attr('width', mWidth + mMargin.left + mMargin.right)
@@ -28,7 +28,7 @@ var mSvg = d3.select('#top-row').append('svg')
 
 function initializeMomentChart(){
   mx0.domain([0, MAX_UNBRACED]);
-  my0.domain([SPECIAL.yBoundMin, SPECIAL.yBoundMax]);
+  my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
 
   var wGroup = mSvg.selectAll('.w-group')
       .data(W_BEAMS)
@@ -60,7 +60,7 @@ function initializeMomentChart(){
         x: -mMargin.left,
         y: -mMargin.top,
         height: mMargin.top,
-        width: wMargin.left + mWidth + mMargin.right,
+        width: mMargin.left + mWidth + mMargin.right,
         fill: 'white'
       })
 
@@ -93,12 +93,11 @@ function initializeMomentChart(){
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
       .text('Available Moment (k-ft) - Phi not yet applied');
-
 }
 
 function mUpdateLength() {
   mx0.domain([START_LENGTH, endLength]);
-  my0.domain([SPECIAL.yBoundMin, SPECIAL.yBoundMax]);
+  my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
 
   d3.selectAll('.x.axis')
     .transition().duration(2000)
@@ -110,7 +109,7 @@ function mUpdateLength() {
 
   mLine = d3.svg.line()
     .x(function(d){ return mx0(d.length);})
-    .y(function(d){ return my0(d.Mn);});
+    .y(function(d){ return my0(d.Mn * PHI);});
 
   var wGroup = d3.selectAll('.w-group')
       .data(W_BEAMS)
@@ -122,7 +121,7 @@ function mUpdateLength() {
 }
 
 function mUpdateWeight() {
-  my0.domain([SPECIAL.yBoundMin, SPECIAL.yBoundMax]);
+  my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
 
   d3.selectAll('.y.axis')
     .transition().duration(2000).delay(1000)
@@ -130,7 +129,7 @@ function mUpdateWeight() {
 
   mLine = d3.svg.line()
     .x(function(d){ return mx0(d.length);})
-    .y(function(d){ return my0(d.Mn);});
+    .y(function(d){ return my0(d.Mn * PHI);});
 
   var wGroup = d3.selectAll('.w-group')
       .data(W_BEAMS)
