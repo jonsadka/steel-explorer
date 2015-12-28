@@ -22,6 +22,7 @@ var COL_2_WIDTH = CHARTS_WIDTH * 0.5;
 
 // CACHED GLOBAL PROPERTIES
 var W_BEAMS = [];
+var W_BEAMS_FILTERED = [];
 var SPECIAL = null;
 var PHI = 0.9;
 
@@ -77,11 +78,18 @@ function calculateProperties (beamGroup){
 }
 
 function validateBeam (d, options){
-  if (USER_WEIGHT_MAX || USER_WEIGHT_MIN){
-    if (USER_WEIGHT_MAX && +d.W > USER_WEIGHT_MAX) return options.invalid;
+  var passedValid = false;
+  if (USER_WEIGHT_MIN || USER_WEIGHT_MAX){
     if (USER_WEIGHT_MIN && +d.W < USER_WEIGHT_MIN) return options.invalid;
-    return options.valid;
+    if (USER_WEIGHT_MAX && +d.W > USER_WEIGHT_MAX) return options.invalid;
+    passedValid = true;
   }
+  // if (USER_I_MAX || USER_I_MIN){
+  //   if (USER_I_MAX && +d.Ix > USER_I_MAX) return options.invalid;
+  //   if (USER_I_MIN && +d.Ix < USER_I_MIN) return options.invalid;
+  //   passedValid = true;
+  // }
+  if (passedValid) return options.valid;
   return options.nullState;
 }
 
@@ -105,6 +113,7 @@ function updateWeight() {
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
   mUpdateWeight();
+  iUpdateWeight();
 }
 
 function updateI() {
@@ -129,13 +138,15 @@ function calculateSpecialProperties(beams, options){
   var special = beams.slice().reduce(function(pv, cv){
 
     var groupStats = cv.values.reduce(function(pv, cv){
+      var shoudlUpdateI = true;
       if (minWeight <= +cv.W && +cv.W <= maxWeight){
         pv.yMin = Math.min(pv.yMin, cv.MnFunction(endLength));
         pv.yMax = Math.max(pv.yMax, cv.MnFunction(startLength));
-      }
-      if (minI <= +cv.Ix && +cv.Ix <= maxI){
-        pv.iMin = Math.min(pv.iMin, cv.MnFunction(endLength));
-        pv.iMax = Math.max(pv.iMax, cv.MnFunction(startLength));
+        if (minI <= +cv.Ix && +cv.Ix <= maxI){
+          shoudlUpdateI = false;
+          pv.iMin = Math.min(pv.iMin, +cv.Ix);
+          pv.iMax = Math.max(pv.iMax, +cv.Ix);
+        }
       }
       return pv
     }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0});

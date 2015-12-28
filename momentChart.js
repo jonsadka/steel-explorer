@@ -30,10 +30,10 @@ function initializeMomentChart(){
   mx0.domain([0, MAX_UNBRACED]);
   my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
 
-  var wGroup = mSvg.selectAll('.w-group')
+  var wGroup = mSvg.selectAll('.w-group.m')
       .data(W_BEAMS)
     .enter().append('g')
-      .attr('class', function(d){ return 'g w-group ' + d.key;})
+      .attr('class', function(d){ return 'g w-group m ' + d.key;})
 
   wGroup.selectAll('.w-beam')
       .data(function(d) { return d.values; })
@@ -76,7 +76,7 @@ function initializeMomentChart(){
       })
 
   mSvg.append('g')
-      .attr('class', 'x axis')
+      .attr('class', 'x axis moment')
       .attr('transform', 'translate(0,' + mHeight + ')')
       .call(mXAxis)
     .append('text')
@@ -85,7 +85,7 @@ function initializeMomentChart(){
       .text('Unbraced Length');
 
   mSvg.append('g')
-      .attr('class', 'y axis')
+      .attr('class', 'y axis moment')
       .call(mYAxis)
     .append('text')
       .attr('transform', 'rotate(-90)')
@@ -99,11 +99,11 @@ function mUpdateLength() {
   mx0.domain([START_LENGTH, endLength]);
   my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
 
-  d3.selectAll('.x.axis')
+  d3.selectAll('.x.axis.moment')
     .transition().duration(2000)
     .call(mXAxis);
 
-  d3.selectAll('.y.axis')
+  d3.selectAll('.y.axis.moment')
     .transition().duration(2000)
     .call(mYAxis);
 
@@ -123,7 +123,7 @@ function mUpdateLength() {
 function mUpdateWeight() {
   my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
 
-  d3.selectAll('.y.axis')
+  d3.selectAll('.y.axis.moment')
     .transition().duration(2000).delay(1000)
     .call(mYAxis);
 
