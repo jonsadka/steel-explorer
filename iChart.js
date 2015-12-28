@@ -84,7 +84,7 @@ function iUpdateWeight() {
     .attr('class', function(d){ return 'g w-group I ' + d.key;})
 
   var wBeams = wGroup.selectAll('circle')
-      .data(function(d) { return d.values; })
+      .data(function(d) { return d.values; }, function(d) { return d.W; })
 
   wBeams.enter().append('circle')
     .attr('class', function(d){ return 'w-beam X' + d.W;})
@@ -99,19 +99,19 @@ function iUpdateWeight() {
   ix0.domain(W_BEAMS_FILTERED.map(function(d){ return d.key;}));
   iy0.domain([SPECIAL.iBoundMin, SPECIAL.iBoundMax]);
   d3.selectAll('.x.axis.I')
-    .transition().duration(2000).delay(1000)
+    .transition().duration(1600).delay(500)
     .call(iXAxis);
   d3.selectAll('.y.axis.I')
-    .transition().duration(2000).delay(1000)
+    .transition().duration(1600).delay(500)
     .call(iYAxis);
 
   // Transition dots into their places
-  wBeams.transition().duration(1000)
+  wBeams.transition().duration(500)
     .attr('opacity', filterOpacity)
     .attr('stroke', filterStroke)
     .attr('stroke-width', filterStrokeWidth);
 
-  wBeams.transition().duration(2000).delay(1000)
+  wBeams.transition().duration(1600).delay(500)
     .attr('cx', function(d){
       var section = d.AISC_Manual_Label.split('X')[0];
       return ix0(section);

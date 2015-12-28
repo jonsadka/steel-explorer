@@ -100,11 +100,11 @@ function mUpdateLength() {
   my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
 
   d3.selectAll('.x.axis.moment')
-    .transition().duration(2000)
+    .transition().duration(1600)
     .call(mXAxis);
 
   d3.selectAll('.y.axis.moment')
-    .transition().duration(2000)
+    .transition().duration(1600)
     .call(mYAxis);
 
   mLine = d3.svg.line()
@@ -116,7 +116,7 @@ function mUpdateLength() {
 
   wGroup.selectAll('path.w-beam')
       .data(function(d) { return d.values; })
-      .transition().duration(2000)
+      .transition().duration(1600)
       .attr('d', function(d){ return mLine(d.MnValues); });
 }
 
@@ -124,7 +124,7 @@ function mUpdateWeight() {
   my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
 
   d3.selectAll('.y.axis.moment')
-    .transition().duration(2000).delay(1000)
+    .transition().duration(1600).delay(500)
     .call(mYAxis);
 
   mLine = d3.svg.line()
@@ -136,14 +136,14 @@ function mUpdateWeight() {
 
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
-      .transition().duration(1000)
+      .transition().duration(500)
       .attr('opacity', filterOpacity)
       .attr('stroke', filterStroke)
       .attr('stroke-width', filterStrokeWidth);
 
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
-      .transition().duration(2000).delay(1000)
+      .transition().duration(1600).delay(500)
       .attr('d', function(d){ return mLine(d.MnValues); });
 }
 
