@@ -25,11 +25,11 @@
   }
 
   #left-column {
-    width: 30%;
+    width: 20%;
   }
 
   #right-column {
-    width: 70%;
+    width: 80%;
   }
 
   #top-row,
@@ -52,6 +52,19 @@
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
+  }
+
+  .voronoi {
+    fill: none;
+    stroke: pink;
+    stroke-opacity: 0.1;
+    pointer-events: all;
+  }
+
+  path.beam--hover {
+    stroke: steelblue;
+    stroke-width: 6px;
+    stroke-opacity: 1;
   }
 
   .bar {
@@ -96,6 +109,9 @@
     <div>
       Ix goes here
     </div>
+    <h1>
+      23 Beams found
+    </h1>
   </div>
   <div id="right-column">
     <div id="top-row"></div>

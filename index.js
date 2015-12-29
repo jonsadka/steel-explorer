@@ -112,6 +112,7 @@ function updateWeight() {
   USER_WEIGHT_MAX = NEW_USER_WEIGHT_MAX;
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
+  filterBeams();
   mUpdateWeight();
   iUpdateWeight();
 }
@@ -124,6 +125,7 @@ function updateI() {
   USER_I_MAX = NEW_USER_I_MAX;
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
+  filterBeams();
   iUpdateI();
 }
 
@@ -170,6 +172,20 @@ function calculateSpecialProperties(beams, options){
   return special;
 }
 
+function filterBeams(){
+  W_BEAMS_FILTERED = W_BEAMS.map(function(group){
+    var groupValues = [];
+    for (var i = 0; i < group.values.length; i++){
+      var beam = group.values[i];
+      if (validateBeam(beam, {valid: true, invalid: false, nullState: true})) groupValues.push(beam);
+    }
+    return {key: group.key, values: groupValues};
+  })
+  .filter(function(group){
+    return group.values.length
+  })
+}
+
 d3.selectAll('input').on('change', updateDesignType);
 
 function updateDesignType() {
@@ -179,4 +195,8 @@ function updateDesignType() {
   } else if (designType === 'ASD'){
     PHI = 999999;
   }
+}
+
+function escapeCharacter(string){
+  return string.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')
 }

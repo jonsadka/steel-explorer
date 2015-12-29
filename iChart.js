@@ -62,18 +62,6 @@ function iUpdateI(){
 }
 
 function iUpdateWeight() {
-  W_BEAMS_FILTERED = W_BEAMS.map(function(group){
-    var groupValues = [];
-    for (var i = 0; i < group.values.length; i++){
-      var beam = group.values[i];
-      if (validateBeam(beam, {valid: true, invalid: false, nullState: true})) groupValues.push(beam);
-    }
-    return {key: group.key, values: groupValues};
-  })
-  .filter(function(group){
-    return group.values.length
-  })
-
   var wGroup = iSvg.selectAll('.w-group.I')
       .data(W_BEAMS_FILTERED, function(d) { return d.key; })
 
