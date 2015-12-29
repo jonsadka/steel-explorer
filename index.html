@@ -37,9 +37,13 @@
     border: 1px solid RGBA(100, 100, 255, 0.5);
   }
 
-  #bottom-right,
+  #bottom-right {
+    width: 60%;
+    border: 1px solid RGBA(255, 10, 25, 0.5);
+  }
+
   #bottom-left {
-    width: 50%;
+    width: 40%;
     border: 1px solid RGBA(255, 10, 25, 0.5);
   }
 
@@ -71,14 +75,20 @@
     fill: steelblue;
   }
 
-  .w-group {
+  .w-group.m {
     fill: none;
     stroke-width: 1px;
     stroke: gray;
   }
 
+  .w-group.I {
+    fill: RGBA(200, 200, 200, .1);
+    stroke-width: 1px;
+    stroke: RGBA(175, 100, 208, 1);
+  }
+
   input {
-    width: 150px;
+    width: 100px;
   }
 
 </style>

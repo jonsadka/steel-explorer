@@ -63,7 +63,7 @@ function iUpdateI(){
 
 function iUpdateWeight() {
   var wGroup = iSvg.selectAll('.w-group.I')
-      .data(W_BEAMS_FILTERED, function(d) { return d.key; })
+      .data(W_BEAMS, function(d) { return d.key; })
 
   wGroup.enter().append('g')
       .attr('class', function(d){ return 'g w-group I ' + d.key;})

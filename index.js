@@ -17,8 +17,8 @@ var ROW_1_HEIGHT = 0.55 * CHARTS_HEIGHT;
 var ROW_2_HEIGHT = 0.45 * CHARTS_HEIGHT;
 // WIDTHS
 var CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
-var COL_1_WIDTH = CHARTS_WIDTH * 0.5;
-var COL_2_WIDTH = CHARTS_WIDTH * 0.5;
+var COL_1_WIDTH = CHARTS_WIDTH * 0.4;
+var COL_2_WIDTH = CHARTS_WIDTH * 0.6;
 
 // CACHED GLOBAL PROPERTIES
 var W_BEAMS = [];
