@@ -148,18 +148,22 @@ function calculateSpecialProperties(beams, options){
           shoudlUpdateI = false;
           pv.iMin = Math.min(pv.iMin, +cv.Ix);
           pv.iMax = Math.max(pv.iMax, +cv.Ix);
+          pv.wMin = Math.min(pv.wMin, +cv.W);
+          pv.wMax = Math.max(pv.wMax, +cv.W);
         }
       }
       return pv
-    }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0});
+    }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0, wMin: Infinity, wMax: 0});
 
     pv.yMin = Math.min(pv.yMin, groupStats.yMin);
     pv.yMax = Math.max(pv.yMax, groupStats.yMax);
     pv.iMin = Math.min(pv.iMin, groupStats.iMin);
     pv.iMax = Math.max(pv.iMax, groupStats.iMax);
+    pv.wMin = Math.min(pv.wMin, groupStats.wMin);
+    pv.wMax = Math.max(pv.wMax, groupStats.wMax);
     return pv;
 
-  }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0});
+  }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0, wMin: Infinity, wMax: 0});
 
   special.yMin = special.yMin / 12; // convert from k-in to k-ft
   special.yMax = special.yMax / 12; // convert from k-in to k-ft

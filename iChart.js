@@ -8,6 +8,15 @@ var ix0 = d3.scale.ordinal()
 var iy0 = d3.scale.linear()
     .range([iHeight, 0]);
 
+// Radi size
+// Shouldn't use radius, should color it where green is lower weight
+var iy1 = d3.scale.linear()
+    .range([7, 7])
+    // .range([4, 12])
+    .clamp(true);
+var colorScale = d3.scale.quantize()
+  .range(colorbrewer.RdYlGn[9].reverse())
+
 var iXAxis = d3.svg.axis()
     .scale(ix0)
     .orient('bottom');
@@ -25,6 +34,8 @@ var iSvg = d3.select('#bottom-left').append('svg')
 function initializeIChart(){
   ix0.domain(W_BEAMS.map(function(d){ return d.key}));
   iy0.domain([SPECIAL.iBoundMin, SPECIAL.iBoundMax]);
+  iy1.domain([SPECIAL.wMin, SPECIAL.wMax]);
+  colorScale.domain([SPECIAL.wMin, SPECIAL.wMin + (SPECIAL.wMax- SPECIAL.wMin)/2, SPECIAL.wMax]);
 
   var wGroup = iSvg.selectAll('.w-group.I')
       .data(W_BEAMS)
@@ -40,7 +51,8 @@ function initializeIChart(){
         return ix0(section);
       })
       .attr('cy', function(d){ return iy0(+d.Ix); })
-      .attr('r', 5);
+      .attr('r', function(d){ return iy1(+d.W); })
+      .attr('stroke', function(d){ return colorScale(+d.W); })
 
   iSvg.append('g')
       .attr('class', 'x axis I')
@@ -81,7 +93,8 @@ function iUpdateWeight() {
       return ix0(section);
     })
     .attr('cy', function(d){ return iy0(+d.Ix); })
-    .attr('r', 5);
+    .attr('r', function(d){ return iy1(+d.W); })
+    .attr('stroke', function(d){ return colorScale(+d.W); })
 
   // Update scales only after the new dots have been entered
   ix0.domain(W_BEAMS_FILTERED.map(function(d){ return d.key;}));
@@ -93,7 +106,10 @@ function iUpdateWeight() {
     .transition().duration(1600).delay(500)
     .call(iYAxis);
 
+
   // Transition dots into their places
+  iy1.domain([SPECIAL.wMin, SPECIAL.wMax]);
+  colorScale.domain([SPECIAL.wMin, SPECIAL.wMin + (SPECIAL.wMax- SPECIAL.wMin)/2, SPECIAL.wMax]);
   wBeams.transition().duration(500)
     .attr('opacity', filterOpacity)
     .attr('stroke', filterStroke)
@@ -105,6 +121,8 @@ function iUpdateWeight() {
       return ix0(section);
     })
     .attr('cy', function(d){ return iy0(+d.Ix); })
+    .attr('r', function(d){ return iy1(+d.W); })
+    .attr('stroke', function(d){ return colorScale(+d.W); })
 
   wBeams.exit().remove()
   wGroup.exit().remove()
