@@ -44,8 +44,8 @@ function initializeProfileChart(){
       .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
       .attr('width', function(d){ return px0(+d.bf.Max); })
       .attr('height', function(d){ return py0(SPECIAL.d.boundMax - +d.d.Max); })
-      .attr('stroke', 'steelblue')
-      .attr('fill', 'RGBA(100, 100, 100, 0.01)')
+      .attr('stroke', 'RGBA(100, 100, 100, 0.3)')
+      .attr('fill', 'RGBA(100, 100, 100, 0)')
 
   pSvg.append('g')
       .attr('class', 'x axis p')
@@ -77,8 +77,8 @@ function pUpdateWeight(){
     .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
     .attr('width', function(d){ return px0(+d.bf.Max); })
     .attr('height', function(d){ return Math.max(0, py0(SPECIAL.d.boundMax - +d.d.Max)); })
-    .attr('stroke', 'steelblue')
-    .attr('fill', 'RGBA(100, 100, 100, 0.01)')
+    .attr('stroke', 'RGBA(100, 100, 100, 0.3)')
+    .attr('fill', 'RGBA(100, 100, 100, 0)')
 
   // Update scales only after the new rectangles have been entered
   var maxDimension = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
@@ -115,9 +115,11 @@ function showBeamProfile(d){
   var bf = +beam.bf;
   var d = +beam.d;
   var rectangles = [
-    {offsetX: (bf - tw) / 4 + tw / 2, width: (bf - tw) / 2, height: d - 2 * tf},
     {width: bf, height: d},
-    {offsetX: -(bf - tw) / 4 - tw / 2, width: (bf - tw) / 2, height: d - 2 * tf}
+    {offsetX: (bf - tw) / 4 + tw / 2, width: (bf - tw) / 2, height: d - 2 * tf},
+    {offsetX: -(bf - tw) / 4 - tw / 2, width: (bf - tw) / 2, height: d - 2 * tf},
+    {offsetX: (bf - tw) / 2 + tw / 2, width: .25, height: d - 2 * tf - .05, stroke: 'none', fill: 'white'},
+    {offsetX: -(bf - tw) / 2 - tw / 2, width: .25, height: d - 2 * tf - .05, stroke: 'none', fill: 'white'}
   ];
   pSvg.selectAll('.w-group.selected-beam')
       .data(rectangles)
@@ -130,7 +132,13 @@ function showBeamProfile(d){
       .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - d.height)) / 2; })
       .attr('width', function(d){ return px0(d.width); })
       .attr('height', function(d){ return py0(SPECIAL.d.boundMax - d.height); })
-      .attr('fill', 'none')
-      .attr('stroke', 'red')
+      .attr('fill', function(d){
+        if (d.fill) return d.fill;
+        return 'none';
+      })
+      .attr('stroke', function(d){
+        if (d.stroke) return d.stroke;
+        return 'red';
+      })
       .attr('stroke-width', 1)
 }
