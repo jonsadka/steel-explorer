@@ -8,7 +8,7 @@ var ix0 = d3.scale.ordinal()
 var iy0 = d3.scale.linear()
     .range([iHeight, 0]);
 
-// Radi size
+// Radii size
 // Shouldn't use radius, should color it where green is lower weight
 var iy1 = d3.scale.linear()
     .range([7, 7])
@@ -51,7 +51,7 @@ function initializeIChart(){
         return ix0(section);
       })
       .attr('cy', function(d){ return iy0(+d.Ix); })
-      .attr('r', function(d){ return iy1(+d.W); })
+      .attr('r', function(d){ return Math.max(0, iy1(+d.W)); })
       .attr('stroke', function(d){ return colorScale(+d.W); })
 
   iSvg.append('g')
@@ -93,7 +93,7 @@ function iUpdateWeight() {
       return ix0(section);
     })
     .attr('cy', function(d){ return iy0(+d.Ix); })
-    .attr('r', function(d){ return iy1(+d.W); })
+    .attr('r', function(d){ return Math.max(0, iy1(+d.W)); })
     .attr('stroke', function(d){ return colorScale(+d.W); })
 
   // Update scales only after the new dots have been entered
@@ -111,7 +111,7 @@ function iUpdateWeight() {
   colorScale.domain([SPECIAL.W.Min, SPECIAL.W.Min + (SPECIAL.W.Max- SPECIAL.W.Min)/2, SPECIAL.W.Max]);
   wBeams.transition().duration(500)
     .attr('stroke', function(d){ return colorScale(+d.W); })
-    .attr('stroke-width', filterStrokeWidth);
+    .attr('stroke-width', iFilterStrokeWidth);
 
   wBeams.transition().duration(1600).delay(500)
     .attr('cx', function(d){
@@ -119,9 +119,13 @@ function iUpdateWeight() {
       return ix0(section);
     })
     .attr('cy', function(d){ return iy0(+d.Ix); })
-    .attr('r', function(d){ return iy1(+d.W); })
+    .attr('r', function(d){ return Math.max(0, iy1(+d.W)); })
     .attr('stroke', function(d){ return colorScale(+d.W); })
 
   wBeams.exit().remove()
   wGroup.exit().remove()
+}
+
+function iFilterStrokeWidth(d){
+  return validateBeam(d, {valid: 1.25, invalid: 0});
 }

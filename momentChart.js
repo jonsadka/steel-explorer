@@ -101,17 +101,6 @@ function initializeMomentChart(){
 
   mSvg.append('rect')
       .attr('class', 'covers')
-      .attr('transform', 'translate(' + -mMargin.left + ',' + 0 + ')')
-      .attr({
-        x: 0,
-        y: 0,
-        height: mHeight + mMargin.bottom,
-        width: mMargin.left,
-        fill: 'white'
-      })
-
-  mSvg.append('rect')
-      .attr('class', 'covers')
       .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
       .attr({
         x: -mMargin.left,
@@ -132,6 +121,28 @@ function initializeMomentChart(){
         fill: 'white'
       })
 
+  mSvg.append('rect')
+      .attr('class', 'covers')
+      .attr('transform', 'translate(' + 0 + ',' + mHeight + ')')
+      .attr({
+        x: 0,
+        y: 0,
+        height: mHeight,
+        width: mWidth,
+        fill: 'white'
+      })
+
+  mSvg.append('rect')
+      .attr('class', 'covers')
+      .attr('transform', 'translate(' + -mMargin.left + ',' + 0 + ')')
+      .attr({
+        x: 0,
+        y: 0,
+        height: mHeight + mMargin.bottom,
+        width: mMargin.left,
+        fill: 'white'
+      })
+
   mSvg.append('g')
       .attr('class', 'x axis moment')
       .attr('transform', 'translate(0,' + mHeight + ')')
@@ -149,7 +160,7 @@ function initializeMomentChart(){
       .attr('y', 6)
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
-      .text('Available Moment (k-ft) - Phi not yet applied');
+      .text('Available Moment (k-ft) - φ not yet applied');
 }
 
 function mUpdateLength() {
@@ -223,9 +234,9 @@ function mUpdateWeight() {
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
       .transition().duration(500)
-      .attr('opacity', filterOpacity)
-      .attr('stroke', filterStroke)
-      .attr('stroke-width', filterStrokeWidth);
+      .attr('opacity', mFilterOpacity)
+      .attr('stroke', mFilterStroke)
+      .attr('stroke-width', mFilterStrokeWidth);
 
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
@@ -262,16 +273,16 @@ function mUpdateWeight() {
   }, 1600 + 500);
 }
 
-function filterOpacity(d){
+function mFilterOpacity(d){
   return validateBeam(d, {valid: 0.5, invalid: 0.09, nullState: 0.09});
 }
 
-function filterStroke(d){
+function mFilterStroke(d){
   return validateBeam(d, {valid: '#00A1DC'});
 }
 
-function filterStrokeWidth(d){
-  return validateBeam(d, {valid: 1.25, invalid: 0});
+function mFilterStrokeWidth(d){
+  return validateBeam(d, {valid: 1.25, invalid: 0.5});
 }
 
 function mMouseover(d) {
@@ -281,7 +292,9 @@ function mMouseover(d) {
   wBeam.classed('beam--hover', true);
   // wBeam.parentNode.appendChild(wBeam);
   mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
-  mSvg.select('.focus').select('text').text(d.AISC_Manual_Label);
+  mSvg.select('.focus').select('text').text(d.AISC_Manual_Label + ' (' + d.length + ' ft.,' + Math.round(d.Mn * PHI * 10) / 10 + ' k-ft.)');
+  removeBeamProfile();
+  showBeamProfile(d);
 }
 
 function mMouseout(d) {
@@ -290,4 +303,5 @@ function mMouseout(d) {
   wGroup.classed('group--hover', false);
   wBeam.classed('beam--hover', false);
   mSvg.select('.focus').attr('transform', 'translate(-100,-100)');
+  removeBeamProfile();
 }

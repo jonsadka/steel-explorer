@@ -24,6 +24,7 @@ var RIGHT_COL_2_WIDTH = RIGHT_CHARTS_WIDTH * 0.6;
 
 // CACHED GLOBAL PROPERTIES
 var W_BEAMS = [];
+var W_BEAMS_MAP = {};
 var W_BEAMS_FILTERED = [];
 var SPECIAL = null;
 var PHI = 0.9;
@@ -33,11 +34,16 @@ setTimeout(function(){
   d3.csv('data.csv', function(error, data) {
     if (error) throw error;
 
+    W_BEAMS_MAP = data.reduce(function(map, cv){
+      if (cv.Type === 'W') map[cv.AISC_Manual_Label] = cv
+      return map
+    }, {})
+
     var beams = d3.nest()
       .key(function(d){ return d.AISC_Manual_Label.split('X')[0]; })
       .entries(data)
 
-    W_BEAMS = beams.filter(getWSections);
+    W_BEAMS = beams.filter(isWSection);
     W_BEAMS.forEach(calculateProperties);
     SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
@@ -45,9 +51,9 @@ setTimeout(function(){
     initializeIChart();
     initializeMomentChart();
   });
-},10);
+}, 10);
 
-function getWSections (data){
+function isWSection (data){
   return (data.key.slice(0,1) === 'W') && (data.key.slice(0,2) !== 'WT');
 }
 
@@ -233,9 +239,12 @@ function calculateSpecialProperties(beams, options){
   //Add padding to x and y axis
   special.Mn.boundMin = Math.floor(special.Mn.Min - special.Mn.Min * 0.01);
   special.Mn.boundMax = Math.ceil(special.Mn.Max + special.Mn.Max * 0.01);
-  //Add padding to x and y axis
   special.I.boundMin = Math.floor(special.I.Min - special.I.Min * 0.01);
   special.I.boundMax = Math.ceil(special.I.Max + special.I.Max * 0.01);
+  special.d.boundMin = Math.floor(special.d.Min - special.d.Min * 0.05);
+  special.d.boundMax = Math.ceil(special.d.Max + special.d.Max * 0.05);
+  special.bf.boundMin = Math.floor(special.bf.Min - special.bf.Min * 0.05);
+  special.bf.boundMax = Math.ceil(special.bf.Max + special.bf.Max * 0.05);
   return special;
 }
 

@@ -1,4 +1,4 @@
-var pMargin = {top: 20, right: 20, bottom: 30, left: 50},
+var pMargin = {top: 20, right: 20, bottom: 20, left: 30},
     pWidth = LEFT_CHARTS_WIDTH - pMargin.left - pMargin.right,
     pHeight = LEFT_ROW_2_HEIGHT - pMargin.top - pMargin.bottom - 10;
 
@@ -23,17 +23,27 @@ var pSvg = d3.select('#bottom-container').append('svg')
     .attr('transform', 'translate(' + pMargin.left + ',' + pMargin.top + ')');
 
 function initializeProfileChart(){
-  px0.domain([0, SPECIAL.bf.Max]);
-  py0.domain([SPECIAL.d.Max, 0]);
+  var maxDimension = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
+  px0.domain([0, maxDimension]);
+  py0.domain([maxDimension, 0]);
+
+  pSvg.selectAll('.w-group.profile')
+      .data(SPECIAL.groupDimensions, function(d){ return d.key})
+    .enter().append('text')
+      .text(function(d){ return d.key; })
+      .attr('x', function(d){ return (pWidth + px0(+d.bf.Max)) / 2 - 18; })
+      .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
+      .attr('fill', 'black')
 
   var wGroup = pSvg.selectAll('.w-group.profile')
       .data(SPECIAL.groupDimensions, function(d){ return d.key})
-    .enter().append('rect')
+
+  wGroup.enter().append('rect')
       .attr('class', function(d){ return 'g w-group profile ' + d.key;})
       .attr('x', function(d){ return (pWidth - px0(+d.bf.Max)) / 2; })
-      .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.Max - +d.d.Max)) / 2; })
+      .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
       .attr('width', function(d){ return px0(+d.bf.Max); })
-      .attr('height', function(d){ return py0(SPECIAL.d.Max - +d.d.Max); })
+      .attr('height', function(d){ return py0(SPECIAL.d.boundMax - +d.d.Max); })
       .attr('stroke', 'steelblue')
       .attr('fill', 'RGBA(100, 100, 100, 0.01)')
 
@@ -64,15 +74,16 @@ function pUpdateWeight(){
   wGroup.enter().append('rect')
     .attr('class', function(d){ return 'g w-group profile ' + d.key;})
     .attr('x', function(d){ return (pWidth - px0(+d.bf.Max)) / 2; })
-    .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.Max - +d.d.Max)) / 2; })
+    .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
     .attr('width', function(d){ return px0(+d.bf.Max); })
-    .attr('height', function(d){ return Math.max(0, py0(SPECIAL.d.Max - +d.d.Max)); })
+    .attr('height', function(d){ return Math.max(0, py0(SPECIAL.d.boundMax - +d.d.Max)); })
     .attr('stroke', 'steelblue')
     .attr('fill', 'RGBA(100, 100, 100, 0.01)')
 
   // Update scales only after the new rectangles have been entered
-  px0.domain([0, SPECIAL.bf.Max]);
-  py0.domain([SPECIAL.d.Max, 0]);
+  var maxDimension = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
+  px0.domain([0, maxDimension]);
+  py0.domain([maxDimension, 0]);
   d3.selectAll('.x.axis.p')
     .transition().duration(1600).delay(500)
     .call(pXAxis);
@@ -86,9 +97,40 @@ function pUpdateWeight(){
 
   wGroup.transition().duration(1600).delay(500)
     .attr('x', function(d){ return (pWidth - px0(+d.bf.Max)) / 2; })
-    .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.Max - +d.d.Max)) / 2; })
+    .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
     .attr('width', function(d){ return px0(+d.bf.Max); })
-    .attr('height', function(d){ return py0(SPECIAL.d.Max - +d.d.Max); })
+    .attr('height', function(d){ return py0(SPECIAL.d.boundMax - +d.d.Max); })
 
   wGroup.exit().remove();
+}
+
+function removeBeamProfile(d){
+  pSvg.selectAll('.w-group.selected-beam').remove();
+}
+
+function showBeamProfile(d){
+  var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
+  var tf = +beam.tf;
+  var tw = +beam.tw;
+  var bf = +beam.bf;
+  var d = +beam.d;
+  var rectangles = [
+    {offsetX: (bf - tw) / 4 + tw / 2, width: (bf - tw) / 2, height: d - 2 * tf},
+    {width: bf, height: d},
+    {offsetX: -(bf - tw) / 4 - tw / 2, width: (bf - tw) / 2, height: d - 2 * tf}
+  ];
+  pSvg.selectAll('.w-group.selected-beam')
+      .data(rectangles)
+    .enter().append('rect')
+      .attr('class', function(d){ return 'w-group selected-beam ' + d.AISC_Manual_Label; })
+      .attr('x', function(d){
+        if (d.offsetX) return (pWidth - px0(d.width)) / 2 + px0(d.offsetX);
+        return (pWidth - px0(d.width)) / 2;
+      })
+      .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - d.height)) / 2; })
+      .attr('width', function(d){ return px0(d.width); })
+      .attr('height', function(d){ return py0(SPECIAL.d.boundMax - d.height); })
+      .attr('fill', 'none')
+      .attr('stroke', 'red')
+      .attr('stroke-width', 1)
 }
