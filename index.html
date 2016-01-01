@@ -17,6 +17,14 @@
     margin: 0;
   }
 
+  .btn {
+    position: absolute;
+    text-decoration: none;
+    background-color: steelblue;
+    color: white;
+    padding: 2px 6px 2px 6px;
+  }
+
   #left-column,
   #right-column {
     float: left;
@@ -32,6 +40,8 @@
     width: 80%;
   }
 
+  #top-container,
+  #bottom-container,
   #top-row,
   #bottom-row {
     border: 1px solid RGBA(100, 100, 255, 0.5);
@@ -93,38 +103,41 @@
 
 </style>
   <div id="left-column">
-    <div>
-      min max moment goes here
+    <div id="top-container">
+      <div>
+        min max moment goes here
+      </div>
+      <div>
+        <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
+        <!-- <label><input type="radio" name="mode" value="ASD">ASD</label> -->
+      </div>
+      <div>
+        Weight: <input type="number" id="weight-min-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
+        plf
+        <input type="number" id="weight-max-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
+        plf
+      </div>
+      <div>
+        Ix: <input type="number" id="I-min-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
+        in<sup>4</sup>
+        <input type="number" id="I-max-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
+        in<sup>4</sup>
+      </div>
+      <div>
+        Length: <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Unbraced beam length">
+        ft
+      </div>
+      <div>Ix goes here</div>
     </div>
-    <div>
-      <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
-      <!-- <label><input type="radio" name="mode" value="ASD">ASD</label> -->
+    <div id="bottom-container">
+      <h1>23 Beams found</h1>
     </div>
-    <div>
-      Weight: <input type="number" id="weight-min-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
-      plf
-      <input type="number" id="weight-max-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
-      plf
-    </div>
-    <div>
-      Ix: <input type="number" id="I-min-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
-      in<sup>4</sup>
-      <input type="number" id="I-max-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
-      in<sup>4</sup>
-    </div>
-    <div>
-      Length: <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Unbraced beam length">
-      ft
-    </div>
-    <div>
-      Ix goes here
-    </div>
-    <h1>
-      23 Beams found
-    </h1>
   </div>
   <div id="right-column">
-    <div id="top-row"></div>
+    <div id="top-row">
+      <a class="btn">Delta goes here</a>
+      <a class="btn">Mn</a>
+    </div>
     <div id="bottom-row">
       <div id="bottom-left"></div>
       <div id="bottom-right"></div>
@@ -134,5 +147,6 @@
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="./index.js"></script>
 <script src="./colorbrewer.min.js"></script>
+<script src="./profileChart.js"></script>
 <script src="./iChart.js"></script>
 <script src="./momentChart.js"></script>

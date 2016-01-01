@@ -13,12 +13,14 @@ var USER_I_MIN = null;
 
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight;
-var ROW_1_HEIGHT = 0.55 * CHARTS_HEIGHT;
-var ROW_2_HEIGHT = 0.45 * CHARTS_HEIGHT;
+var LEFT_ROW_2_HEIGHT = 0.65 * CHARTS_HEIGHT;
+var RIGHT_ROW_1_HEIGHT = 0.55 * CHARTS_HEIGHT;
+var RIGHT_ROW_2_HEIGHT = 0.45 * CHARTS_HEIGHT;
 // WIDTHS
-var CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
-var COL_1_WIDTH = CHARTS_WIDTH * 0.4;
-var COL_2_WIDTH = CHARTS_WIDTH * 0.6;
+var LEFT_CHARTS_WIDTH = document.getElementById('left-column').offsetWidth;
+var RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
+var RIGHT_COL_1_WIDTH = RIGHT_CHARTS_WIDTH * 0.4;
+var RIGHT_COL_2_WIDTH = RIGHT_CHARTS_WIDTH * 0.6;
 
 // CACHED GLOBAL PROPERTIES
 var W_BEAMS = [];
@@ -142,37 +144,37 @@ function calculateSpecialProperties(beams, options){
     var groupStats = cv.values.reduce(function(pv, cv){
       var shoudlUpdateI = true;
       if (minWeight <= +cv.W && +cv.W <= maxWeight){
-        pv.yMin = Math.min(pv.yMin, cv.MnFunction(endLength));
-        pv.yMax = Math.max(pv.yMax, cv.MnFunction(startLength));
+        pv.y.Min = Math.min(pv.y.Min, cv.MnFunction(endLength));
+        pv.y.Max = Math.max(pv.y.Max, cv.MnFunction(startLength));
         if (minI <= +cv.Ix && +cv.Ix <= maxI){
           shoudlUpdateI = false;
-          pv.iMin = Math.min(pv.iMin, +cv.Ix);
-          pv.iMax = Math.max(pv.iMax, +cv.Ix);
-          pv.wMin = Math.min(pv.wMin, +cv.W);
-          pv.wMax = Math.max(pv.wMax, +cv.W);
+          pv.I.Min = Math.min(pv.I.Min, +cv.Ix);
+          pv.I.Max = Math.max(pv.I.Max, +cv.Ix);
+          pv.W.Min = Math.min(pv.W.Min, +cv.W);
+          pv.W.Max = Math.max(pv.W.Max, +cv.W);
         }
       }
       return pv
-    }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0, wMin: Infinity, wMax: 0});
+    }, {y: {Min: Infinity, Max: 0}, I: {Min: Infinity, Max: 0}, W: {Min: Infinity, Max: 0}});
 
-    pv.yMin = Math.min(pv.yMin, groupStats.yMin);
-    pv.yMax = Math.max(pv.yMax, groupStats.yMax);
-    pv.iMin = Math.min(pv.iMin, groupStats.iMin);
-    pv.iMax = Math.max(pv.iMax, groupStats.iMax);
-    pv.wMin = Math.min(pv.wMin, groupStats.wMin);
-    pv.wMax = Math.max(pv.wMax, groupStats.wMax);
+    pv.y.Min = Math.min(pv.y.Min, groupStats.y.Min);
+    pv.y.Max = Math.max(pv.y.Max, groupStats.y.Max);
+    pv.I.Min = Math.min(pv.I.Min, groupStats.I.Min);
+    pv.I.Max = Math.max(pv.I.Max, groupStats.I.Max);
+    pv.W.Min = Math.min(pv.W.Min, groupStats.W.Min);
+    pv.W.Max = Math.max(pv.W.Max, groupStats.W.Max);
     return pv;
 
-  }, {yMin: Infinity, yMax: 0, iMin: Infinity, iMax: 0, wMin: Infinity, wMax: 0});
+  }, {y: {Min: Infinity, Max: 0}, I: {Min: Infinity, Max: 0}, W: {Min: Infinity, Max: 0}});
 
-  special.yMin = special.yMin / 12; // convert from k-in to k-ft
-  special.yMax = special.yMax / 12; // convert from k-in to k-ft
+  special.y.Min = special.y.Min / 12; // convert from k-in to k-ft
+  special.y.Max = special.y.Max / 12; // convert from k-in to k-ft
   //Add padding to x and y axis
-  special.yBoundMin = Math.floor(special.yMin - special.yMin * 0.01);
-  special.yBoundMax = Math.ceil(special.yMax + special.yMax * 0.01);
+  special.yBoundMin = Math.floor(special.y.Min - special.y.Min * 0.01);
+  special.yBoundMax = Math.ceil(special.y.Max + special.y.Max * 0.01);
   //Add padding to x and y axis
-  special.iBoundMin = Math.floor(special.iMin - special.iMin * 0.01);
-  special.iBoundMax = Math.ceil(special.iMax + special.iMax * 0.01);
+  special.iBoundMin = Math.floor(special.I.Min - special.I.Min * 0.01);
+  special.iBoundMax = Math.ceil(special.I.Max + special.I.Max * 0.01);
   return special;
 }
 

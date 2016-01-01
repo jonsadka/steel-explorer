@@ -1,6 +1,6 @@
 var mMargin = {top: 20, right: 20, bottom: 30, left: 40},
-    mWidth = CHARTS_WIDTH - mMargin.left - mMargin.right,
-    mHeight = ROW_1_HEIGHT - mMargin.top - mMargin.bottom - 10;
+    mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
+    mHeight = RIGHT_ROW_1_HEIGHT - mMargin.top - mMargin.bottom - 10;
 
 var mx0 = d3.scale.linear()
     .range([0, mWidth], .1);

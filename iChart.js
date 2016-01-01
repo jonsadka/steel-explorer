@@ -1,6 +1,6 @@
 var iMargin = {top: 20, right: 20, bottom: 30, left: 50},
-    iWidth = COL_1_WIDTH - iMargin.left - iMargin.right,
-    iHeight = ROW_2_HEIGHT - iMargin.top - iMargin.bottom - 10;
+    iWidth = RIGHT_COL_1_WIDTH - iMargin.left - iMargin.right,
+    iHeight = RIGHT_ROW_2_HEIGHT - iMargin.top - iMargin.bottom - 10;
 
 var ix0 = d3.scale.ordinal()
     .rangePoints([iWidth, 0], .1);
@@ -15,7 +15,7 @@ var iy1 = d3.scale.linear()
     // .range([4, 12])
     .clamp(true);
 var colorScale = d3.scale.quantize()
-  .range(colorbrewer.RdYlGn[9].reverse())
+  .range(colorbrewer.PuOr[5].reverse())
 
 var iXAxis = d3.svg.axis()
     .scale(ix0)
@@ -34,8 +34,8 @@ var iSvg = d3.select('#bottom-left').append('svg')
 function initializeIChart(){
   ix0.domain(W_BEAMS.map(function(d){ return d.key}));
   iy0.domain([SPECIAL.iBoundMin, SPECIAL.iBoundMax]);
-  iy1.domain([SPECIAL.wMin, SPECIAL.wMax]);
-  colorScale.domain([SPECIAL.wMin, SPECIAL.wMin + (SPECIAL.wMax- SPECIAL.wMin)/2, SPECIAL.wMax]);
+  iy1.domain([SPECIAL.W.Min, SPECIAL.W.Max]);
+  colorScale.domain([SPECIAL.W.Min, SPECIAL.W.Min + (SPECIAL.W.Max- SPECIAL.W.Min)/2, SPECIAL.W.Max]);
 
   var wGroup = iSvg.selectAll('.w-group.I')
       .data(W_BEAMS)
@@ -108,8 +108,8 @@ function iUpdateWeight() {
 
 
   // Transition dots into their places
-  iy1.domain([SPECIAL.wMin, SPECIAL.wMax]);
-  colorScale.domain([SPECIAL.wMin, SPECIAL.wMin + (SPECIAL.wMax- SPECIAL.wMin)/2, SPECIAL.wMax]);
+  iy1.domain([SPECIAL.W.Min, SPECIAL.W.Max]);
+  colorScale.domain([SPECIAL.W.Min, SPECIAL.W.Min + (SPECIAL.W.Max- SPECIAL.W.Min)/2, SPECIAL.W.Max]);
   wBeams.transition().duration(500)
     .attr('opacity', filterOpacity)
     .attr('stroke', filterStroke)
