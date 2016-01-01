@@ -1,6 +1,6 @@
-var pMargin = {top: 20, right: 20, bottom: 20, left: 30},
-    pWidth = LEFT_CHARTS_WIDTH - pMargin.left - pMargin.right,
-    pHeight = LEFT_ROW_2_HEIGHT - pMargin.top - pMargin.bottom - 10;
+var pMargin = {top: 20, right: 12, bottom: 20, left: 22},
+    pWidth = RIGHT_COL_1_WIDTH - pMargin.left - pMargin.right,
+    pHeight = RIGHT_ROW_2_HEIGHT - pMargin.top - pMargin.bottom - 10;
 
 var px0 = d3.scale.linear()
     .range([0, pWidth], .1);
@@ -16,7 +16,7 @@ var pYAxis = d3.svg.axis()
     .scale(py0)
     .orient('left');
 
-var pSvg = d3.select('#bottom-container').append('svg')
+var pSvg = d3.select('#bottom-left').append('svg')
     .attr('width', pWidth + pMargin.left + pMargin.right)
     .attr('height', pHeight + pMargin.top + pMargin.bottom)
   .append('g')

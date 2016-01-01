@@ -13,7 +13,8 @@ var USER_I_MIN = null;
 
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight;
-var LEFT_ROW_2_HEIGHT = 0.65 * CHARTS_HEIGHT;
+var LEFT_ROW_2_HEIGHT = 0.30 * CHARTS_HEIGHT;
+var LEFT_ROW_3_HEIGHT = 0.30 * CHARTS_HEIGHT;
 var RIGHT_ROW_1_HEIGHT = 0.55 * CHARTS_HEIGHT;
 var RIGHT_ROW_2_HEIGHT = 0.45 * CHARTS_HEIGHT;
 // WIDTHS
@@ -48,6 +49,7 @@ setTimeout(function(){
     SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
     initializeProfileChart();
+    initializeDistributionChart();
     initializeIChart();
     initializeMomentChart();
   });

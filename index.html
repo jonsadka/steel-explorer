@@ -41,20 +41,24 @@
   }
 
   #top-container,
+  #middle-container,
   #bottom-container,
-  #top-row,
   #bottom-row {
     border: 1px solid RGBA(100, 100, 255, 0.5);
   }
 
-  #bottom-right {
-    width: 60%;
+  #bottom-right,
+  #bottom-left {
+    display: inline-block;
+    vertical-align: top;
     border: 1px solid RGBA(255, 10, 25, 0.5);
   }
 
   #bottom-left {
     width: 40%;
-    border: 1px solid RGBA(255, 10, 25, 0.5);
+  }
+  #bottom-right {
+    width: 60%;
   }
 
   text {
@@ -128,8 +132,24 @@
       </div>
       <div>Ix goes here</div>
     </div>
+    <div id="middle-container">
+      <h1>23 Matching beams found</h1>
+      <table>
+        <tr>
+          <td>by Weight</td>
+          <td>by Depth</td>
+        </tr>
+        <tr>
+          <td>W14x170</td>
+          <td>W18x175</td>
+        </tr>
+        <tr>
+          <td>W18x175</td>
+          <td>W14x170</td>
+        </tr>
+      </table>
+    </div>
     <div id="bottom-container">
-      <h1>23 Beams found</h1>
     </div>
   </div>
   <div id="right-column">
@@ -138,8 +158,7 @@
       <a class="btn">Mn</a>
     </div>
     <div id="bottom-row">
-      <div id="bottom-left"></div>
-      <div id="bottom-right"></div>
+      <div id="bottom-left"><div style="position: absolute;">Need to show dimensions</div></div><div id="bottom-right"></div>
     </div>
   </div>
 <body>
@@ -147,5 +166,6 @@
 <script src="./index.js"></script>
 <script src="./colorbrewer.min.js"></script>
 <script src="./profileChart.js"></script>
+<script src="./distributionChart.js"></script>
 <script src="./iChart.js"></script>
 <script src="./momentChart.js"></script>
