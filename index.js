@@ -1,7 +1,7 @@
 var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
-var MAX_UNBRACED = 61; // ft
+var MAX_UNBRACED = 51; // ft
 var UNBRACED_STEP = 1; // ft
 
 // User inputs
@@ -28,20 +28,24 @@ var W_BEAMS_FILTERED = [];
 var SPECIAL = null;
 var PHI = 0.9;
 
-d3.csv('data.csv', function(error, data) {
-  if (error) throw error;
+// HACK
+setTimeout(function(){
+  d3.csv('data.csv', function(error, data) {
+    if (error) throw error;
 
-  var beams = d3.nest()
-    .key(function(d){ return d.AISC_Manual_Label.split('X')[0]; })
-    .entries(data)
+    var beams = d3.nest()
+      .key(function(d){ return d.AISC_Manual_Label.split('X')[0]; })
+      .entries(data)
 
-  W_BEAMS = beams.filter(getWSections);
-  W_BEAMS.forEach(calculateProperties);
-  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
+    W_BEAMS = beams.filter(getWSections);
+    W_BEAMS.forEach(calculateProperties);
+    SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
-  initializeMomentChart();
-  initializeIChart();
-});
+    initializeProfileChart();
+    initializeIChart();
+    initializeMomentChart();
+  });
+},10);
 
 function getWSections (data){
   return (data.key.slice(0,1) === 'W') && (data.key.slice(0,2) !== 'WT');
@@ -115,6 +119,7 @@ function updateWeight() {
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
   filterBeams();
+  pUpdateWeight();
   mUpdateWeight();
   iUpdateWeight();
 }
@@ -139,21 +144,24 @@ function calculateSpecialProperties(beams, options){
   var maxI = !!USER_I_MAX ? Math.max(10, USER_I_MAX) : Infinity;
   var minI = !!USER_I_MIN ? Math.min(70000, USER_I_MIN) : 0;
 
+  var groupDimensions = {}
   var special = beams.slice().reduce(function(pv, cv){
-
+    var wGroup = cv.key;
     var groupStats = cv.values.reduce(function(pv, cv){
-      var shouldUpdateY = false;
+      var shouldUpdateMn = false;
       var shouldUpdateW = false;
       var shouldUpdateI = false;
+      var shouldUpdateDimensions = false;
       if (minWeight <= +cv.W && +cv.W <= maxWeight){
         if (minI <= +cv.Ix && +cv.Ix <= maxI){
-          shouldUpdateY = true;
+          shouldUpdateMn = true;
           shouldUpdateW = true;
           shouldUpdateI = true;
+          shouldUpdateDimensions = true;
         }
       }
 
-      if (shouldUpdateY){
+      if (shouldUpdateMn){
         pv.Mn.Min = Math.min(pv.Mn.Min, cv.MnFunction(endLength));
         pv.Mn.Max = Math.max(pv.Mn.Max, cv.MnFunction(startLength));
       }
@@ -165,29 +173,69 @@ function calculateSpecialProperties(beams, options){
         pv.W.Min = Math.min(pv.W.Min, +cv.W);
         pv.W.Max = Math.max(pv.W.Max, +cv.W);
       }
+      if (shouldUpdateDimensions){
+        pv.d.Min = Math.min(pv.d.Min, +cv.d);
+        pv.d.Max = Math.max(pv.d.Max, +cv.d);
+        pv.bf.Min = Math.min(pv.bf.Min, +cv.bf);
+        pv.bf.Max = Math.max(pv.bf.Max, +cv.bf);
+      }
 
       return pv
-    }, {Mn: {Min: Infinity, Max: 0}, I: {Min: Infinity, Max: 0}, W: {Min: Infinity, Max: 0}});
+    }, {
+      Mn: {Min: Infinity, Max: 0},
+      I: {Min: Infinity, Max: 0},
+      W: {Min: Infinity, Max: 0},
+      d: {Min: Infinity, Max: 0},
+      bf: {Min: Infinity, Max: 0}
+    });
 
-    pv.Mn.Min = Math.min(pv.Mn.Min, groupStats.Mn.Min);
-    pv.Mn.Max = Math.max(pv.Mn.Max, groupStats.Mn.Max);
-    pv.I.Min = Math.min(pv.I.Min, groupStats.I.Min);
-    pv.I.Max = Math.max(pv.I.Max, groupStats.I.Max);
-    pv.W.Min = Math.min(pv.W.Min, groupStats.W.Min);
-    pv.W.Max = Math.max(pv.W.Max, groupStats.W.Max);
+    // Set the min and max properties thus far
+    var specialProperties = ['Mn', 'I', 'W', 'd', 'bf'];
+    for (var i = 0; i < specialProperties.length; i++){
+      var variable = specialProperties[i];
+      pv[variable].Min = Math.min(pv[variable].Min, groupStats[variable].Min);
+      pv[variable].Max = Math.max(pv[variable].Max, groupStats[variable].Max);
+    }
+    // Cache the W group min and max dimensions
+    groupDimensions[wGroup] = groupDimensions[wGroup] || {};
+    var specialDimensions = ['d', 'bf'];
+    for (var i = 0; i < specialDimensions.length; i++){
+      var dimension = specialDimensions[i];
+      groupDimensions[wGroup][dimension] = groupDimensions[wGroup][dimension] || {};
+      if (groupStats[dimension].Max > 0) {
+        groupDimensions[wGroup][dimension].Max = groupStats[dimension].Max;
+      }
+      if (groupStats[dimension].Min < Infinity){
+        groupDimensions[wGroup][dimension].Min = groupStats[dimension].Min;
+      }
+      // Delete the dimension if no dimensions were set
+      if (!Object.keys(groupDimensions[wGroup][dimension]).length) delete groupDimensions[wGroup][dimension];
+    }
+    // Delete the W group if no dimensions were set
+    if (!Object.keys(groupDimensions[wGroup]).length) delete groupDimensions[wGroup];
+
     return pv;
+  }, {
+    Mn: {Min: Infinity, Max: 0},
+    I: {Min: Infinity, Max: 0},
+    W: {Min: Infinity, Max: 0},
+    d: {Min: Infinity, Max: 0},
+    bf: {Min: Infinity, Max: 0}
+  });
 
-  }, {Mn: {Min: Infinity, Max: 0}, I: {Min: Infinity, Max: 0}, W: {Min: Infinity, Max: 0}});
-
-  special.Mn.Min = special.Mn.Min / 12; // convert from k-in to k-ft
-  special.Mn.Max = special.Mn.Max / 12; // convert from k-in to k-ft
+  special.groupDimensions = Object.keys(groupDimensions).map(function(wGroup){
+    groupDimensions[wGroup].key = wGroup;
+    return groupDimensions[wGroup];
+  });;
+  // convert from k-in to k-ft
+  special.Mn.Min = special.Mn.Min / 12;
+  special.Mn.Max = special.Mn.Max / 12;
   //Add padding to x and y axis
   special.Mn.boundMin = Math.floor(special.Mn.Min - special.Mn.Min * 0.01);
   special.Mn.boundMax = Math.ceil(special.Mn.Max + special.Mn.Max * 0.01);
   //Add padding to x and y axis
   special.I.boundMin = Math.floor(special.I.Min - special.I.Min * 0.01);
   special.I.boundMax = Math.ceil(special.I.Max + special.I.Max * 0.01);
-  console.log(special)
   return special;
 }
 

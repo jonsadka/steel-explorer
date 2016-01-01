@@ -38,12 +38,12 @@ function initializeIChart(){
   colorScale.domain([SPECIAL.W.Min, SPECIAL.W.Min + (SPECIAL.W.Max- SPECIAL.W.Min)/2, SPECIAL.W.Max]);
 
   var wGroup = iSvg.selectAll('.w-group.I')
-      .data(W_BEAMS)
+      .data(W_BEAMS, function(d) { return d.key; })
     .enter().append('g')
       .attr('class', function(d){ return 'g w-group I ' + d.key;})
 
   wGroup.selectAll('circle')
-      .data(function(d) { return d.values; })
+      .data(function(d) { return d.values; }, function(d) { return d.W; })
     .enter().append('circle')
       .attr('class', function(d){ return 'w-beam X' + d.W;})
       .attr('cx', function(d){
@@ -78,7 +78,7 @@ function iUpdateWeight() {
       .data(W_BEAMS, function(d) { return d.key; })
 
   wGroup.enter().append('g')
-      .attr('class', function(d){ return 'g w-group I ' + d.key;})
+    .attr('class', function(d){ return 'g w-group I ' + d.key;})
 
   wGroup
     .attr('class', function(d){ return 'g w-group I ' + d.key;})
@@ -106,13 +106,11 @@ function iUpdateWeight() {
     .transition().duration(1600).delay(500)
     .call(iYAxis);
 
-
   // Transition dots into their places
   iy1.domain([SPECIAL.W.Min, SPECIAL.W.Max]);
   colorScale.domain([SPECIAL.W.Min, SPECIAL.W.Min + (SPECIAL.W.Max- SPECIAL.W.Min)/2, SPECIAL.W.Max]);
   wBeams.transition().duration(500)
-    .attr('opacity', filterOpacity)
-    .attr('stroke', filterStroke)
+    .attr('stroke', function(d){ return colorScale(+d.W); })
     .attr('stroke-width', filterStrokeWidth);
 
   wBeams.transition().duration(1600).delay(500)

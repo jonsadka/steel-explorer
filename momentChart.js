@@ -168,7 +168,7 @@ function mUpdateLength() {
     .x(function(d){ return mx0(d.length); })
     .y(function(d){ return my0(d.Mn * PHI); });
 
-  var wGroup = d3.selectAll('.w-group')
+  var wGroup = mSvg.selectAll('.w-group')
       .data(W_BEAMS)
 
   wGroup.selectAll('path.w-beam')
@@ -217,7 +217,7 @@ function mUpdateWeight() {
     .x(function(d){ return mx0(d.length);})
     .y(function(d){ return my0(d.Mn * PHI);});
 
-  var wGroup = d3.selectAll('.w-group')
+  var wGroup = mSvg.selectAll('.w-group')
       .data(W_BEAMS)
 
   wGroup.selectAll('path')
@@ -271,7 +271,7 @@ function filterStroke(d){
 }
 
 function filterStrokeWidth(d){
-  return validateBeam(d, {valid: 1.25});
+  return validateBeam(d, {valid: 1.25, invalid: 0});
 }
 
 function mMouseover(d) {
