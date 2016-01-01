@@ -33,7 +33,7 @@ var mSvg = d3.select('#top-row').append('svg')
 
 function initializeMomentChart(){
   mx0.domain([0, MAX_UNBRACED]);
-  my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
+  my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
   // Actual line chart
   var wGroup = mSvg.selectAll('.w-group.m')
@@ -154,7 +154,7 @@ function initializeMomentChart(){
 
 function mUpdateLength() {
   mx0.domain([START_LENGTH, endLength]);
-  my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
+  my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
   d3.selectAll('.x.axis.moment')
     .transition().duration(1600)
@@ -207,7 +207,7 @@ function mUpdateLength() {
 }
 
 function mUpdateWeight() {
-  my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
+  my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
   d3.selectAll('.y.axis.moment')
     .transition().duration(1600).delay(500)

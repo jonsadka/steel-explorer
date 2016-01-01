@@ -142,39 +142,52 @@ function calculateSpecialProperties(beams, options){
   var special = beams.slice().reduce(function(pv, cv){
 
     var groupStats = cv.values.reduce(function(pv, cv){
-      var shoudlUpdateI = true;
+      var shouldUpdateY = false;
+      var shouldUpdateW = false;
+      var shouldUpdateI = false;
       if (minWeight <= +cv.W && +cv.W <= maxWeight){
-        pv.y.Min = Math.min(pv.y.Min, cv.MnFunction(endLength));
-        pv.y.Max = Math.max(pv.y.Max, cv.MnFunction(startLength));
         if (minI <= +cv.Ix && +cv.Ix <= maxI){
-          shoudlUpdateI = false;
-          pv.I.Min = Math.min(pv.I.Min, +cv.Ix);
-          pv.I.Max = Math.max(pv.I.Max, +cv.Ix);
-          pv.W.Min = Math.min(pv.W.Min, +cv.W);
-          pv.W.Max = Math.max(pv.W.Max, +cv.W);
+          shouldUpdateY = true;
+          shouldUpdateW = true;
+          shouldUpdateI = true;
         }
       }
-      return pv
-    }, {y: {Min: Infinity, Max: 0}, I: {Min: Infinity, Max: 0}, W: {Min: Infinity, Max: 0}});
 
-    pv.y.Min = Math.min(pv.y.Min, groupStats.y.Min);
-    pv.y.Max = Math.max(pv.y.Max, groupStats.y.Max);
+      if (shouldUpdateY){
+        pv.Mn.Min = Math.min(pv.Mn.Min, cv.MnFunction(endLength));
+        pv.Mn.Max = Math.max(pv.Mn.Max, cv.MnFunction(startLength));
+      }
+      if (shouldUpdateI){
+        pv.I.Min = Math.min(pv.I.Min, +cv.Ix);
+        pv.I.Max = Math.max(pv.I.Max, +cv.Ix);
+      }
+      if (shouldUpdateW){
+        pv.W.Min = Math.min(pv.W.Min, +cv.W);
+        pv.W.Max = Math.max(pv.W.Max, +cv.W);
+      }
+
+      return pv
+    }, {Mn: {Min: Infinity, Max: 0}, I: {Min: Infinity, Max: 0}, W: {Min: Infinity, Max: 0}});
+
+    pv.Mn.Min = Math.min(pv.Mn.Min, groupStats.Mn.Min);
+    pv.Mn.Max = Math.max(pv.Mn.Max, groupStats.Mn.Max);
     pv.I.Min = Math.min(pv.I.Min, groupStats.I.Min);
     pv.I.Max = Math.max(pv.I.Max, groupStats.I.Max);
     pv.W.Min = Math.min(pv.W.Min, groupStats.W.Min);
     pv.W.Max = Math.max(pv.W.Max, groupStats.W.Max);
     return pv;
 
-  }, {y: {Min: Infinity, Max: 0}, I: {Min: Infinity, Max: 0}, W: {Min: Infinity, Max: 0}});
+  }, {Mn: {Min: Infinity, Max: 0}, I: {Min: Infinity, Max: 0}, W: {Min: Infinity, Max: 0}});
 
-  special.y.Min = special.y.Min / 12; // convert from k-in to k-ft
-  special.y.Max = special.y.Max / 12; // convert from k-in to k-ft
+  special.Mn.Min = special.Mn.Min / 12; // convert from k-in to k-ft
+  special.Mn.Max = special.Mn.Max / 12; // convert from k-in to k-ft
   //Add padding to x and y axis
-  special.yBoundMin = Math.floor(special.y.Min - special.y.Min * 0.01);
-  special.yBoundMax = Math.ceil(special.y.Max + special.y.Max * 0.01);
+  special.Mn.boundMin = Math.floor(special.Mn.Min - special.Mn.Min * 0.01);
+  special.Mn.boundMax = Math.ceil(special.Mn.Max + special.Mn.Max * 0.01);
   //Add padding to x and y axis
-  special.iBoundMin = Math.floor(special.I.Min - special.I.Min * 0.01);
-  special.iBoundMax = Math.ceil(special.I.Max + special.I.Max * 0.01);
+  special.I.boundMin = Math.floor(special.I.Min - special.I.Min * 0.01);
+  special.I.boundMax = Math.ceil(special.I.Max + special.I.Max * 0.01);
+  console.log(special)
   return special;
 }
 

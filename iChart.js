@@ -33,7 +33,7 @@ var iSvg = d3.select('#bottom-left').append('svg')
 
 function initializeIChart(){
   ix0.domain(W_BEAMS.map(function(d){ return d.key}));
-  iy0.domain([SPECIAL.iBoundMin, SPECIAL.iBoundMax]);
+  iy0.domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
   iy1.domain([SPECIAL.W.Min, SPECIAL.W.Max]);
   colorScale.domain([SPECIAL.W.Min, SPECIAL.W.Min + (SPECIAL.W.Max- SPECIAL.W.Min)/2, SPECIAL.W.Max]);
 
@@ -98,7 +98,7 @@ function iUpdateWeight() {
 
   // Update scales only after the new dots have been entered
   ix0.domain(W_BEAMS_FILTERED.map(function(d){ return d.key;}));
-  iy0.domain([SPECIAL.iBoundMin, SPECIAL.iBoundMax]);
+  iy0.domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
   d3.selectAll('.x.axis.I')
     .transition().duration(1600).delay(500)
     .call(iXAxis);

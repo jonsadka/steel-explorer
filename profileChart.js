@@ -16,7 +16,7 @@ var pSvg = d3.select('#bottom-container').append('svg')
 
 function initializeProfileChart(){
   mx0.domain([0, MAX_UNBRACED]);
-  my0.domain([SPECIAL.yBoundMin * PHI, SPECIAL.yBoundMax * PHI]);
+  my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
 
 }
