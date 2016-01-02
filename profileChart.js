@@ -124,7 +124,7 @@ function showBeamProfile(d){
   pSvg.selectAll('.w-group.selected-beam')
       .data(rectangles)
     .enter().append('rect')
-      .attr('class', function(d){ return 'w-group selected-beam ' + d.AISC_Manual_Label; })
+      .attr('class', function(d){ return 'w-group selected-beam ' + escapeCharacter(beam.AISC_Manual_Label); })
       .attr('x', function(d){
         if (d.offsetX) return (pWidth - px0(d.width)) / 2 + px0(d.offsetX);
         return (pWidth - px0(d.width)) / 2;
@@ -138,7 +138,7 @@ function showBeamProfile(d){
       })
       .attr('stroke', function(d){
         if (d.stroke) return d.stroke;
-        return 'red';
+        return 'steelblue';
       })
       .attr('stroke-width', 1)
 }

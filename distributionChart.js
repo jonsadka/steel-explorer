@@ -37,12 +37,14 @@ function initializeDistributionChart(){
     .enter().append('rect')
       .attr('class', function(d){ return 'w-beam d ' + d.AISC_Manual_Label;} )
       .attr('x', function(d){ return dx0(+d.W); })
-      .attr('y', function(d){ return dy0(0) - dy0(+d.d); })
+      .attr('y', function(d){ return dy0(+d.d); })
+      .attr('rx', 5)
+      .attr('height', function(d){ return dy0(0) - dy0(+d.d); })
       .attr('width', 0.25)
-      .attr('height', function(d){ return dy0(+d.d); })
+      .attr('opacity', 0.5)
 
   dSvg.append('g')
-      .attr('class', 'x axis I')
+      .attr('class', 'x axis d')
       .attr('transform', 'translate(0,' + dHeight + ')')
       .call(dXAxis)
     .append('text')
@@ -51,7 +53,7 @@ function initializeDistributionChart(){
       .text('Weight (plf.)');
 
   dSvg.append('g')
-      .attr('class', 'y axis I')
+      .attr('class', 'y axis d')
       .call(dYAxis)
     .append('text')
       .attr('transform', 'rotate(-90)')
@@ -59,5 +61,20 @@ function initializeDistributionChart(){
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
       .text('Depth (in)');
+}
 
+function removeBeamDistribution(d){
+  dSvg.select('.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
+    .transition().duration(100)
+    .attr('fill', 'black')
+    .attr('width', 0.25)
+    .attr('opacity', 0.5)
+}
+
+function highlightBeamDistribution(d){
+  dSvg.select('.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
+    .attr('fill', 'steelblue')
+    .transition().duration(100)
+    .attr('width', 4)
+    .attr('opacity', 1)
 }

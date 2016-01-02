@@ -126,6 +126,22 @@ function iUpdateWeight() {
   wGroup.exit().remove()
 }
 
-function iFilterStrokeWidth(d){
+function iFilterStrokeWidth(d) {
   return validateBeam(d, {valid: 1.25, invalid: 0});
+}
+
+function removeHighlightBeamI(d) {
+  var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
+  var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
+    .transition().duration(100)
+    .attr('r', Math.max(0, iy1(+d.W)))
+    .attr('fill', 'none')
+}
+
+function highlightBeamI(d) {
+  var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
+  var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
+    .attr('fill', colorScale(+d.W))
+    .transition().duration(100)
+    .attr('r', 10)
 }

@@ -293,8 +293,9 @@ function mMouseover(d) {
   // wBeam.parentNode.appendChild(wBeam);
   mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
   mSvg.select('.focus').select('text').text(d.AISC_Manual_Label + ' (' + d.length + ' ft.,' + Math.round(d.Mn * PHI * 10) / 10 + ' k-ft.)');
-  removeBeamProfile();
   showBeamProfile(d);
+  highlightBeamI(d);
+  highlightBeamDistribution(d);
 }
 
 function mMouseout(d) {
@@ -304,4 +305,6 @@ function mMouseout(d) {
   wBeam.classed('beam--hover', false);
   mSvg.select('.focus').attr('transform', 'translate(-100,-100)');
   removeBeamProfile();
+  removeHighlightBeamI(d);
+  removeBeamDistribution(d);
 }
