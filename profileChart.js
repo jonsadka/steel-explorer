@@ -8,8 +8,16 @@ var px0 = d3.scale.linear()
 var py0 = d3.scale.linear()
     .range([0, pHeight]);
 
-var pXAxis = d3.svg.axis()
-    .scale(px0)
+// for half axis
+var px1 = d3.scale.linear()
+    .range([0, pWidth/2]);
+var px2 = d3.scale.linear()
+    .range([0, pWidth/2]);
+var pX1Axis = d3.svg.axis()
+    .scale(px1)
+    .orient('bottom');
+var pX2Axis = d3.svg.axis()
+    .scale(px2)
     .orient('bottom');
 
 var pYAxis = d3.svg.axis()
@@ -25,13 +33,15 @@ var pSvg = d3.select('#bottom-left').append('svg')
 function initializeProfileChart(){
   var maxDimension = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
   px0.domain([0, maxDimension]);
+  px1.domain([maxDimension/2, 0]);
+  px2.domain([0, maxDimension/2]);
   py0.domain([maxDimension, 0]);
 
   pSvg.selectAll('.w-group.profile')
       .data(SPECIAL.groupDimensions, function(d){ return d.key})
     .enter().append('text')
       .text(function(d){ return d.key; })
-      .attr('x', function(d){ return (pWidth + px0(+d.bf.Max)) / 2 - 18; })
+      .attr('x', function(d){ return (pWidth + px0(+d.bf.Max)) / 2; })
       .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
       .attr('fill', 'black')
 
@@ -48,9 +58,13 @@ function initializeProfileChart(){
       .attr('fill', 'RGBA(100, 100, 100, 0)')
 
   pSvg.append('g')
-      .attr('class', 'x axis p')
-      .attr('transform', 'translate(0,' + pHeight + ')')
-      .call(pXAxis)
+      .attr('class', 'x axis p left')
+      .attr('transform', 'translate(0,' + pHeight / 2 + ')')
+      .call(pX1Axis)
+  pSvg.append('g')
+      .attr('class', 'x axis p right')
+      .attr('transform', 'translate(' + pWidth / 2 + ',' + pHeight / 2 + ')')
+      .call(pX2Axis)
     .append('text')
       .attr('x', pWidth)
       .style('text-anchor', 'end')
@@ -58,6 +72,7 @@ function initializeProfileChart(){
 
   pSvg.append('g')
       .attr('class', 'y axis p')
+      .attr('transform', 'translate(' + pWidth / 2 + ',' + 0 + ')')
       .call(pYAxis)
     .append('text')
       .attr('transform', 'rotate(-90)')
@@ -83,10 +98,15 @@ function pUpdateWeight(){
   // Update scales only after the new rectangles have been entered
   var maxDimension = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
   px0.domain([0, maxDimension]);
+  px1.domain([maxDimension/2, 0]);
+  px2.domain([0, maxDimension/2]);
   py0.domain([maxDimension, 0]);
-  d3.selectAll('.x.axis.p')
+  d3.selectAll('.x.axis.p.left')
     .transition().duration(1600).delay(500)
-    .call(pXAxis);
+    .call(pX1Axis);
+  d3.selectAll('.x.axis.p.right')
+    .transition().duration(1600).delay(500)
+    .call(pX2Axis);
   d3.selectAll('.y.axis.p')
     .transition().duration(1600).delay(500)
     .call(pYAxis);

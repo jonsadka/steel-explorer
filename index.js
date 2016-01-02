@@ -12,7 +12,7 @@ var USER_I_MAX = null;
 var USER_I_MIN = null;
 
 // HEIGHTS
-var CHARTS_HEIGHT = window.innerHeight;
+var CHARTS_HEIGHT = window.innerHeight - document.getElementById('nav-bar').offsetHeight;
 var LEFT_ROW_2_HEIGHT = 0.30 * CHARTS_HEIGHT;
 var LEFT_ROW_3_HEIGHT = 0.30 * CHARTS_HEIGHT;
 var RIGHT_ROW_1_HEIGHT = 0.55 * CHARTS_HEIGHT;

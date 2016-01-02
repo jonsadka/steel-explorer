@@ -17,6 +17,11 @@
     margin: 0;
   }
 
+  #nav-bar {
+    height: 30px;
+    background: #3F3F3F;
+  }
+
   .btn {
     position: absolute;
     text-decoration: none;
@@ -72,6 +77,10 @@
     shape-rendering: crispEdges;
   }
 
+  #bottom-right .axis.x path {
+    stroke: none;
+  }
+
   .voronoi {
     fill: none;
     stroke: pink;
@@ -108,156 +117,159 @@
     width: 100%;
   }
 </style>
-  <div id="left-column">
-    <div id="top-container">
-      <div>
-        min max moment goes here
+  <div id="nav-bar"></div>
+  <div id="charts">
+    <div id="left-column">
+      <div id="top-container">
+        <div>
+          min max moment goes here
+        </div>
+        <div>
+          <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
+          <!-- <label><input type="radio" name="mode" value="ASD">ASD</label> -->
+        </div>
+        <div>
+          Weight: <input type="number" id="weight-min-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
+          plf
+          <input type="number" id="weight-max-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
+          plf
+        </div>
+        <div>
+          Ix: <input type="number" id="I-min-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
+          in<sup>4</sup>
+          <input type="number" id="I-max-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
+          in<sup>4</sup>
+        </div>
+        <div>
+          Length: <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Unbraced beam length">
+          ft
+        </div>
+        <div>Ix goes here</div>
       </div>
-      <div>
-        <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
-        <!-- <label><input type="radio" name="mode" value="ASD">ASD</label> -->
+      <div id="middle-container">
+        <h1>23 Matching beams found</h1>
+        <table>
+          <tr>
+            <td>by Weight</td>
+            <td>by Depth</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W18x175</td>
+            <td>W14x170</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W18x175</td>
+            <td>W14x170</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+          <tr>
+            <td>W14x170</td>
+            <td>W18x175</td>
+          </tr>
+        </table>
       </div>
-      <div>
-        Weight: <input type="number" id="weight-min-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
-        plf
-        <input type="number" id="weight-max-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
-        plf
+      <div id="bottom-container">
       </div>
-      <div>
-        Ix: <input type="number" id="I-min-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
-        in<sup>4</sup>
-        <input type="number" id="I-max-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
-        in<sup>4</sup>
-      </div>
-      <div>
-        Length: <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Unbraced beam length">
-        ft
-      </div>
-      <div>Ix goes here</div>
     </div>
-    <div id="middle-container">
-      <h1>23 Matching beams found</h1>
-      <table>
-        <tr>
-          <td>by Weight</td>
-          <td>by Depth</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W18x175</td>
-          <td>W14x170</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W18x175</td>
-          <td>W14x170</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-        <tr>
-          <td>W14x170</td>
-          <td>W18x175</td>
-        </tr>
-      </table>
-    </div>
-    <div id="bottom-container">
-    </div>
-  </div>
-  <div id="right-column">
-    <div id="top-row">
-      <a class="btn">Delta goes here</a>
-      <a class="btn">Mn</a>
-    </div>
-    <div id="bottom-row">
-      <div id="bottom-left"><div style="position: absolute;">Need to show dimensions</div></div><div id="bottom-right"></div>
+    <div id="right-column">
+      <div id="top-row">
+        <a class="btn">Delta goes here</a>
+        <a class="btn">Mn</a>
+      </div>
+      <div id="bottom-row">
+        <div id="bottom-left"><div style="position: absolute;">Need to show dimensions</div></div><div id="bottom-right"></div>
+      </div>
     </div>
   </div>
 <body>
