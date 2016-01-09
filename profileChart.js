@@ -15,9 +15,11 @@ var px2 = d3.scale.linear()
     .range([0, pWidth/2]);
 var pX1Axis = d3.svg.axis()
     .scale(px1)
+    .ticks(4)
     .orient('bottom');
 var pX2Axis = d3.svg.axis()
     .scale(px2)
+    .ticks(4)
     .orient('bottom');
 var py1 = d3.scale.linear()
     .range([0, pHeight/2]);
@@ -25,13 +27,11 @@ var py2 = d3.scale.linear()
     .range([0, pHeight/2]);
 var pY1Axis = d3.svg.axis()
     .scale(py1)
+    .ticks(4)
     .orient('left');
 var pY2Axis = d3.svg.axis()
     .scale(py2)
-    .orient('left');
-
-var pYAxis = d3.svg.axis()
-    .scale(py0)
+    .ticks(4)
     .orient('left');
 
 var pSvg = d3.select('#bottom-left').append('svg')
@@ -65,7 +65,7 @@ function initializeProfileChart(){
       .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
       .attr('width', function(d){ return px0(+d.bf.Max); })
       .attr('height', function(d){ return py0(SPECIAL.d.boundMax - +d.d.Max); })
-      .attr('stroke', 'RGBA(100, 100, 100, 0.3)')
+      .attr('stroke', 'RGBA(100, 100, 100, 0.2)')
       .attr('fill', 'RGBA(100, 100, 100, 0)')
 
   pSvg.append('g')
@@ -110,7 +110,7 @@ function pUpdateWeight(){
     .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
     .attr('width', function(d){ return px0(+d.bf.Max); })
     .attr('height', function(d){ return Math.max(0, py0(SPECIAL.d.boundMax - +d.d.Max)); })
-    .attr('stroke', 'RGBA(100, 100, 100, 0.3)')
+    .attr('stroke', 'RGBA(100, 100, 100, 0.2)')
     .attr('fill', 'RGBA(100, 100, 100, 0)')
 
   wTextGroup.enter().append('text')
@@ -170,21 +170,16 @@ function showBeamProfile(d){
   var bf = +beam.bf;
   var d = +beam.d;
   var rectangles = [
-    {width: bf, height: d},
-    {offsetX: (bf - tw) / 4 + tw / 2, width: (bf - tw) / 2, height: d - 2 * tf},
-    {offsetX: -(bf - tw) / 4 - tw / 2, width: (bf - tw) / 2, height: d - 2 * tf},
-    {offsetX: (bf - tw) / 2 + tw / 2, width: .25, height: d - 2 * tf - .05, stroke: 'none', fill: 'white'},
-    {offsetX: -(bf - tw) / 2 - tw / 2, width: .25, height: d - 2 * tf - .05, stroke: 'none', fill: 'white'}
+    {offsetX: 0, offsetY: 0, width: tw, height: d, stroke: 'none', fill: 'steelblue'},
+    {offsetX: 0, offsetY: (d - tf), width: bf, height: tf, stroke: 'none', fill: 'steelblue'},
+    {offsetX: 0, offsetY: -(d - tf), width: bf, height: tf, stroke: 'none', fill: 'steelblue'},
   ];
   pSvg.selectAll('.w-group.selected-beam')
       .data(rectangles)
     .enter().append('rect')
       .attr('class', function(d){ return 'w-group selected-beam ' + escapeCharacter(beam.AISC_Manual_Label); })
-      .attr('x', function(d){
-        if (d.offsetX) return (pWidth - px0(d.width)) / 2 + px0(d.offsetX);
-        return (pWidth - px0(d.width)) / 2;
-      })
-      .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - d.height)) / 2; })
+      .attr('x', function(d){ return (pWidth - px0(d.width - d.offsetX)) / 2; })
+      .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - d.height - d.offsetY)) / 2; })
       .attr('width', function(d){ return px0(d.width); })
       .attr('height', function(d){ return py0(SPECIAL.d.boundMax - d.height); })
       .attr('fill', function(d){
