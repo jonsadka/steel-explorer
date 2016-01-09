@@ -49,16 +49,15 @@ function initializeProfileChart(){
   py1.domain([0, maxDimension/2]);
   py2.domain([maxDimension/2, 0]);
 
-  pSvg.selectAll('.w-group.profile')
+  var wGroup = pSvg.selectAll('.w-group')
       .data(SPECIAL.groupDimensions, function(d){ return d.key})
-    .enter().append('text')
+
+  wGroup.enter().append('text')
+      .attr('class', function(d){ return 'g w-group text ' + d.key;})
       .text(function(d){ return d.key; })
       .attr('x', function(d){ return (pWidth + px0(+d.bf.Max)) / 2; })
       .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
       .attr('fill', 'black')
-
-  var wGroup = pSvg.selectAll('.w-group.profile')
-      .data(SPECIAL.groupDimensions, function(d){ return d.key})
 
   wGroup.enter().append('rect')
       .attr('class', function(d){ return 'g w-group profile ' + d.key;})
@@ -99,10 +98,13 @@ function initializeProfileChart(){
 }
 
 function pUpdateWeight(){
-  var wGroup = pSvg.selectAll('.w-group.profile')
+  var wBeamGroup = pSvg.selectAll('.w-group.profile')
       .data(SPECIAL.groupDimensions, function(d){ return d.key})
 
-  wGroup.enter().append('rect')
+  var wTextGroup = pSvg.selectAll('.w-group.text')
+      .data(SPECIAL.groupDimensions, function(d){ return d.key})
+
+  wBeamGroup.enter().append('rect')
     .attr('class', function(d){ return 'g w-group profile ' + d.key;})
     .attr('x', function(d){ return (pWidth - px0(+d.bf.Max)) / 2; })
     .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
@@ -110,6 +112,13 @@ function pUpdateWeight(){
     .attr('height', function(d){ return Math.max(0, py0(SPECIAL.d.boundMax - +d.d.Max)); })
     .attr('stroke', 'RGBA(100, 100, 100, 0.3)')
     .attr('fill', 'RGBA(100, 100, 100, 0)')
+
+  wTextGroup.enter().append('text')
+      .attr('class', function(d){ return 'g w-group text ' + d.key;})
+      .text(function(d){ return d.key; })
+      .attr('x', function(d){ return (pWidth + px0(+d.bf.Max)) / 2; })
+      .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
+      .attr('fill', 'black')
 
   // Update scales only after the new rectangles have been entered
   var maxDimension = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
@@ -132,17 +141,22 @@ function pUpdateWeight(){
     .transition().duration(1600).delay(500)
     .call(pY1Axis);
 
+  wTextGroup.transition().duration(1600).delay(500)
+    .attr('x', function(d){ return (pWidth + px0(+d.bf.Max)) / 2; })
+    .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
+
   // Transition rectangles into their places
-  wGroup.transition().duration(500)
+  wBeamGroup.transition().duration(500)
     .attr('class', function(d){ return 'g w-group profile ' + d.key;})
 
-  wGroup.transition().duration(1600).delay(500)
+  wBeamGroup.transition().duration(1600).delay(500)
     .attr('x', function(d){ return (pWidth - px0(+d.bf.Max)) / 2; })
     .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
     .attr('width', function(d){ return px0(+d.bf.Max); })
     .attr('height', function(d){ return py0(SPECIAL.d.boundMax - +d.d.Max); })
 
-  wGroup.exit().remove();
+  wBeamGroup.exit().remove();
+  wTextGroup.exit().remove();
 }
 
 function removeBeamProfile(d){
