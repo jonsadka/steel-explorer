@@ -38,7 +38,6 @@ function initializeDistributionChart(){
       .attr('class', function(d){ return 'w-beam d ' + d.AISC_Manual_Label;} )
       .attr('x', function(d){ return dx0(+d.W); })
       .attr('y', function(d){ return dy0(+d.d); })
-      .attr('rx', 5)
       .attr('height', function(d){ return dy0(0) - dy0(+d.d); })
       .attr('width', 0.25)
       .attr('opacity', 0.5)
@@ -65,8 +64,8 @@ function initializeDistributionChart(){
 
 function removeBeamDistribution(d){
   dSvg.select('.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .transition().duration(100)
     .attr('fill', 'black')
+    .attr('rx', 0)
     .attr('width', 0.25)
     .attr('opacity', 0.5)
 }
@@ -74,7 +73,7 @@ function removeBeamDistribution(d){
 function highlightBeamDistribution(d){
   dSvg.select('.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
     .attr('fill', 'steelblue')
-    .transition().duration(100)
+    .attr('rx', 3)
     .attr('width', 4)
     .attr('opacity', 1)
 }

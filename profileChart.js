@@ -19,6 +19,16 @@ var pX1Axis = d3.svg.axis()
 var pX2Axis = d3.svg.axis()
     .scale(px2)
     .orient('bottom');
+var py1 = d3.scale.linear()
+    .range([0, pHeight/2]);
+var py2 = d3.scale.linear()
+    .range([0, pHeight/2]);
+var pY1Axis = d3.svg.axis()
+    .scale(py1)
+    .orient('left');
+var pY2Axis = d3.svg.axis()
+    .scale(py2)
+    .orient('left');
 
 var pYAxis = d3.svg.axis()
     .scale(py0)
@@ -36,6 +46,8 @@ function initializeProfileChart(){
   px1.domain([maxDimension/2, 0]);
   px2.domain([0, maxDimension/2]);
   py0.domain([maxDimension, 0]);
+  py1.domain([0, maxDimension/2]);
+  py2.domain([maxDimension/2, 0]);
 
   pSvg.selectAll('.w-group.profile')
       .data(SPECIAL.groupDimensions, function(d){ return d.key})
@@ -66,20 +78,24 @@ function initializeProfileChart(){
       .attr('transform', 'translate(' + pWidth / 2 + ',' + pHeight / 2 + ')')
       .call(pX2Axis)
     .append('text')
-      .attr('x', pWidth)
+      .attr('x', pWidth / 2)
       .style('text-anchor', 'end')
       .text('Width (in.)');
 
   pSvg.append('g')
-      .attr('class', 'y axis p')
+      .attr('class', 'y axis p top')
       .attr('transform', 'translate(' + pWidth / 2 + ',' + 0 + ')')
-      .call(pYAxis)
+      .call(pY2Axis)
     .append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', 6)
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
       .text('Height (in.)');
+  pSvg.append('g')
+      .attr('class', 'y axis p bottom')
+      .attr('transform', 'translate(' + pWidth / 2 + ',' + pHeight / 2 + ')')
+      .call(pY1Axis)
 }
 
 function pUpdateWeight(){
@@ -101,15 +117,20 @@ function pUpdateWeight(){
   px1.domain([maxDimension/2, 0]);
   px2.domain([0, maxDimension/2]);
   py0.domain([maxDimension, 0]);
+  py1.domain([0, maxDimension/2]);
+  py2.domain([maxDimension/2, 0]);
   d3.selectAll('.x.axis.p.left')
     .transition().duration(1600).delay(500)
     .call(pX1Axis);
   d3.selectAll('.x.axis.p.right')
     .transition().duration(1600).delay(500)
     .call(pX2Axis);
-  d3.selectAll('.y.axis.p')
+  d3.selectAll('.y.axis.p.top')
     .transition().duration(1600).delay(500)
-    .call(pYAxis);
+    .call(pY2Axis);
+  d3.selectAll('.y.axis.p.bottom')
+    .transition().duration(1600).delay(500)
+    .call(pY1Axis);
 
   // Transition rectangles into their places
   wGroup.transition().duration(500)
