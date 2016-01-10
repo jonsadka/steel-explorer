@@ -179,6 +179,7 @@ function showBeamProfile(d){
     .enter().append('rect')
       .attr('class', function(d){ return 'w-group selected-beam ' + escapeCharacter(beam.AISC_Manual_Label); })
       .attr('x', function(d){ return (pWidth - px0(d.width - d.offsetX)) / 2; })
+      .attr('rx', 2)
       .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - d.height - d.offsetY)) / 2; })
       .attr('width', function(d){ return px0(d.width); })
       .attr('height', function(d){ return py0(SPECIAL.d.boundMax - d.height); })

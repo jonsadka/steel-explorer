@@ -50,6 +50,7 @@ setTimeout(function(){
     W_BEAMS.forEach(calculateProperties);
     SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
+    initializeMatchList();
     initializeProfileChart();
     initializeDistributionChart();
     initializeIChart();
@@ -133,12 +134,7 @@ function updateMoment(){
   if (USER_MOMENT_MAX === NEW_USER_MOMENT_MAX && USER_MOMENT_MIN === NEW_USER_MOMENT_MIN) return;
   USER_MOMENT_MIN = NEW_USER_MOMENT_MIN;
   USER_MOMENT_MAX = NEW_USER_MOMENT_MAX;
-  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
-
-  filterBeams();
-  pUpdateWeight();
-  mUpdateWeight();
-  iUpdateWeight();
+  updateVisual();
 }
 
 function updateWeight() {
@@ -148,12 +144,7 @@ function updateWeight() {
   if (USER_WEIGHT_MAX === NEW_USER_WEIGHT_MAX && USER_WEIGHT_MIN === NEW_USER_WEIGHT_MIN) return;
   USER_WEIGHT_MIN = NEW_USER_WEIGHT_MIN;
   USER_WEIGHT_MAX = NEW_USER_WEIGHT_MAX;
-  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
-
-  filterBeams();
-  pUpdateWeight();
-  mUpdateWeight();
-  iUpdateWeight();
+  updateVisual();
 }
 
 function updateI() {
@@ -163,9 +154,14 @@ function updateI() {
   if (USER_I_MAX === NEW_USER_I_MAX && USER_I_MIN === NEW_USER_I_MIN) return;
   USER_I_MIN = NEW_USER_I_MIN;
   USER_I_MAX = NEW_USER_I_MAX;
-  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
+  updateVisual();
+}
 
+function updateVisual(){
+  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
   filterBeams();
+
+  updateMatchList();
   pUpdateWeight();
   mUpdateWeight();
   iUpdateWeight();
