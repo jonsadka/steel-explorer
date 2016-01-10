@@ -98,11 +98,11 @@ function validateBeam (d, options){
     if (USER_WEIGHT_MAX && +d.W > USER_WEIGHT_MAX) return options.invalid;
     passedValid = true;
   }
-  // if (USER_I_MAX || USER_I_MIN){
-  //   if (USER_I_MAX && +d.Ix > USER_I_MAX) return options.invalid;
-  //   if (USER_I_MIN && +d.Ix < USER_I_MIN) return options.invalid;
-  //   passedValid = true;
-  // }
+  if (USER_I_MAX || USER_I_MIN){
+    if (USER_I_MAX && +d.Ix > USER_I_MAX) return options.invalid;
+    if (USER_I_MIN && +d.Ix < USER_I_MIN) return options.invalid;
+    passedValid = true;
+  }
   if (passedValid) return options.valid;
   return options.nullState;
 }
@@ -121,6 +121,8 @@ function updateLength() {
 function updateWeight() {
   var NEW_USER_WEIGHT_MIN = +document.getElementById('weight-min-input').value;
   var NEW_USER_WEIGHT_MAX = +document.getElementById('weight-max-input').value;
+  if (NEW_USER_WEIGHT_MAX < 7) return;
+  if (NEW_USER_WEIGHT_MIN > NEW_USER_WEIGHT_MAX) return;
   if (USER_WEIGHT_MAX === NEW_USER_WEIGHT_MAX && USER_WEIGHT_MIN === NEW_USER_WEIGHT_MIN) return;
   USER_WEIGHT_MIN = NEW_USER_WEIGHT_MIN;
   USER_WEIGHT_MAX = NEW_USER_WEIGHT_MAX;
@@ -135,13 +137,17 @@ function updateWeight() {
 function updateI() {
   var NEW_USER_I_MIN = +document.getElementById('I-min-input').value;
   var NEW_USER_I_MAX = +document.getElementById('I-max-input').value;
+  if (NEW_USER_I_MAX < 10) return;
+  if (NEW_USER_I_MIN > NEW_USER_I_MAX) return;
   if (USER_I_MAX === NEW_USER_I_MAX && USER_I_MIN === NEW_USER_I_MIN) return;
   USER_I_MIN = NEW_USER_I_MIN;
   USER_I_MAX = NEW_USER_I_MAX;
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
   filterBeams();
-  iUpdateI();
+  pUpdateWeight();
+  mUpdateWeight();
+  iUpdateWeight();
 }
 
 function calculateSpecialProperties(beams, options){

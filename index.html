@@ -121,13 +121,16 @@
   <div id="charts">
     <div id="left-column">
       <div id="top-container">
-        <div>
-          min max moment goes here
-        </div>
+        <h2>Units</h2>
         <div>
           <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
           <!-- <label><input type="radio" name="mode" value="ASD">ASD</label> -->
         </div>
+        <h2>Filter Beam</h2>
+<!--         <div>
+          Moment: <input placeholder="Max Moment"> plf
+          <input placeholder="Min Moment"> plf
+        </div> -->
         <div>
           Weight: <input type="number" id="weight-min-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
           plf
@@ -140,6 +143,7 @@
           <input type="number" id="I-max-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
           in<sup>4</sup>
         </div>
+        <h2>Zoom</h2>
         <div>
           Length: <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Unbraced beam length">
           ft

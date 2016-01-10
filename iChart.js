@@ -66,9 +66,6 @@ function initializeIChart(){
       .text('Ix (in^4)');
 }
 
-function iUpdateI(){
-}
-
 function iUpdateWeight() {
   iy0.domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
 
@@ -150,8 +147,8 @@ function highlightBeamI(d) {
   var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
-    .attr('fill', 'black')
-    .attr('stroke', 'black')
+    .attr('fill', 'crimson')
+    .attr('stroke', 'crimson')
     .transition().duration(100)
     .attr('height', 1)
     .attr('width', ix0(d.AISC_Manual_Label.split('X')[0]) + ix0.rangeBand())
