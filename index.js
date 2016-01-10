@@ -159,12 +159,14 @@ function calculateSpecialProperties(beams, options){
       var shouldUpdateMn = false;
       var shouldUpdateW = false;
       var shouldUpdateI = false;
+      var shouldUpdateIxPerW = false;
       var shouldUpdateDimensions = false;
       if (minWeight <= +cv.W && +cv.W <= maxWeight){
         if (minI <= +cv.Ix && +cv.Ix <= maxI){
           shouldUpdateMn = true;
           shouldUpdateW = true;
           shouldUpdateI = true;
+          shouldUpdateIxPerW = true;
           shouldUpdateDimensions = true;
         }
       }
@@ -173,13 +175,17 @@ function calculateSpecialProperties(beams, options){
         pv.Mn.Min = Math.min(pv.Mn.Min, cv.MnFunction(endLength));
         pv.Mn.Max = Math.max(pv.Mn.Max, cv.MnFunction(startLength));
       }
+      if (shouldUpdateW){
+        pv.W.Min = Math.min(pv.W.Min, +cv.W);
+        pv.W.Max = Math.max(pv.W.Max, +cv.W);
+      }
       if (shouldUpdateI){
         pv.I.Min = Math.min(pv.I.Min, +cv.Ix);
         pv.I.Max = Math.max(pv.I.Max, +cv.Ix);
       }
-      if (shouldUpdateW){
-        pv.W.Min = Math.min(pv.W.Min, +cv.W);
-        pv.W.Max = Math.max(pv.W.Max, +cv.W);
+      if (shouldUpdateIxPerW){
+        pv.IxPerW.Min = Math.min(pv.IxPerW.Min, +cv.Ix / +cv.W);
+        pv.IxPerW.Max = Math.max(pv.IxPerW.Max, +cv.Ix / +cv.W);
       }
       if (shouldUpdateDimensions){
         pv.d.Min = Math.min(pv.d.Min, +cv.d);
@@ -191,14 +197,15 @@ function calculateSpecialProperties(beams, options){
       return pv
     }, {
       Mn: {Min: Infinity, Max: 0},
-      I: {Min: Infinity, Max: 0},
       W: {Min: Infinity, Max: 0},
+      I: {Min: Infinity, Max: 0},
+      IxPerW: {Min: Infinity, Max: 0},
       d: {Min: Infinity, Max: 0},
       bf: {Min: Infinity, Max: 0}
     });
 
     // Set the min and max properties thus far
-    var specialProperties = ['Mn', 'I', 'W', 'd', 'bf'];
+    var specialProperties = ['Mn', 'W', 'I', 'IxPerW', 'd', 'bf'];
     for (var i = 0; i < specialProperties.length; i++){
       var variable = specialProperties[i];
       pv[variable].Min = Math.min(pv[variable].Min, groupStats[variable].Min);
@@ -225,8 +232,9 @@ function calculateSpecialProperties(beams, options){
     return pv;
   }, {
     Mn: {Min: Infinity, Max: 0},
-    I: {Min: Infinity, Max: 0},
     W: {Min: Infinity, Max: 0},
+    I: {Min: Infinity, Max: 0},
+    IxPerW: {Min: Infinity, Max: 0},
     d: {Min: Infinity, Max: 0},
     bf: {Min: Infinity, Max: 0}
   });

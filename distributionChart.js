@@ -72,7 +72,7 @@ function removeBeamDistribution(d){
 
 function highlightBeamDistribution(d){
   dSvg.select('.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', 'steelblue')
+    .attr('fill', 'crimson')
     .attr('rx', 3)
     .attr('width', 4)
     .attr('opacity', 1)

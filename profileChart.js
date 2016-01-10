@@ -170,9 +170,9 @@ function showBeamProfile(d){
   var bf = +beam.bf;
   var d = +beam.d;
   var rectangles = [
-    {offsetX: 0, offsetY: 0, width: tw, height: d, stroke: 'none', fill: 'steelblue'},
-    {offsetX: 0, offsetY: (d - tf), width: bf, height: tf, stroke: 'none', fill: 'steelblue'},
-    {offsetX: 0, offsetY: -(d - tf), width: bf, height: tf, stroke: 'none', fill: 'steelblue'},
+    {offsetX: 0, offsetY: 0, width: tw, height: d, stroke: 'none', fill: 'crimson'},
+    {offsetX: 0, offsetY: (d - tf), width: bf, height: tf, stroke: 'none', fill: 'crimson'},
+    {offsetX: 0, offsetY: -(d - tf), width: bf, height: tf, stroke: 'none', fill: 'crimson'},
   ];
   pSvg.selectAll('.w-group.selected-beam')
       .data(rectangles)
@@ -188,7 +188,7 @@ function showBeamProfile(d){
       })
       .attr('stroke', function(d){
         if (d.stroke) return d.stroke;
-        return 'steelblue';
+        return 'crimson';
       })
       .attr('stroke-width', 1)
 }

@@ -3,19 +3,15 @@ var iMargin = {top: 20, right: 22, bottom: 30, left: 42},
     iHeight = RIGHT_ROW_2_HEIGHT - iMargin.top - iMargin.bottom - 10;
 
 var ix0 = d3.scale.ordinal()
-    .rangePoints([iWidth, 0], .1);
+    .rangeBands([iWidth, 0], .1);
 
 var iy0 = d3.scale.linear()
     .range([iHeight, 0]);
 
-// Radii size
-// Shouldn't use radius, should color it where green is lower weight
-var iy1 = d3.scale.linear()
-    .range([7, 7])
-    // .range([4, 12])
-    .clamp(true);
+// Color in Ix per W
+console.log(colorbrewer)
 var colorScale = d3.scale.quantize()
-  .range(colorbrewer.PuOr[5].reverse())
+  .range(colorbrewer.RdYlGn[5].reverse())
 
 var iXAxis = d3.svg.axis()
     .scale(ix0)
@@ -34,25 +30,25 @@ var iSvg = d3.select('#bottom-right').append('svg')
 function initializeIChart(){
   ix0.domain(W_BEAMS.map(function(d){ return d.key}));
   iy0.domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
-  iy1.domain([SPECIAL.W.Min, SPECIAL.W.Max]);
-  colorScale.domain([SPECIAL.W.Min, SPECIAL.W.Min + (SPECIAL.W.Max- SPECIAL.W.Min)/2, SPECIAL.W.Max]);
+  colorScale.domain([SPECIAL.IxPerW.Min, SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2, SPECIAL.IxPerW.Max]);
 
   var wGroup = iSvg.selectAll('.w-group.I')
       .data(W_BEAMS, function(d) { return d.key; })
     .enter().append('g')
       .attr('class', function(d){ return 'g w-group I ' + d.key;})
 
-  wGroup.selectAll('circle')
+  wGroup.selectAll('rect')
       .data(function(d) { return d.values; }, function(d) { return d.W; })
-    .enter().append('circle')
+    .enter().append('rect')
       .attr('class', function(d){ return 'w-beam X' + d.W;})
-      .attr('cx', function(d){
+      .attr('x', function(d){
         var section = d.AISC_Manual_Label.split('X')[0];
         return ix0(section);
       })
-      .attr('cy', function(d){ return iy0(+d.Ix); })
-      .attr('r', function(d){ return Math.max(0, iy1(+d.W)); })
-      .attr('stroke', function(d){ return colorScale(+d.W); })
+      .attr('y', function(d){ return iy0(+d.Ix); })
+      .attr('width', ix0.rangeBand())
+      .attr('height', 3)
+      .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
 
   iSvg.append('g')
       .attr('class', 'x axis I')
@@ -74,6 +70,8 @@ function iUpdateI(){
 }
 
 function iUpdateWeight() {
+  iy0.domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
+
   var wGroup = iSvg.selectAll('.w-group.I')
       .data(W_BEAMS, function(d) { return d.key; })
 
@@ -83,22 +81,22 @@ function iUpdateWeight() {
   wGroup
     .attr('class', function(d){ return 'g w-group I ' + d.key;})
 
-  var wBeams = wGroup.selectAll('circle')
+  var wBeams = wGroup.selectAll('rect')
       .data(function(d) { return d.values; }, function(d) { return d.W; })
 
-  wBeams.enter().append('circle')
+  wBeams.enter().append('rect')
     .attr('class', function(d){ return 'w-beam X' + d.W;})
-    .attr('cx', function(d){
+    .attr('x', function(d){
       var section = d.AISC_Manual_Label.split('X')[0];
       return ix0(section);
     })
-    .attr('cy', function(d){ return iy0(+d.Ix); })
-    .attr('r', function(d){ return Math.max(0, iy1(+d.W)); })
-    .attr('stroke', function(d){ return colorScale(+d.W); })
+    .attr('y', function(d){ return iy0(+d.Ix); })
+    .attr('width', ix0.rangeBand())
+    .attr('height', 3)
+    .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
 
   // Update scales only after the new dots have been entered
   ix0.domain(W_BEAMS_FILTERED.map(function(d){ return d.key;}));
-  iy0.domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
   d3.selectAll('.x.axis.I')
     .transition().duration(1600).delay(500)
     .call(iXAxis);
@@ -107,20 +105,19 @@ function iUpdateWeight() {
     .call(iYAxis);
 
   // Transition dots into their places
-  iy1.domain([SPECIAL.W.Min, SPECIAL.W.Max]);
-  colorScale.domain([SPECIAL.W.Min, SPECIAL.W.Min + (SPECIAL.W.Max- SPECIAL.W.Min)/2, SPECIAL.W.Max]);
+  colorScale.domain([SPECIAL.IxPerW.Min, SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2, SPECIAL.IxPerW.Max]);
   wBeams.transition().duration(500)
-    .attr('stroke', function(d){ return colorScale(+d.W); })
+    .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
     .attr('stroke-width', iFilterStrokeWidth);
 
   wBeams.transition().duration(1600).delay(500)
-    .attr('cx', function(d){
+    .attr('width', ix0.rangeBand())
+    .attr('x', function(d){
       var section = d.AISC_Manual_Label.split('X')[0];
       return ix0(section);
     })
-    .attr('cy', function(d){ return iy0(+d.Ix); })
-    .attr('r', function(d){ return Math.max(0, iy1(+d.W)); })
-    .attr('stroke', function(d){ return colorScale(+d.W); })
+    .attr('y', function(d){ return iy0(+d.Ix); })
+    .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
 
   wBeams.exit().remove()
   wGroup.exit().remove()
@@ -131,17 +128,32 @@ function iFilterStrokeWidth(d) {
 }
 
 function removeHighlightBeamI(d) {
+  // Return if selecting a beam currenty filtered out
+  if (!ix0(d.AISC_Manual_Label.split('X')[0])) return
+  var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
     .transition().duration(100)
-    .attr('r', Math.max(0, iy1(+d.W)))
+    .attr('width', ix0.rangeBand())
+    .attr('height', 3)
     .attr('fill', 'none')
+    .attr('stroke', colorScale(+beam.Ix / +d.W))
+    .attr('x', function(){
+      var section = d.AISC_Manual_Label.split('X')[0];
+      return ix0(section);
+    })
 }
 
 function highlightBeamI(d) {
+  // Return if selecting a beam currenty filtered out
+  if (!ix0(d.AISC_Manual_Label.split('X')[0])) return
+  var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
-    .attr('fill', colorScale(+d.W))
+    .attr('fill', 'black')
+    .attr('stroke', 'black')
     .transition().duration(100)
-    .attr('r', 10)
+    .attr('height', 1)
+    .attr('width', ix0(d.AISC_Manual_Label.split('X')[0]) + ix0.rangeBand())
+    .attr('x', 0)
 }
