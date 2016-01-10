@@ -6,6 +6,8 @@ var UNBRACED_STEP = 1; // ft
 
 // User inputs
 var START_LENGTH = null;
+var USER_MOMENT_MAX = null;
+var USER_MOMENT_MIN = null;
 var USER_WEIGHT_MAX = null;
 var USER_WEIGHT_MIN = null;
 var USER_I_MAX = null;
@@ -93,6 +95,12 @@ function calculateProperties (beamGroup){
 
 function validateBeam (d, options){
   var passedValid = false;
+  if (USER_MOMENT_MAX || USER_MOMENT_MIN){
+    // SHOULD TECHNICALLY INTERPOLATE
+    if (USER_MOMENT_MAX && +d.MnValues[d.MnValues.length - 1].Mn > USER_MOMENT_MAX) return options.invalid;
+    if (USER_MOMENT_MIN && +d.MnValues[0].Mn < USER_MOMENT_MIN) return options.invalid;
+    passedValid = true;
+  }
   if (USER_WEIGHT_MIN || USER_WEIGHT_MAX){
     if (USER_WEIGHT_MIN && +d.W < USER_WEIGHT_MIN) return options.invalid;
     if (USER_WEIGHT_MAX && +d.W > USER_WEIGHT_MAX) return options.invalid;
@@ -118,11 +126,25 @@ function updateLength() {
   mUpdateLength();
 }
 
+function updateMoment(){
+  var NEW_USER_MOMENT_MIN = +document.getElementById('moment-min-input').value;
+  var NEW_USER_MOMENT_MAX = +document.getElementById('moment-max-input').value;
+  if (NEW_USER_MOMENT_MIN && NEW_USER_MOMENT_MAX && NEW_USER_MOMENT_MIN > NEW_USER_MOMENT_MAX) return;
+  if (USER_MOMENT_MAX === NEW_USER_MOMENT_MAX && USER_MOMENT_MIN === NEW_USER_MOMENT_MIN) return;
+  USER_MOMENT_MIN = NEW_USER_MOMENT_MIN;
+  USER_MOMENT_MAX = NEW_USER_MOMENT_MAX;
+  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
+
+  filterBeams();
+  pUpdateWeight();
+  mUpdateWeight();
+  iUpdateWeight();
+}
+
 function updateWeight() {
   var NEW_USER_WEIGHT_MIN = +document.getElementById('weight-min-input').value;
   var NEW_USER_WEIGHT_MAX = +document.getElementById('weight-max-input').value;
-  if (NEW_USER_WEIGHT_MAX < 7) return;
-  if (NEW_USER_WEIGHT_MIN > NEW_USER_WEIGHT_MAX) return;
+  if (NEW_USER_WEIGHT_MIN && NEW_USER_WEIGHT_MAX && NEW_USER_WEIGHT_MIN > NEW_USER_WEIGHT_MAX) return;
   if (USER_WEIGHT_MAX === NEW_USER_WEIGHT_MAX && USER_WEIGHT_MIN === NEW_USER_WEIGHT_MIN) return;
   USER_WEIGHT_MIN = NEW_USER_WEIGHT_MIN;
   USER_WEIGHT_MAX = NEW_USER_WEIGHT_MAX;
@@ -137,8 +159,7 @@ function updateWeight() {
 function updateI() {
   var NEW_USER_I_MIN = +document.getElementById('I-min-input').value;
   var NEW_USER_I_MAX = +document.getElementById('I-max-input').value;
-  if (NEW_USER_I_MAX < 10) return;
-  if (NEW_USER_I_MIN > NEW_USER_I_MAX) return;
+  if (NEW_USER_I_MIN && NEW_USER_I_MAX && NEW_USER_I_MIN > NEW_USER_I_MAX) return;
   if (USER_I_MAX === NEW_USER_I_MAX && USER_I_MIN === NEW_USER_I_MIN) return;
   USER_I_MIN = NEW_USER_I_MIN;
   USER_I_MAX = NEW_USER_I_MAX;
@@ -153,10 +174,12 @@ function updateI() {
 function calculateSpecialProperties(beams, options){
   var startLength = START_LENGTH || 0;
   var endLength = 61;
-  var maxWeight = !!USER_WEIGHT_MAX ? Math.max(9, USER_WEIGHT_MAX) : Infinity;
+  var maxMoment = !!USER_MOMENT_MAX ? Math.max(1, USER_MOMENT_MAX) : Infinity;
+  var minMoment = !!USER_MOMENT_MIN ? Math.min(13000, USER_MOMENT_MIN) : 0;
+  var maxWeight = !!USER_WEIGHT_MAX ? Math.max(8, USER_WEIGHT_MAX) : Infinity;
   var minWeight = !!USER_WEIGHT_MIN ? Math.min(900, USER_WEIGHT_MIN) : 0;
-  var maxI = !!USER_I_MAX ? Math.max(10, USER_I_MAX) : Infinity;
-  var minI = !!USER_I_MIN ? Math.min(70000, USER_I_MIN) : 0;
+  var maxI = !!USER_I_MAX ? Math.max(11, USER_I_MAX) : Infinity;
+  var minI = !!USER_I_MIN ? Math.min(6000, USER_I_MIN) : 0;
 
   var groupDimensions = {}
   var special = beams.slice().reduce(function(pv, cv){
@@ -167,13 +190,15 @@ function calculateSpecialProperties(beams, options){
       var shouldUpdateI = false;
       var shouldUpdateIxPerW = false;
       var shouldUpdateDimensions = false;
-      if (minWeight <= +cv.W && +cv.W <= maxWeight){
-        if (minI <= +cv.Ix && +cv.Ix <= maxI){
-          shouldUpdateMn = true;
-          shouldUpdateW = true;
-          shouldUpdateI = true;
-          shouldUpdateIxPerW = true;
-          shouldUpdateDimensions = true;
+      if (minMoment <= +cv.MnValues[0].Mn && +cv.MnValues[0].Mn <= maxMoment){
+        if (minWeight <= +cv.W && +cv.W <= maxWeight){
+          if (minI <= +cv.Ix && +cv.Ix <= maxI){
+            shouldUpdateMn = true;
+            shouldUpdateW = true;
+            shouldUpdateI = true;
+            shouldUpdateIxPerW = true;
+            shouldUpdateDimensions = true;
+          }
         }
       }
 
@@ -253,14 +278,19 @@ function calculateSpecialProperties(beams, options){
   special.Mn.Min = special.Mn.Min / 12;
   special.Mn.Max = special.Mn.Max / 12;
   //Add padding to x and y axis
+  if (USER_MOMENT_MAX){
+    special.Mn.boundMax = Math.ceil(special.Mn.Max + special.Mn.Max * 0.20);
+  } else {
+    special.Mn.boundMax = Math.ceil(special.Mn.Max + special.Mn.Max * 0.01);
+  }
   special.Mn.boundMin = Math.floor(special.Mn.Min - special.Mn.Min * 0.01);
-  special.Mn.boundMax = Math.ceil(special.Mn.Max + special.Mn.Max * 0.01);
   special.I.boundMin = Math.floor(special.I.Min - special.I.Min * 0.01);
   special.I.boundMax = Math.ceil(special.I.Max + special.I.Max * 0.01);
   special.d.boundMin = Math.floor(special.d.Min - special.d.Min * 0.05);
   special.d.boundMax = Math.ceil(special.d.Max + special.d.Max * 0.05);
   special.bf.boundMin = Math.floor(special.bf.Min - special.bf.Min * 0.05);
   special.bf.boundMax = Math.ceil(special.bf.Max + special.bf.Max * 0.05);
+  console.log('~~SPECIAL', special);
   return special;
 }
 

@@ -127,20 +127,20 @@
           <!-- <label><input type="radio" name="mode" value="ASD">ASD</label> -->
         </div>
         <h2>Filter Beam</h2>
-<!--         <div>
-          Moment: <input placeholder="Max Moment"> plf
-          <input placeholder="Min Moment"> plf
-        </div> -->
         <div>
-          Weight: <input type="number" id="weight-min-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
+          Moment: <input type="number" id="moment-min-input" min="0" placeholder="Min" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()"> k-ft
+          <input type="number" id="moment-max-input" min="0" placeholder="Max" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()"> k-ft
+        </div>
+        <div>
+          Weight: <input type="number" id="weight-min-input" min="0" placeholder="Min" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()">
           plf
-          <input type="number" id="weight-max-input" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" max="900" min="9" placeholder="Max beam weight">
+          <input type="number" id="weight-max-input" min="0" placeholder="Max" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()">
           plf
         </div>
         <div>
-          Ix: <input type="number" id="I-min-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
+          I<sub>x</sub>: <input type="number" id="I-min-input" min="0" placeholder="Min" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()">
           in<sup>4</sup>
-          <input type="number" id="I-max-input" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max beam I">
+          <input type="number" id="I-max-input" min="0" placeholder="Max" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()">
           in<sup>4</sup>
         </div>
         <h2>Zoom</h2>
