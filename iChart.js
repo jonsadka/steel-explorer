@@ -11,7 +11,7 @@ var iy0 = d3.scale.linear()
 // Color in Ix per W
 console.log(colorbrewer)
 var colorScale = d3.scale.quantize()
-  .range(colorbrewer.RdYlGn[5].reverse())
+  .range(colorbrewer.RdYlGn[8].reverse())
 
 var iXAxis = d3.svg.axis()
     .scale(ix0)
@@ -130,7 +130,11 @@ function removeHighlightBeamI(d) {
   var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
-    .transition().duration(100)
+
+  // Remove the text label
+  wGroup.select('.value').remove();
+
+  wBeam.transition().duration(100)
     .attr('width', ix0.rangeBand())
     .attr('height', 3)
     .attr('fill', 'none')
@@ -145,12 +149,26 @@ function highlightBeamI(d) {
   // Return if selecting a beam currenty filtered out
   if (!ix0(d.AISC_Manual_Label.split('X')[0])) return
   var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
-  var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
+  var section = d.AISC_Manual_Label.split('X')[0];
+  var wGroup = iSvg.select('.w-group.I.' + section)
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
-    .attr('fill', 'crimson')
+
+  wBeam.attr('fill', 'crimson')
     .attr('stroke', 'crimson')
-    .transition().duration(100)
     .attr('height', 1)
-    .attr('width', ix0(d.AISC_Manual_Label.split('X')[0]) + ix0.rangeBand())
+    .transition().duration(50)
+    .attr('width', ix0(section) + ix0.rangeBand())
     .attr('x', 0)
+
+  var format = d3.format(',');
+  wGroup.append('text')
+    .text(format(+beam.Ix))
+    .attr('class', function(d){ return 'w-beam value X' + d.W;})
+    .attr('x', ix0(section) - 9)
+    .attr('fill', 'crimson')
+    .attr('y', function(d){ return iy0(+beam.Ix); })
+    .attr('alignment-baseline', 'middle')
+    .transition().duration(50)
+    .attr('text-anchor', 'end')
+    .attr('x', -9)
 }
