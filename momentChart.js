@@ -312,7 +312,7 @@ function mMouseout(d) {
   wGroup.classed('group--hover', false);
   wBeam.classed('beam--hover', false);
   mSvg.select('.focus').attr('transform', 'translate(-100,-100)');
-  mSvg.select('.beam-text.' + d.AISC_Manual_Label).remove();
+  mSvg.select('.beam-text.' + escapeCharacter(d.AISC_Manual_Label)).remove();
   removeBeamProfile();
   removeHighlightBeamI(d);
   removeBeamDistribution(d);
