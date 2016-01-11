@@ -292,7 +292,15 @@ function mMouseover(d) {
   wBeam.classed('beam--hover', true);
   // wBeam.parentNode.appendChild(wBeam);
   mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
-  mSvg.select('.focus').select('text').text(d.AISC_Manual_Label + ' (' + d.length + ' ft.,' + Math.round(d.Mn * PHI * 10) / 10 + ' k-ft.)');
+  mSvg.select('.focus').select('text').text(d.length + ' ft., ' + Math.round(d.Mn * PHI * 10) / 10 + ' k-ft.');
+  mSvg.append('text')
+    .text(d.AISC_Manual_Label)
+    .attr('class', 'beam-text ' + d.AISC_Manual_Label)
+    .attr('x', mWidth - mMargin.left)
+    .attr('y', mMargin.top * 2)
+    .style('font-size', 42)
+    .attr('opacity', 0.3)
+    .attr('text-anchor', 'end')
   showBeamProfile(d);
   highlightBeamI(d);
   highlightBeamDistribution(d);
@@ -304,6 +312,7 @@ function mMouseout(d) {
   wGroup.classed('group--hover', false);
   wBeam.classed('beam--hover', false);
   mSvg.select('.focus').attr('transform', 'translate(-100,-100)');
+  mSvg.select('.beam-text.' + d.AISC_Manual_Label).remove();
   removeBeamProfile();
   removeHighlightBeamI(d);
   removeBeamDistribution(d);
