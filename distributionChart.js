@@ -3,7 +3,7 @@ var dMargin = {top: 20, right: 30, bottom: 20, left: 30},
     dHeight = LEFT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom - 10;
 
 var dx0 = d3.scale.linear()
-    .range([0, dWidth], .1);
+    .range([0, dWidth]);
 
 var dy0 = d3.scale.linear()
     .range([dHeight, 0]);

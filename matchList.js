@@ -1,4 +1,4 @@
-var MATCHES_SHOWN = 15;
+var MATCHES_SHOWN = 20;
 
 function initializeMatchList(){
   var container = document.getElementById('middle-container'),
@@ -29,7 +29,7 @@ function initializeMatchList(){
       // td.style.border = '1px solid black';
       if (j === 0){
         var beam = wByWeight[i];
-        td.appendChild(document.createTextNode(beam.AISC_Manual_Label + '(' + beam.W + 'plf)'));
+        td.appendChild(document.createTextNode(beam.AISC_Manual_Label));
       } else if (j === 1){
         var beam = wByDepth[i];
         td.appendChild(document.createTextNode(beam.AISC_Manual_Label + '(' + beam.d + 'in)'));
@@ -54,7 +54,7 @@ function updateMatchList(){
       if (j === 0){
         var beam = sortedBeams.weight[i];
         if (beam){
-          cell.innerHTML = beam.AISC_Manual_Label + '(' + beam.W + 'plf)';
+          cell.innerHTML = beam.AISC_Manual_Label;
         } else {
           cell.innerHTML = '';
         }

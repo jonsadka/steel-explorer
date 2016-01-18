@@ -41,13 +41,13 @@ var pSvg = d3.select('#bottom-left').append('svg')
     .attr('transform', 'translate(' + pMargin.left + ',' + pMargin.top + ')');
 
 function initializeProfileChart(){
-  var maxDimension = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
-  px0.domain([0, maxDimension]);
-  px1.domain([maxDimension/2, 0]);
-  px2.domain([0, maxDimension/2]);
-  py0.domain([maxDimension, 0]);
-  py1.domain([0, maxDimension/2]);
-  py2.domain([maxDimension/2, 0]);
+  var maxBound = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
+  px0.domain([0, maxBound]);
+  px1.domain([maxBound/2, 0]);
+  px2.domain([0, maxBound/2]);
+  py0.domain([maxBound, 0]);
+  py1.domain([0, maxBound/2]);
+  py2.domain([maxBound/2, 0]);
 
   var wGroup = pSvg.selectAll('.w-group')
       .data(SPECIAL.groupDimensions, function(d){ return d.key})
@@ -121,13 +121,13 @@ function pUpdateWeight(){
       .attr('fill', 'black')
 
   // Update scales only after the new rectangles have been entered
-  var maxDimension = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
-  px0.domain([0, maxDimension]);
-  px1.domain([maxDimension/2, 0]);
-  px2.domain([0, maxDimension/2]);
-  py0.domain([maxDimension, 0]);
-  py1.domain([0, maxDimension/2]);
-  py2.domain([maxDimension/2, 0]);
+  var maxBound = Math.max(SPECIAL.bf.boundMax, SPECIAL.d.boundMax);
+  px0.domain([0, maxBound]);
+  px1.domain([maxBound/2, 0]);
+  px2.domain([0, maxBound/2]);
+  py0.domain([maxBound, 0]);
+  py1.domain([0, maxBound/2]);
+  py2.domain([maxBound/2, 0]);
   d3.selectAll('.x.axis.p.left')
     .transition().duration(1600).delay(500)
     .call(pX1Axis);
@@ -169,20 +169,40 @@ function showBeamProfile(d){
   var tw = +beam.tw;
   var bf = +beam.bf;
   var d = +beam.d;
+  var drawings = [];
   var rectangles = [
     {offsetX: 0, offsetY: 0, width: tw, height: d, stroke: 'none', fill: 'crimson'},
     {offsetX: 0, offsetY: (d - tf), width: bf, height: tf, stroke: 'none', fill: 'crimson'},
     {offsetX: 0, offsetY: -(d - tf), width: bf, height: tf, stroke: 'none', fill: 'crimson'},
   ];
+  var tickHeight = Math.max(3, py0(SPECIAL.d.boundMax - tf));
+  var annotations = [
+    {offsetX:  tw, offsetY: py0(SPECIAL.d.boundMax - d + 4*tf), width: 1, height: pHeight/20, stroke: 'none', fill: 'blue', override: true},
+    {offsetX: -tw, offsetY: py0(SPECIAL.d.boundMax - d + 4*tf), width: 1, height: pHeight/20, stroke: 'none', fill: 'blue', override: true},
+    {offsetX: 0, offsetY: py0(SPECIAL.d.boundMax - d + 4*tf) - pHeight/20, width: pWidth/6, height: 1, stroke: 'none', fill: 'blue', override: true},
+  ]
+  drawings = drawings.concat(rectangles).concat(annotations);
   pSvg.selectAll('.w-group.selected-beam')
-      .data(rectangles)
+      .data(drawings)
     .enter().append('rect')
       .attr('class', function(d){ return 'w-group selected-beam ' + escapeCharacter(beam.AISC_Manual_Label); })
-      .attr('x', function(d){ return (pWidth - px0(d.width - d.offsetX)) / 2; })
+      .attr('x', function(d){
+        if (d.override){ return (pWidth - d.width + px0(d.offsetX)) / 2; }
+        return (pWidth - px0(d.width - d.offsetX)) / 2;
+      })
       .attr('rx', 2)
-      .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - d.height - d.offsetY)) / 2; })
-      .attr('width', function(d){ return px0(d.width); })
-      .attr('height', function(d){ return py0(SPECIAL.d.boundMax - d.height); })
+      .attr('y', function(d){
+        if (d.override){ return (pHeight - d.offsetY) / 2;}
+        return (pHeight - py0(SPECIAL.d.boundMax - d.height - d.offsetY)) / 2;
+      })
+      .attr('width', function(d){
+        if (d.override){ return d.width; }
+        return px0(d.width);
+      })
+      .attr('height', function(d){
+        if (d.override){ return d.height; }
+        return py0(SPECIAL.d.boundMax - d.height);
+      })
       .attr('fill', function(d){
         if (d.fill) return d.fill;
         return 'none';

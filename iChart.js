@@ -47,7 +47,7 @@ function initializeIChart(){
       })
       .attr('y', function(d){ return iy0(+d.Ix); })
       .attr('width', ix0.rangeBand())
-      .attr('height', 3)
+      .attr('height', 2)
       .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
 
   iSvg.append('g')
@@ -89,7 +89,7 @@ function iUpdateWeight() {
     })
     .attr('y', function(d){ return iy0(+d.Ix); })
     .attr('width', ix0.rangeBand())
-    .attr('height', 3)
+    .attr('height', 2)
     .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
 
   // Update scales only after the new dots have been entered
@@ -136,7 +136,7 @@ function removeHighlightBeamI(d) {
 
   wBeam.transition().duration(100)
     .attr('width', ix0.rangeBand())
-    .attr('height', 3)
+    .attr('height', 2)
     .attr('fill', 'none')
     .attr('stroke', colorScale(+beam.Ix / +d.W))
     .attr('x', function(){

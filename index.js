@@ -1,7 +1,7 @@
 var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
-var MAX_UNBRACED = 51; // ft
+var MAX_UNBRACED = 31; // ft
 var UNBRACED_STEP = 1; // ft
 
 // User inputs
