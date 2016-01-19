@@ -11,7 +11,7 @@ var iy0 = d3.scale.linear()
 // Color in Ix per W
 console.log(colorbrewer)
 var colorScale = d3.scale.quantize()
-  .range(colorbrewer.RdYlGn[8].reverse())
+  .range(['#8b0000','#b61d39','#d84765','#ef738b','#fea0ac','#ffd1c9','#ffffe0','#c7f0ba','#9edba4','#7ac696','#5aaf8c','#399785','#008080'].reverse())
 
 var iXAxis = d3.svg.axis()
     .scale(ix0)
@@ -47,8 +47,8 @@ function initializeIChart(){
       })
       .attr('y', function(d){ return iy0(+d.Ix); })
       .attr('width', ix0.rangeBand())
-      .attr('height', 2)
-      .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
+      .attr('height', 1)
+      .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
 
   iSvg.append('g')
       .attr('class', 'x axis I')
@@ -89,8 +89,8 @@ function iUpdateWeight() {
     })
     .attr('y', function(d){ return iy0(+d.Ix); })
     .attr('width', ix0.rangeBand())
-    .attr('height', 2)
-    .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
+    .attr('height', 1)
+    .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
 
   // Update scales only after the new dots have been entered
   ix0.domain(W_BEAMS_FILTERED.map(function(d){ return d.key;}));
@@ -104,8 +104,8 @@ function iUpdateWeight() {
   // Transition dots into their places
   colorScale.domain([SPECIAL.IxPerW.Min, SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2, SPECIAL.IxPerW.Max]);
   wBeams.transition().duration(500)
-    .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
-    .attr('stroke-width', iFilterStrokeWidth);
+    .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
+    .attr('opacity', iFilterOpacity);
 
   wBeams.transition().duration(1600).delay(500)
     .attr('width', ix0.rangeBand())
@@ -114,14 +114,15 @@ function iUpdateWeight() {
       return ix0(section);
     })
     .attr('y', function(d){ return iy0(+d.Ix); })
-    .attr('stroke', function(d){ return colorScale(+d.Ix / +d.W); })
+    .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
 
   wBeams.exit().remove()
   wGroup.exit().remove()
 }
 
-function iFilterStrokeWidth(d) {
-  return validateBeam(d, {valid: 1.25, invalid: 0});
+function iFilterOpacity(d) {
+  var calculatedFill = colorScale(+d.Ix / +d.W);
+  return validateBeam(d, {valid: 1, invalid: 0});
 }
 
 function removeHighlightBeamI(d) {
@@ -136,9 +137,8 @@ function removeHighlightBeamI(d) {
 
   wBeam.transition().duration(100)
     .attr('width', ix0.rangeBand())
-    .attr('height', 2)
-    .attr('fill', 'none')
-    .attr('stroke', colorScale(+beam.Ix / +d.W))
+    .attr('height', 1)
+    .attr('fill', colorScale(+beam.Ix / +d.W))
     .attr('x', function(){
       var section = d.AISC_Manual_Label.split('X')[0];
       return ix0(section);
@@ -147,14 +147,14 @@ function removeHighlightBeamI(d) {
 
 function highlightBeamI(d) {
   // Return if selecting a beam currenty filtered out
-  if (!ix0(d.AISC_Manual_Label.split('X')[0])) return
+  var isValidBeam = validateBeam(d, {valid: true, invalid: false});
+  if (isValidBeam === false) return;
   var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   var section = d.AISC_Manual_Label.split('X')[0];
   var wGroup = iSvg.select('.w-group.I.' + section)
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
 
   wBeam.attr('fill', 'crimson')
-    .attr('stroke', 'crimson')
     .attr('height', 1)
     .transition().duration(50)
     .attr('width', ix0(section) + ix0.rangeBand())
