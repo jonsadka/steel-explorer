@@ -55,7 +55,8 @@ function initializeProfileChart(){
   wGroup.enter().append('text')
       .attr('class', function(d){ return 'g w-group text ' + d.key;})
       .text(function(d){ return d.key; })
-      .attr('x', function(d){ return (pWidth + px0(+d.bf.Max)) / 2; })
+      .attr('x', function(d, i){ return pWidth/SPECIAL.groupDimensions.length * (SPECIAL.groupDimensions.length - i - 1); })
+      // .attr('x', function(d){ return (pWidth + px0(+d.bf.Max)) / 2; })
       .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
       .attr('fill', 'black')
 
@@ -65,7 +66,7 @@ function initializeProfileChart(){
       .attr('y', function(d){ return (pHeight - py0(SPECIAL.d.boundMax - +d.d.Max)) / 2; })
       .attr('width', function(d){ return px0(+d.bf.Max); })
       .attr('height', function(d){ return py0(SPECIAL.d.boundMax - +d.d.Max); })
-      .attr('stroke', 'RGBA(100, 100, 100, 0.2)')
+      .attr('stroke', 'RGBA(100, 100, 100, 0.15)')
       .attr('fill', 'RGBA(100, 100, 100, 0)')
 
   pSvg.append('g')

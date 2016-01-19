@@ -1,4 +1,4 @@
-var iMargin = {top: 20, right: 22, bottom: 30, left: 42},
+var iMargin = {top: 20, right: 27, bottom: 30, left: 52},
     iWidth = RIGHT_COL_2_WIDTH - iMargin.left - iMargin.right,
     iHeight = RIGHT_ROW_2_HEIGHT - iMargin.top - iMargin.bottom - 10;
 
