@@ -38,15 +38,19 @@ function initializeDistributionChart(){
       .attr('class', function(d){ return 'w-beam d ' + d.AISC_Manual_Label;} )
       .attr('x', function(d){ return dx0(+d.W); })
       .attr('y', function(d){ return 0; })
-      .attr('height', function(d){ return dy0(+d.d); })
       .attr('width', 0.25)
       .attr('opacity', 0.25)
+      .attr('height', 0)
+    .transition().duration(200).delay(function(d, i){ return i * 20;})
+      .attr('height', function(d){ return dy0(+d.d); })
 
   wBeams
     .enter().append('circle')
       .attr('class', function(d){ return 'w-beam d ' + d.AISC_Manual_Label;} )
       .attr('cx', function(d){ return dx0(+d.W); })
       .attr('cy', function(d){ return dy0(+d.d); })
+      .attr('r', 0)
+    .transition().duration(200).delay(function(d, i){ return i * 20;})
       .attr('r', .75)
 
   dSvg.append('g')

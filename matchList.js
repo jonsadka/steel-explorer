@@ -1,4 +1,4 @@
-var MATCHES_SHOWN = 20;
+var MATCHES_SHOWN = 10;
 
 function initializeMatchList(){
   var container = document.getElementById('middle-container'),
