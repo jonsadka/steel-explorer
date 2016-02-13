@@ -1,9 +1,11 @@
+var BEAM_SIZE_FONT_SIZE = 42;
+
 var mMargin = {top: 20, right: 20, bottom: 30, left: 40},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
     mHeight = RIGHT_ROW_1_HEIGHT - mMargin.top - mMargin.bottom - 10;
 
 var mx0 = d3.scale.linear()
-    .range([0, mWidth], .1);
+    .range([0, mWidth]);
 
 var my0 = d3.scale.linear()
     .range([mHeight, 0]);
@@ -298,8 +300,9 @@ function mMouseover(d) {
     .attr('class', 'beam-text ' + d.AISC_Manual_Label)
     .attr('x', mWidth - mMargin.left)
     .attr('y', mMargin.top * 2)
-    .style('font-size', 42)
+    .style('font-size', BEAM_SIZE_FONT_SIZE)
     .attr('opacity', 0.3)
+    .attr('pointer-events', 'none')
     .attr('text-anchor', 'end')
   showBeamProfile(d);
   highlightBeamI(d);

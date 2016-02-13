@@ -1,6 +1,6 @@
 var dMargin = {top: 20, right: 30, bottom: 20, left: 30},
-    dWidth = LEFT_CHARTS_WIDTH - dMargin.left - dMargin.right,
-    dHeight = LEFT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom - 10;
+    dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
+    dHeight = RIGHT_ROW_2_HEIGHT - dMargin.top - dMargin.bottom - 10;
 
 var dx0 = d3.scale.linear()
     .range([0, dWidth]);
@@ -16,7 +16,7 @@ var dYAxis = d3.svg.axis()
     .scale(dy0)
     .orient('left');
 
-var dSvg = d3.select('#bottom-container').append('svg')
+var dSvg = d3.select('#bottom-row').append('svg')
     .attr('width', dWidth + dMargin.left + dMargin.right)
     .attr('height', dHeight + dMargin.top + dMargin.bottom)
   .append('g')
@@ -41,7 +41,7 @@ function initializeDistributionChart(){
       .attr('width', 0.25)
       .attr('opacity', 0.25)
       .attr('height', 0)
-    .transition().duration(200).delay(function(d, i){ return i * 20;})
+    .transition().duration(180).delay(function(d, i){ return i * 15;})
       .attr('height', function(d){ return dy0(+d.d); })
 
   wBeams
@@ -50,7 +50,7 @@ function initializeDistributionChart(){
       .attr('cx', function(d){ return dx0(+d.W); })
       .attr('cy', function(d){ return dy0(+d.d); })
       .attr('r', 0)
-    .transition().duration(200).delay(function(d, i){ return i * 20;})
+    .transition().duration(180).delay(function(d, i){ return i * 15;})
       .attr('r', .75)
 
   dSvg.append('g')

@@ -15,15 +15,14 @@ var USER_I_MIN = null;
 
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight - document.getElementById('nav-bar').offsetHeight;
-var LEFT_ROW_2_HEIGHT = 0.30 * CHARTS_HEIGHT;
-var LEFT_ROW_3_HEIGHT = 0.30 * CHARTS_HEIGHT;
-var RIGHT_ROW_1_HEIGHT = 0.55 * CHARTS_HEIGHT;
-var RIGHT_ROW_2_HEIGHT = 0.45 * CHARTS_HEIGHT;
+var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight;
+var LEFT_ROW_2_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.3;
+var LEFT_ROW_3_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.7;
+var RIGHT_ROW_1_HEIGHT = 0.80 * CHARTS_HEIGHT;
+var RIGHT_ROW_2_HEIGHT = 0.20 * CHARTS_HEIGHT;
 // WIDTHS
 var LEFT_CHARTS_WIDTH = document.getElementById('left-column').offsetWidth;
 var RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
-var RIGHT_COL_1_WIDTH = RIGHT_CHARTS_WIDTH * 0.4;
-var RIGHT_COL_2_WIDTH = RIGHT_CHARTS_WIDTH * 0.6;
 
 // CACHED GLOBAL PROPERTIES
 var W_BEAMS = [];
@@ -33,7 +32,7 @@ var SPECIAL = null;
 var PHI = 0.9;
 
 // HACK
-setTimeout(function(){
+(function(){
   d3.csv('data.csv', function(error, data) {
     if (error) throw error;
 
@@ -51,12 +50,12 @@ setTimeout(function(){
     SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
     initializeMatchList();
-    initializeProfileChart();
     initializeDistributionChart();
     initializeIChart();
     initializeMomentChart();
+    initializeProfileChart();
   });
-}, 10);
+})();
 
 function isWSection (data){
   return (data.key.slice(0,1) === 'W') && (data.key.slice(0,2) !== 'WT');
@@ -162,7 +161,6 @@ function updateVisual(){
   filterBeams();
 
   updateMatchList();
-  pUpdateWeight();
   mUpdateWeight();
   iUpdateWeight();
 }

@@ -1,6 +1,6 @@
 var iMargin = {top: 20, right: 27, bottom: 30, left: 52},
-    iWidth = RIGHT_COL_2_WIDTH - iMargin.left - iMargin.right,
-    iHeight = RIGHT_ROW_2_HEIGHT - iMargin.top - iMargin.bottom - 10;
+    iWidth = LEFT_CHARTS_WIDTH - iMargin.left - iMargin.right,
+    iHeight = LEFT_ROW_3_HEIGHT - iMargin.top - iMargin.bottom - 10;
 
 var ix0 = d3.scale.ordinal()
     .rangeBands([iWidth, 0], .1);
@@ -21,7 +21,7 @@ var iYAxis = d3.svg.axis()
     .scale(iy0)
     .orient('left');
 
-var iSvg = d3.select('#bottom-right').append('svg')
+var iSvg = d3.select('#bottom-container').append('svg')
     .attr('width', iWidth + iMargin.left + iMargin.right)
     .attr('height', iHeight + iMargin.top + iMargin.bottom)
   .append('g')
