@@ -48,7 +48,11 @@ function initializeMomentChart(){
     .enter().append('path')
       .attr('class', function(d){ return 'w-beam X' + d.W;})
       .attr('d', function(d){ return mLine(d.MnValues); })
-      .attr('opacity', 0.15);
+      .attr('stroke-width', 0)
+      .attr('opacity', 1)
+    .transition().delay(function(d, i){ return i * 80;})
+      .attr('opacity', 0.15)
+      .attr('stroke-width', 1)
 
   // Voronoi chart for hover effects
   var voronoiGroup = mSvg.append('g')

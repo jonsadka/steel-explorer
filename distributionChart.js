@@ -26,7 +26,7 @@ function initializeDistributionChart(){
   dx0.domain([0, 800]);
   dy0.domain([50, 0]);
 
-  var beams = Object.keys(W_BEAMS_MAP).map(function(shape){ return W_BEAMS_MAP[shape]; });
+  var beams = Object.keys(W_BEAMS_MAP).map(function(shape){ return W_BEAMS_MAP[shape]; }).reverse();
 
   var wBeams = dSvg.selectAll('.w-beam.d')
       .data(beams)
@@ -38,10 +38,11 @@ function initializeDistributionChart(){
       .attr('class', function(d){ return 'w-beam d ' + d.AISC_Manual_Label;} )
       .attr('x', function(d){ return dx0(+d.W); })
       .attr('y', function(d){ return 0; })
-      .attr('width', 0.25)
       .attr('opacity', 0.25)
       .attr('height', 0)
-    .transition().duration(180).delay(function(d, i){ return i * 15;})
+      .attr('width', 1.5)
+    .transition().duration(600).delay(function(d, i){ return i * 8;})
+      .attr('width', 0.25)
       .attr('height', function(d){ return dy0(+d.d); })
 
   wBeams
@@ -50,7 +51,7 @@ function initializeDistributionChart(){
       .attr('cx', function(d){ return dx0(+d.W); })
       .attr('cy', function(d){ return dy0(+d.d); })
       .attr('r', 0)
-    .transition().duration(180).delay(function(d, i){ return i * 15;})
+    .transition().delay(function(d, i){ return i * 8 + 600;})
       .attr('r', .75)
 
   dSvg.append('g')
