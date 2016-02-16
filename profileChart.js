@@ -49,13 +49,12 @@ function showBeamProfile(d){
   var bf = +beam.bf;
   var d = +beam.d;
   var kdes = +beam.kdes;
-  console.log(beam)
 
   var rectangles = [
     // FIRST ARGUMENT IN offsetX SHIFTS FROM LEFT ALIGNED TO RIGHT ALIGNED
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: 'crimson'},
-    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: 'crimson'},
-    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: 'crimson'}
+    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: 'crimson', opacity: 1},
+    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: 'crimson', opacity: 1},
+    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: 'crimson', opacity: 1}
   ];
 
   var annotationTWeb = [
@@ -78,7 +77,7 @@ function showBeamProfile(d){
     // tw text
     {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 - 1, offsetY: d/2, width: tw + 2, height: 0.2, stroke: 'none', fill: 'black', text: 'tw ' + tw + '"'},
     {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 - 0.1, offsetY: d/2 - 1, width: 0.2, height: 2, stroke: 'none', fill: 'black'},
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 + tw - 0.1, offsetY: d/2 - 1, width: 0.2, height: 2, stroke: 'none', fill: 'black'},
+    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 + tw - 0.1, offsetY: d/2 - 1, width: 0.2, height: 2, stroke: 'none', fill: 'black'}
   ];
 
   var drawings = rectangles.concat(annotationTWeb);
@@ -97,7 +96,9 @@ function showBeamProfile(d){
       .attr('stroke', function(d){ return d.stroke || 'crimson';})
       .attr('pointer-events', 'none')
       .attr('stroke-width', 1)
-      .attr('opacity', 0.6)
+      .attr('opacity', function(d, i){ return d.opacity || 0;})
+    .transition()
+      .attr('opacity', 1)
 
   mSvg.selectAll('.w-group.selected-beam.text')
       .data(drawings)
@@ -107,4 +108,7 @@ function showBeamProfile(d){
       .text(function(d){ return d.text; })
       .attr('x', function(d){ return px(d.offsetX);})
       .attr('y', function(d){ return py(d.offsetY);})
+      .attr('opacity', 0)
+    .transition()
+      .attr('opacity', 1)
 }
