@@ -2,7 +2,7 @@ var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
 var MAX_UNBRACED = 31; // ft
-var UNBRACED_STEP = 1; // ft
+var UNBRACED_STEP = 3; // ft
 
 // User inputs
 var START_LENGTH = null;
@@ -37,8 +37,8 @@ var PHI = 0.9;
     if (error) throw error;
 
     W_BEAMS_MAP = data.reduce(function(map, cv){
-      if (cv.Type === 'W') map[cv.AISC_Manual_Label] = cv
-      return map
+      if (cv.Type === 'W') map[cv.AISC_Manual_Label] = cv;
+      return map;
     }, {})
 
     var beams = d3.nest()
