@@ -1,6 +1,6 @@
 var BEAM_SIZE_FONT_SIZE = 42;
 
-var mMargin = {top: 20, right: 20, bottom: 30, left: 40},
+var mMargin = {top: 20, right: 30, bottom: 30, left: 40},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
     mHeight = RIGHT_ROW_1_HEIGHT - mMargin.top - mMargin.bottom - 10;
 
@@ -69,7 +69,6 @@ function initializeMomentChart(){
           return d.MnValues.map(function(d){
             // Cache beam data
             d.AISC_Manual_Label = beam.AISC_Manual_Label;
-            d.d = beam.d;
             d.W = beam.W;
             return d;
           });
@@ -206,7 +205,6 @@ function mUpdateLength() {
             // Cache beam data
             d.AISC_Manual_Label = beam.AISC_Manual_Label;
             d.W = beam.W;
-            d.d = beam.d;
             return d;
           });
         }))
@@ -262,7 +260,6 @@ function mUpdateWeight() {
           return d.MnValues.map(function(d){
             // Cache beam data
             d.AISC_Manual_Label = beam.AISC_Manual_Label;
-            d.d = beam.d;
             d.W = beam.W;
             return d;
           });

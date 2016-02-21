@@ -147,12 +147,12 @@ function removeHighlightBeamI(d) {
 
 function highlightBeamI(d) {
   // Return if selecting a beam currenty filtered out
-  var isValidBeam = validateBeam(d, {valid: true, invalid: false});
+  beam = W_BEAMS_MAP[d.AISC_Manual_Label];
+  var isValidBeam = validateBeam(beam, {valid: true, invalid: false});
   if (isValidBeam === false) return;
-  var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   var section = d.AISC_Manual_Label.split('X')[0];
   var wGroup = iSvg.select('.w-group.I.' + section)
-  var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
+  var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(beam.W))
 
   wBeam.attr('fill', 'crimson')
     .attr('height', 1)
@@ -163,7 +163,7 @@ function highlightBeamI(d) {
   var format = d3.format(',');
   wGroup.append('text')
     .text(format(+beam.Ix))
-    .attr('class', function(d){ return 'w-beam value X' + d.W;})
+    .attr('class', function(d){ return 'w-beam value X' + beam.W;})
     .attr('x', ix0(section) - 9)
     .attr('fill', 'crimson')
     .attr('y', function(d){ return iy0(+beam.Ix); })

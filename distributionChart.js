@@ -105,9 +105,9 @@ function initializeDistributionChart(){
 }
 
 function highlightBeamDistribution(d){
-  console.log(d)
-  dSvg.select('.focus').attr('transform', 'translate(' +  (dx0(+d.W) + 8) + ',' + (dy0(+d.d) + dMargin.top) + ')');
-  dSvg.select('.focus').select('text').text(d.AISC_Manual_Label);
+  beam = W_BEAMS_MAP[d.AISC_Manual_Label];
+  dSvg.select('.focus').attr('transform', 'translate(' +  (dx0(+beam.W) + 8) + ',' + (dy0(+beam.d) + dMargin.top) + ')');
+  dSvg.select('.focus').select('text').text(beam.AISC_Manual_Label);
 
   dSvg.select('rect.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
     .attr('fill', 'crimson')
