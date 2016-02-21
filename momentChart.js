@@ -69,6 +69,7 @@ function initializeMomentChart(){
           return d.MnValues.map(function(d){
             // Cache beam data
             d.AISC_Manual_Label = beam.AISC_Manual_Label;
+            d.d = beam.d;
             d.W = beam.W;
             return d;
           });
@@ -94,14 +95,14 @@ function initializeMomentChart(){
         .on('mouseover', mMouseover)
         .on('mouseout', mMouseout);
 
-    var focus = mSvg.append('g')
+    var mFocus = mSvg.append('g')
         .attr('transform', 'translate(-100,-100)')
         .attr('class', 'focus');
 
-    focus.append('circle')
+    mFocus.append('circle')
         .attr('r', 3.5);
 
-    focus.append('text')
+    mFocus.append('text')
         .attr('y', -10);
   }, 0)
 
@@ -205,6 +206,7 @@ function mUpdateLength() {
             // Cache beam data
             d.AISC_Manual_Label = beam.AISC_Manual_Label;
             d.W = beam.W;
+            d.d = beam.d;
             return d;
           });
         }))
@@ -212,7 +214,7 @@ function mUpdateLength() {
       .map(function(d) { return d.values; });
     var voronoiData = mVoronoi(nestedData);
 
-    var voronoiGroup = d3.selectAll('.voronoi');
+    var voronoiGroup = mSvg.selectAll('.voronoi');
     voronoiGroup.selectAll('path')
       .data(voronoiData)
       .attr('d', function(d){
@@ -260,6 +262,7 @@ function mUpdateWeight() {
           return d.MnValues.map(function(d){
             // Cache beam data
             d.AISC_Manual_Label = beam.AISC_Manual_Label;
+            d.d = beam.d;
             d.W = beam.W;
             return d;
           });
@@ -268,7 +271,7 @@ function mUpdateWeight() {
       .map(function(d) { return d.values; });
     var voronoiData = mVoronoi(nestedData);
 
-    var voronoiGroup = d3.selectAll('.voronoi');
+    var voronoiGroup = mSvg.selectAll('.voronoi');
     voronoiGroup.selectAll('path')
       .data(voronoiData)
       .attr('d', function(d){
@@ -292,13 +295,20 @@ function mFilterStrokeWidth(d){
 }
 
 function mMouseover(d) {
+  // wBeam.parentNode.appendChild(wBeam);
+  mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
+  mSvg.select('.focus').select('text').text(d.length + ' ft., ' + Math.round(d.Mn * PHI * 10) / 10 + ' k-ft.');
+  showBeamDetails(d);
+  showBeamProfile(d);
+  highlightBeamI(d);
+  highlightBeamDistribution(d);
+}
+
+function showBeamDetails(d){
   var wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
   var wBeam = wGroup.select('.X' + escapeCharacter(d.W));
   wGroup.classed('group--hover', true);
   wBeam.classed('beam--hover', true);
-  // wBeam.parentNode.appendChild(wBeam);
-  mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
-  mSvg.select('.focus').select('text').text(d.length + ' ft., ' + Math.round(d.Mn * PHI * 10) / 10 + ' k-ft.');
   mSvg.append('text')
     .text(d.AISC_Manual_Label)
     .attr('class', 'beam-text ' + d.AISC_Manual_Label)
@@ -308,19 +318,20 @@ function mMouseover(d) {
     .attr('opacity', 0.3)
     .attr('pointer-events', 'none')
     .attr('text-anchor', 'end')
-  showBeamProfile(d);
-  highlightBeamI(d);
-  highlightBeamDistribution(d);
 }
 
-function mMouseout(d) {
+function removeBeamDetails(d){
+  mSvg.select('.beam-text.' + escapeCharacter(d.AISC_Manual_Label)).remove();
   var wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
   var wBeam = wGroup.select('.X' + escapeCharacter(d.W));
   wGroup.classed('group--hover', false);
   wBeam.classed('beam--hover', false);
+}
+
+function mMouseout(d) {
   mSvg.select('.focus').attr('transform', 'translate(-100,-100)');
-  mSvg.select('.beam-text.' + escapeCharacter(d.AISC_Manual_Label)).remove();
   removeBeamProfile();
+  removeBeamDetails(d);
   removeHighlightBeamI(d);
   removeBeamDistribution(d);
 }

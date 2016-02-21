@@ -18,8 +18,8 @@ var CHARTS_HEIGHT = window.innerHeight - document.getElementById('nav-bar').offs
 var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight;
 var LEFT_ROW_2_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.3;
 var LEFT_ROW_3_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.7;
-var RIGHT_ROW_1_HEIGHT = 0.80 * CHARTS_HEIGHT;
-var RIGHT_ROW_2_HEIGHT = 0.20 * CHARTS_HEIGHT;
+var RIGHT_ROW_1_HEIGHT = 0.8 * CHARTS_HEIGHT;
+var RIGHT_ROW_2_HEIGHT = 0.2 * CHARTS_HEIGHT;
 // WIDTHS
 var LEFT_CHARTS_WIDTH = document.getElementById('left-column').offsetWidth;
 var RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;

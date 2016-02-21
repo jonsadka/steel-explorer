@@ -1,4 +1,4 @@
-var pHeight = RIGHT_ROW_1_HEIGHT * 0.3;
+var pHeight = RIGHT_ROW_1_HEIGHT * 0.40;
 var pWidth = pHeight;
 var maxHeight = null;
 var maxWidth = null;
@@ -50,6 +50,9 @@ function showBeamProfile(d){
   var d = +beam.d;
   var kdes = +beam.kdes;
 
+  // Tick length
+  var eL = 0.75;
+
   var rectangles = [
     // FIRST ARGUMENT IN offsetX SHIFTS FROM LEFT ALIGNED TO RIGHT ALIGNED
     {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: 'crimson', opacity: 1},
@@ -59,25 +62,25 @@ function showBeamProfile(d){
 
   var annotationTWeb = [
     // d text
-    {offsetX: maxWidth + 2, offsetY: -1, width: 0.2, height: d + 2, stroke: 'none', fill: 'black', text: 'd', textPos: 'right'},
-    {offsetX: maxWidth + 1, offsetY: 0, width: 2, height: 0.2, stroke: 'none', fill: 'black'},
-    {offsetX: maxWidth + 1, offsetY: d, width: 2, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: maxWidth + 2*eL, offsetY: -eL, width: 0.2, height: d + 2*eL, stroke: 'none', fill: 'black', text: 'd', textPos: 'right'},
+    {offsetX: maxWidth + eL, offsetY: 0, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: maxWidth + eL, offsetY: d, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
     // tf text
-    {offsetX: (maxWidth - bf) - 2, offsetY: -1, width: 0.2, height: tf + 2, stroke: 'none', fill: 'black', text: 'tf', textPos: 'left'},
-    {offsetX: (maxWidth - bf) - 3, offsetY: 0, width: 2, height: 0.2, stroke: 'none', fill: 'black'},
-    {offsetX: (maxWidth - bf) - 3, offsetY: tf, width: 2, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: (maxWidth - bf) - 2*eL, offsetY: -eL, width: 0.2, height: tf + 2*eL, stroke: 'none', fill: 'black', text: 'tf', textPos: 'left'},
+    {offsetX: (maxWidth - bf) - 3*eL, offsetY: 0, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: (maxWidth - bf) - 3*eL, offsetY: tf, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
     // kdes text
-    {offsetX: (maxWidth - bf) - 2, offsetY: (d - kdes) - 1, width: 0.2, height: kdes + 2, stroke: 'none', fill: 'black', text: 'kdes', textPos: 'left'},
-    {offsetX: (maxWidth - bf) - 3, offsetY: d, width: 2, height: 0.2, stroke: 'none', fill: 'black'},
-    {offsetX: (maxWidth - bf) - 3, offsetY: (d - kdes), width: 2 + (bf/2), height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: (maxWidth - bf) - 2*eL, offsetY: (d - kdes) - eL, width: 0.2, height: kdes + 2*eL, stroke: 'none', fill: 'black', text: 'kdes', textPos: 'left'},
+    {offsetX: (maxWidth - bf) - 3*eL, offsetY: d, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: (maxWidth - bf) - 3*eL, offsetY: (d - kdes), width: 2*eL + (bf/2), height: 0.2, stroke: 'none', fill: 'black'},
     // bf text
-    {offsetX: (maxWidth - bf) - 1, offsetY: d + 2, width: bf + 2, height: 0.2, stroke: 'none', fill: 'black', text: 'bf', textPos: 'middle'},
-    {offsetX: (maxWidth - bf), offsetY: d + 1, width: 0.2, height: 2, stroke: 'none', fill: 'black'},
-    {offsetX: maxWidth, offsetY: d + 1, width: 0.2, height: 2, stroke: 'none', fill: 'black'},
+    {offsetX: (maxWidth - bf) - eL, offsetY: d + 2*eL, width: bf + 2*eL, height: 0.2, stroke: 'none', fill: 'black', text: 'bf', textPos: 'middle'},
+    {offsetX: (maxWidth - bf), offsetY: d + eL, width: 0.2, height: 2*eL, stroke: 'none', fill: 'black'},
+    {offsetX: maxWidth, offsetY: d + eL, width: 0.2, height: 2*eL, stroke: 'none', fill: 'black'},
     // tw text
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 - 1, offsetY: d/2, width: tw + 2, height: 0.2, stroke: 'none', fill: 'black', text: 'tw', textPos: 'left'},
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 - 0.1, offsetY: d/2 - 1, width: 0.2, height: 2, stroke: 'none', fill: 'black'},
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 + tw - 0.1, offsetY: d/2 - 1, width: 0.2, height: 2, stroke: 'none', fill: 'black'}
+    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 - eL, offsetY: d/2, width: tw + 2*eL, height: 0.2, stroke: 'none', fill: 'black', text: 'tw', textPos: 'left'},
+    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 - 0.1, offsetY: d/2 - eL, width: 0.2, height: 2*eL, stroke: 'none', fill: 'black'},
+    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 + tw - 0.1, offsetY: d/2 - eL, width: 0.2, height: 2*eL, stroke: 'none', fill: 'black'}
   ];
 
   var drawings = rectangles.concat(annotationTWeb);
