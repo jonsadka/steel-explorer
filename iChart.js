@@ -8,6 +8,11 @@ var ix0 = d3.scale.ordinal()
 var iy0 = d3.scale.linear()
     .range([iHeight, 0]);
 
+var iVoronoi = d3.geom.voronoi()
+  .x(function(d){ return ix0(d.AISC_Manual_Label.split('X')[0]) + ix0.rangeBand()/2; })
+  .y(function(d){ return iy0(+d.Ix); })
+  .clipExtent([[0, 0], [iWidth, iHeight]]);
+
 // Color in Ix per W
 console.log(colorbrewer)
 var colorScale = d3.scale.quantize()
@@ -19,6 +24,7 @@ var iXAxis = d3.svg.axis()
 
 var iYAxis = d3.svg.axis()
     .scale(iy0)
+    .ticks(5)
     .orient('left');
 
 var iSvg = d3.select('#bottom-container').append('svg')
@@ -64,6 +70,21 @@ function initializeIChart(){
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
       .text('Ix (in^4)');
+
+  // Voronoi chart for hover effects
+  var voronoiGroup = iSvg.append('g')
+    .attr('class', 'voronoi');
+
+  // Generate voronoi polygons
+  var voronoiData = iVoronoi([].concat.apply([], W_BEAMS.map(function(d){ return d.values})));
+
+  voronoiGroup.selectAll('path')
+      .data(voronoiData)
+    .enter().append('path')
+      .attr('d', function(d, i){return 'M' + d.join('L') + 'Z';})
+      .datum(function(d){ return d.point; })
+      .on('mouseover', iMouseover)
+      .on('mouseout', iMouseout);
 }
 
 function iUpdateWeight() {
@@ -95,10 +116,10 @@ function iUpdateWeight() {
   // Update scales only after the new dots have been entered
   ix0.domain(W_BEAMS_FILTERED.map(function(d){ return d.key;}));
   d3.selectAll('.x.axis.I')
-    .transition().duration(1600).delay(500)
+    .transition().duration(TRANSITION_TIME).delay(500)
     .call(iXAxis);
   d3.selectAll('.y.axis.I')
-    .transition().duration(1600).delay(500)
+    .transition().duration(TRANSITION_TIME).delay(500)
     .call(iYAxis);
 
   // Transition dots into their places
@@ -107,7 +128,7 @@ function iUpdateWeight() {
     .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
     .attr('opacity', iFilterOpacity);
 
-  wBeams.transition().duration(1600).delay(500)
+  wBeams.transition().duration(TRANSITION_TIME).delay(500)
     .attr('width', ix0.rangeBand())
     .attr('x', function(d){
       var section = d.AISC_Manual_Label.split('X')[0];
@@ -118,6 +139,23 @@ function iUpdateWeight() {
 
   wBeams.exit().remove()
   wGroup.exit().remove()
+
+
+  var voronoiGroup = iSvg.selectAll('.voronoi');
+  var voronoiData = iVoronoi([].concat.apply([], W_BEAMS_FILTERED.map(function(d){ return d.values})));
+  var voronoiLines = voronoiGroup.selectAll('path')
+      .data(voronoiData)
+
+  voronoiLines.enter().append('path')
+      .attr('d', function(d, i){return 'M' + d.join('L') + 'Z';})
+      .datum(function(d){ return d.point; })
+      .on('mouseover', iMouseover)
+      .on('mouseout', iMouseout);
+
+  voronoiLines.attr('d', function(d){return 'M' + d.join('L') + 'Z';})
+      .datum(function(d){ return d.point; })
+
+  voronoiLines.exit().remove();
 }
 
 function iFilterOpacity(d) {
@@ -171,4 +209,18 @@ function highlightBeamI(d) {
     .transition().duration(50)
     .attr('text-anchor', 'end')
     .attr('x', -9)
+}
+
+function iMouseover(d) {
+  showBeamDetails(d);
+  showBeamProfile(d);
+  highlightBeamI(d);
+  highlightBeamDistribution(d);
+}
+
+function iMouseout(d) {
+  removeBeamProfile();
+  removeBeamDetails(d);
+  removeHighlightBeamI(d);
+  removeBeamDistribution(d);
 }

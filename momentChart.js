@@ -174,11 +174,11 @@ function mUpdateLength() {
   my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
   d3.selectAll('.x.axis.moment')
-    .transition().duration(1600)
+    .transition().duration(TRANSITION_TIME)
     .call(mXAxis);
 
   d3.selectAll('.y.axis.moment')
-    .transition().duration(1600)
+    .transition().duration(TRANSITION_TIME)
     .call(mYAxis);
 
   mLine = d3.svg.line()
@@ -190,7 +190,7 @@ function mUpdateLength() {
 
   wGroup.selectAll('path.w-beam')
       .data(function(d) { return d.values; })
-      .transition().duration(1600)
+      .transition().duration(TRANSITION_TIME)
       .attr('d', function(d){ return mLine(d.MnValues); });
 
   // Wait until the transition is done to recalculate and update the voronoi
@@ -220,14 +220,14 @@ function mUpdateLength() {
         return 'M' + subPath + 'Z';
       })
       .datum(function(d){ return d.point; });
-  }, 1600);
+  }, TRANSITION_TIME);
 }
 
 function mUpdateWeight() {
   my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
   d3.selectAll('.y.axis.moment')
-    .transition().duration(1600).delay(500)
+    .transition().duration(TRANSITION_TIME).delay(500)
     .call(mYAxis);
 
   mLine = d3.svg.line()
@@ -246,7 +246,7 @@ function mUpdateWeight() {
 
   wGroup.selectAll('path')
       .data(function(d) { return d.values; })
-      .transition().duration(1600).delay(500)
+      .transition().duration(TRANSITION_TIME).delay(500)
       .attr('d', function(d){ return mLine(d.MnValues); });
 
   // Wait until the transition is done to recalculate and update the voronoi
@@ -276,7 +276,7 @@ function mUpdateWeight() {
         return 'M' + subPath + 'Z';
       })
       .datum(function(d){ return d.point; });
-  }, 1600 + 500);
+  }, TRANSITION_TIME + 500);
 }
 
 function mFilterOpacity(d){
