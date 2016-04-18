@@ -1,156 +1,98 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
-  html {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-  *, *:before, *:after {
-    -webkit-box-sizing: inherit;
-    -moz-box-sizing: inherit;
-    box-sizing: inherit;
-  }
-
-  body {
-    font: 10px sans-serif;
-    margin: 0;
-  }
-
-  #nav-bar {
-    height: 30px;
-    background: #3F3F3F;
-  }
-
-  .btn {
-    position: absolute;
-    text-decoration: none;
-    background-color: crimson;
-    color: white;
-    padding: 2px 6px 2px 6px;
-  }
-
-  #left-column,
-  #right-column {
-    float: left;
-    vertical-align: top;
-    border: 1px solid RGBA(184, 103, 130, 0.5);
-  }
-
-  #left-column {
-    width: 35%;
-  }
-
-  #right-column {
-    width: 65%;
-  }
-
-  #top-container,
-  #middle-container,
-  #bottom-container,
-  #bottom-row {
-    border: 1px solid RGBA(100, 100, 255, 0.5);
-  }
-
-  text {
-    font: 10px sans-serif;
-  }
-
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-  }
-
-  #bottom-container .axis.x path {
-    stroke: none;
-  }
-
-  #bottom-right .axis path {
-    stroke: none;
-  }
-  #bottom-right .axis.y .tick {
-    fill-opacity: 0.40;
-    stroke-opacity: 0.40;
-  }
-
-  .voronoi {
-    fill: none;
-    stroke: pink;
-    stroke-opacity: 1;
-    pointer-events: all;
-  }
-
-  path.beam--hover {
-    stroke: crimson;
-    stroke-width: 6px;
-    stroke-opacity: 1;
-  }
-
-  .bar {
-    fill: crimson;
-  }
-
-  .w-group.m {
-    fill: none;
-    stroke-width: 1px;
-    stroke: gray;
-  }
-
-  .w-group.I {
-    fill: none;
-    stroke-width: 1px;
-  }
-
-  input {
-    width: 100px;
-  }
-
-  table {
-    width: 100%;
-    font-size: 14px;
-  }
-
-  td {
-    padding: 2px;
-  }
-
-</style>
-  <div id="nav-bar"></div>
+  <div id="nav-bar">
+    Pure Steel
+    <a class="link" href="http://jonsadka.com/" target="_blank">by Jon Sadka</a>
+    <a class="link about" href="http://jonsadka.com/" target="_blank">About</a>
+  </div>
   <div id="charts">
     <div id="left-column">
       <div id="top-container">
-        <h2>Units</h2>
+<!--         <h2>Units</h2>
         <div>
           <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
-          <!-- <label><input type="radio" name="mode" value="ASD">ASD</label> -->
+          <label><input type="radio" name="mode" value="ASD">ASD</label>
+        </div> -->
+        <div class="filter-category">
+          <div class="header-container">
+            <h2>Moment (k-ft)</h2>
+            <p>Moments in LRFD</p>
+          </div>
+          <div class="input-container first">
+            <div class="material-input">
+              <input class="input-item" type="number" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" required>
+              <label>Min</label>
+              <span class="bar"></span>
+            </div>
+          </div>
+          <div class="input-container">
+            <div class="material-input">
+              <input class="input-item" type="number" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" required>
+              <label>Max</label>
+              <span class="bar"></span>
+            </div>
+          </div>
         </div>
-        <h2>Filter Beam</h2>
-        <div>
-          Moment: <input type="number" id="moment-min-input" min="0" placeholder="Min" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()"> k-ft
-          <input type="number" id="moment-max-input" min="0" placeholder="Max" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()"> k-ft
+
+        <div class="filter-category">
+          <div class="header-container">
+            <h2>Weight (plf)</h2>
+            <p>Force on the beam due to gravity</p>
+          </div>
+          <div class="input-container first">
+            <div class="material-input">
+              <input class="input-item" type="number" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" required>
+              <label>Min</label>
+              <span class="bar"></span>
+            </div>
+          </div>
+          <div class="input-container">
+            <div class="material-input">
+              <input class="input-item" type="number" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" required>
+              <label>Max</label>
+              <span class="bar"></span>
+            </div>
+          </div>
         </div>
-        <div>
-          Weight: <input type="number" id="weight-min-input" min="0" placeholder="Min" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()">
-          plf
-          <input type="number" id="weight-max-input" min="0" placeholder="Max" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()">
-          plf
+
+        <div class="filter-category">
+          <div class="header-container">
+            <h2>I<sub>x</sub> (in<sup>4</sup>)</h2>
+            <p>Moment of inertia</p>
+          </div>
+          <div class="input-container first">
+            <div class="material-input">
+              <input class="input-item" type="number" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" required>
+              <label>Min</label>
+              <span class="bar"></span>
+            </div>
+          </div>
+          <div class="input-container">
+            <div class="material-input">
+              <input class="input-item" type="number" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" required>
+              <label>Max</label>
+              <span class="bar"></span>
+            </div>
+          </div>
         </div>
-        <div>
-          I<sub>x</sub>: <input type="number" id="I-min-input" min="0" placeholder="Min" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()">
-          in<sup>4</sup>
-          <input type="number" id="I-max-input" min="0" placeholder="Max" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()">
-          in<sup>4</sup>
-        </div>
-        <h2>Zoom</h2>
-        <div>
-          Length: <input type="number" id="length-input" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" max="1000" placeholder="Unbraced beam length">
-          ft
+
+        <div class="filter-category">
+          <div class="header-container">
+            <h2>Length (ft)</h2>
+            <p>Extent of beam from end to end</p>
+          </div>
+          <div class="input-container first">
+            <div class="material-input">
+              <input class="input-item" type="number" id="length-input" min="1000" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" required>
+              <label>Unbraced</label>
+              <span class="bar"></span>
+            </div>
+          </div>
         </div>
       </div>
+
       <div id="middle-container">
-        <h1>23 Matching beams found</h1>
+        <h1>Efficient beams</h1>
       </div>
       <div id="bottom-container">
         <h3>Need a color scale</h3>
@@ -158,16 +100,17 @@
     </div>
     <div id="right-column">
       <div id="top-row">
-        <a class="btn">Delta goes here</a>
-        <a class="btn">Mn</a>
+<!--         <a class="btn">Delta goes here</a>
+        <a class="btn">Mn</a> -->
       </div>
       <div id="bottom-row">
       </div>
     </div>
   </div>
 <body>
-<script src="./node_modules/d3/d3.js"></script>
-<!-- <script src="//d3js.org/d3.v3.js"></script> -->
+<link rel="stylesheet" type="text/css" href="style.css"/>
+<!-- <script src="./node_modules/d3/d3.js"></script> -->
+<script src="//d3js.org/d3.v3.js"></script>
 <script src="./index.js"></script>
 <script src="./colorbrewer.min.js"></script>
 <script src="./matchList.js"></script>
