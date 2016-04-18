@@ -1,3 +1,4 @@
+/*Color pallett inspired by */
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 
 html {
@@ -15,33 +16,37 @@ html {
 body {
   font: 10px sans-serif;
   margin: 0;
+  background-color: #26323C;
+  color: #FEFFFF;
 }
 
 #nav-bar {
   height: 40px;
-  background: #3F3F3F;
-  padding: 10px;
+  background: #FEFFFF;
+  padding: 20px 20px 60px 20px;
   font-size: 24px;
-  color: white;
+  color: #20B7C4;
 }
 
 .link {
+  vertical-align: top;
   font-size: 14px;
+  text-decoration: none;
+  color: #9AAAAE;
 }
 
 .link.about {
   float: right;
 }
-.link {color: gray;}
-.link:visited {color: gray;}
-.link:hover {color: white;}
-.link:active {color: gray;}
+.link:visited {color: #9AAAAE;}
+.link:hover {color: #20B7C4;}
+.link:active {color: #9AAAAE;}
 
 .btn {
   position: absolute;
   text-decoration: none;
   background-color: crimson;
-  color: white;
+  color: #FEFFFF;
   padding: 2px 6px 2px 6px;
 }
 
@@ -113,6 +118,10 @@ input {
   float: left;
   vertical-align: top;
   border: 1px solid RGBA(184, 103, 130, 0.5);
+  background-color: #26323C;
+}
+.covers {
+  fill: #26323C;
 }
 
 #left-column {
@@ -125,7 +134,9 @@ input {
 
 
 #top-container {
-padding: 10px;
+  background-color: #374049;
+  padding: 10px 20px;
+  border-radius: 0 0 40px 0;
 }
 
 .header-container {
@@ -136,6 +147,11 @@ padding: 10px;
 
 h2 {
   margin: 0;
+  color: #08A5A3;
+}
+h2 .units {
+  font-size: 10px;
+  vertical-align: top;
 }
 
 .header-container p {
