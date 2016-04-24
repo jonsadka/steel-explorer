@@ -14,18 +14,19 @@ var iVoronoi = d3.geom.voronoi()
   .clipExtent([[0, 0], [iWidth, iHeight]]);
 
 // Color in Ix per W
-console.log(colorbrewer)
+// console.log(colorbrewer)
 var colorScale = d3.scale.quantize()
-  .range(['#8b0000','#b61d39','#d84765','#ef738b','#fea0ac','#ffd1c9','#ffffe0','#c7f0ba','#9edba4','#7ac696','#5aaf8c','#399785','#008080'].reverse())
+  .range(['#3ca0a0','#4aa6a7','#59abae','#66b1b4','#75b6bc','#85bbc2','#9abfc5','#b4c2c5','#c0c7c8','#cacccd','#d3d3d3'])
 
 var iXAxis = d3.svg.axis()
     .scale(ix0)
+    .tickSize(-iHeight)
     .orient('bottom');
 
 var iYAxis = d3.svg.axis()
     .scale(iy0)
-    .ticks(5)
-    .orient('left');
+    // .ticks(1)
+    .orient('right');
 
 var iSvg = d3.select('#bottom-container').append('svg')
     .attr('width', iWidth + iMargin.left + iMargin.right)
@@ -53,7 +54,7 @@ function initializeIChart(){
       })
       .attr('y', function(d){ return iy0(+d.Ix); })
       .attr('width', ix0.rangeBand())
-      .attr('height', 1)
+      .attr('height', 3)
       .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
 
   iSvg.append('g')
@@ -110,7 +111,7 @@ function iUpdateWeight() {
     })
     .attr('y', function(d){ return iy0(+d.Ix); })
     .attr('width', ix0.rangeBand())
-    .attr('height', 1)
+    .attr('height', 3)
     .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
 
   // Update scales only after the new dots have been entered
@@ -175,7 +176,7 @@ function removeHighlightBeamI(d) {
 
   wBeam.transition().duration(100)
     .attr('width', ix0.rangeBand())
-    .attr('height', 1)
+    .attr('height', 3)
     .attr('fill', colorScale(+beam.Ix / +d.W))
     .attr('x', function(){
       var section = d.AISC_Manual_Label.split('X')[0];
@@ -192,8 +193,8 @@ function highlightBeamI(d) {
   var wGroup = iSvg.select('.w-group.I.' + section)
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(beam.W))
 
-  wBeam.attr('fill', 'crimson')
-    .attr('height', 1)
+  wBeam.attr('fill', CUSTOM_WHITE)
+    .attr('height', 3)
     .transition().duration(50)
     .attr('width', ix0(section) + ix0.rangeBand())
     .attr('x', 0)
@@ -203,7 +204,7 @@ function highlightBeamI(d) {
     .text(format(+beam.Ix))
     .attr('class', function(d){ return 'w-beam value X' + beam.W;})
     .attr('x', ix0(section) - 9)
-    .attr('fill', 'crimson')
+    .attr('fill', CUSTOM_WHITE)
     .attr('y', function(d){ return iy0(+beam.Ix); })
     .attr('alignment-baseline', 'middle')
     .transition().duration(50)

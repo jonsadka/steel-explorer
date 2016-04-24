@@ -1,7 +1,7 @@
 var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
-var MAX_UNBRACED = 31; // ft
+var MAX_UNBRACED = 41; // ft
 var UNBRACED_STEP = 1; // ft
 var TRANSITION_TIME = 1400; // ms
 
@@ -17,8 +17,8 @@ var USER_I_MIN = null;
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight - document.getElementById('nav-bar').offsetHeight;
 var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight;
-var LEFT_ROW_2_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.3;
-var LEFT_ROW_3_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.7;
+var LEFT_ROW_2_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.30;
+var LEFT_ROW_3_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.70;
 var RIGHT_ROW_1_HEIGHT = 0.8 * CHARTS_HEIGHT;
 var RIGHT_ROW_2_HEIGHT = 0.2 * CHARTS_HEIGHT;
 // WIDTHS
@@ -31,6 +31,8 @@ var W_BEAMS_MAP = {};
 var W_BEAMS_FILTERED = [];
 var SPECIAL = null;
 var PHI = 0.9;
+
+var CUSTOM_WHITE = '#20B7C4';
 
 // HACK
 (function(){
@@ -120,7 +122,7 @@ function updateLength() {
   userLength = +document.getElementById('length-input').value;
   if (START_LENGTH === (userLength - 2)) return;
   START_LENGTH = Math.max(0, userLength - 2);
-  endLength = (userLength === 0) ? MAX_UNBRACED : Math.min(MAX_UNBRACED, userLength + 2);
+  endLength = (userLength === 0) ? (MAX_UNBRACED - 1) : Math.min(MAX_UNBRACED - 1, userLength + 2);
 
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
@@ -168,7 +170,7 @@ function updateVisual(){
 
 function calculateSpecialProperties(beams, options){
   var startLength = START_LENGTH || 0;
-  var endLength = 61;
+  var endLength = MAX_UNBRACED;
   var maxMoment = !!USER_MOMENT_MAX ? Math.max(1, USER_MOMENT_MAX) : Infinity;
   var minMoment = !!USER_MOMENT_MIN ? Math.min(13000, USER_MOMENT_MIN) : 0;
   var maxWeight = !!USER_WEIGHT_MAX ? Math.max(8, USER_WEIGHT_MAX) : Infinity;

@@ -1,5 +1,5 @@
 /*Color pallett inspired by */
-@import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url(https://fonts.googleapis.com/css?family=Catamaran);
 
 html {
   -webkit-box-sizing: border-box;
@@ -7,7 +7,7 @@ html {
   box-sizing: border-box;
 }
 *, *:before, *:after {
-  font-family: 'Roboto', sans-serif;
+  font-family: sans-serif;
   -webkit-box-sizing: inherit;
   -moz-box-sizing: inherit;
   box-sizing: inherit;
@@ -16,45 +16,37 @@ html {
 body {
   font: 10px sans-serif;
   margin: 0;
-  background-color: #26323C;
-  color: #FEFFFF;
+  background-color: white;
 }
 
 #nav-bar {
+  font-family: 'Catamaran', sans-serif;
   height: 40px;
-  background: #FEFFFF;
-  padding: 20px 20px 60px 20px;
+  background: #222735;
+  padding: 20px 20px 50px 20px;
   font-size: 24px;
-  color: #20B7C4;
+  color: #60677D;
 }
 
 .link {
   vertical-align: top;
   font-size: 14px;
   text-decoration: none;
-  color: #9AAAAE;
+  color: #60677D;
 }
 
 .link.about {
   float: right;
 }
-.link:visited {color: #9AAAAE;}
+.link:visited {color: #60677D;}
 .link:hover {color: #20B7C4;}
-.link:active {color: #9AAAAE;}
-
-.btn {
-  position: absolute;
-  text-decoration: none;
-  background-color: crimson;
-  color: #FEFFFF;
-  padding: 2px 6px 2px 6px;
-}
+.link:active {color: #60677D;}
 
 #top-container,
 #middle-container,
 #bottom-container,
 #bottom-row {
-  border: 1px solid RGBA(100, 100, 255, 0.5);
+  /*border: 1px solid red;*/
 }
 
 text {
@@ -68,18 +60,6 @@ text {
   shape-rendering: crispEdges;
 }
 
-#bottom-container .axis.x path {
-  stroke: none;
-}
-
-#bottom-right .axis path {
-  stroke: none;
-}
-#bottom-right .axis.y .tick {
-  fill-opacity: 0.40;
-  stroke-opacity: 0.40;
-}
-
 .voronoi {
   fill: none;
   stroke: pink;
@@ -88,13 +68,13 @@ text {
 }
 
 path.beam--hover {
-  stroke: crimson;
+  stroke: #2AC8E7;
   stroke-width: 6px;
   stroke-opacity: 1;
 }
 
 .bar {
-  fill: crimson;
+  fill: #2AC8E7;
 }
 
 .w-group.m {
@@ -117,11 +97,11 @@ input {
 #right-column {
   float: left;
   vertical-align: top;
-  border: 1px solid RGBA(184, 103, 130, 0.5);
-  background-color: #26323C;
+  /*border: 1px solid pink;*/
+  background-color: #FEFEFE;
 }
 .covers {
-  fill: #26323C;
+  fill: #FEFEFE;
 }
 
 #left-column {
@@ -134,22 +114,63 @@ input {
 
 
 #top-container {
-  background-color: #374049;
-  padding: 10px 20px;
+  background-color: #222735;
+  padding: 0 30px 30px 20px;
   border-radius: 0 0 40px 0;
+}
+#middle-container {
+  background-color: #373E4E;
+  padding: 5px 30px 10px 10px;
+  border-radius: 0 0 40px 0;
+  position: relative;
+  transition: height 1s ease-in;
+}
+.concave {
+  background-color: #373E4E;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  right: 0;
+  top: -40px;
+}
+.concave::after {
+  content: '';
+  background-color: #222735;
+  position: absolute;
+  border-radius: 40px;
+  width: 80px;
+  height: 80px;
+  top: -40px;
+  left: -40px;
+}
+.convex {
+  background-color: #222735;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  left: 0;
+  top: 0;
+}
+.convex::after {
+  content: '';
+  background-color: white;
+  position: absolute;
+  border-radius: 40px;
+  width: 80px;
+  height: 80px;
+  top: 0px;
+  left: 0px;
 }
 
 .header-container {
   display: inline-block;
   width: 36%;
-  vertical-align: top;
+  text-align: center;
+  color: #3C4254;
+  font-size: 18px;
 }
 
-h2 {
-  margin: 0;
-  color: #08A5A3;
-}
-h2 .units {
+.units {
   font-size: 10px;
   vertical-align: top;
 }
@@ -160,143 +181,125 @@ h2 .units {
 
 #match-list-table {
   width: 100%;
+  font-weight: 400;
 }
 #match-list-table td {
-  padding: 2px;
+  padding: 10px;
 }
 #match-list-table .efficient-beam {
   text-align: center;
 }
+
+#match-list-table tr td:first-child {
+  color: #60677D;
+  font-size: 16px;
+  text-align: center;
+  padding: 0;
+  -ms-transform:rotate(270deg); /* IE 9 */
+  -moz-transform:rotate(270deg); /* Firefox */
+  -webkit-transform:rotate(270deg); /* Safari and Chrome */
+  -o-transform:rotate(270deg); /* Opera */
+}
 #match-list-table .primary {
-  padding: 10px 15px;
+  padding: 10px;
+  /*background-color: white;*/
   border-radius: 10px 10px 0 0;
-  background-color: crimson;
-  box-shadow: 0 0 20px rgba(46, 59, 125, 0.23);
+  border: 1px solid #222735;
+  border-bottom: none;
+  color: #60677D;
+  /*box-shadow: 0 0 20px rgba(46, 59, 125, 0.23);*/
   font-size: 14px;
+}
+#match-list-table .best-beam .primary {
+  padding: 15px;
+  font-size: 20px;
+  border: 0.5px solid #60677D;
+  border-bottom: none;
+  color: #60677D;
 }
 #match-list-table .secondary {
   padding: 5px;
-  background-color: gray;
+  background-color: #222735;
+  color: #60677D;
   border-radius: 0 0 10px 10px;
-  letter-spacing: 2px;
-  box-shadow: 0 0 20px rgba(46, 59, 125, 0.23);
+  /*box-shadow: 0 0 20px rgba(46, 59, 125, 0.23);*/
   font-size: 12px;
-}
-
-#match-list-table .best-beam .primary {
-  padding: 10px 25px;
-  font-size: 18px;
+  letter-spacing: 2px;
 }
 #match-list-table .best-beam .secondary {
-  padding: 10px;
+  background-color: #60677D;
+  color: #222735;
   font-size: 14px;
+  padding: 10px;
+  letter-spacing: 3px;
 }
 
 
+/*AXES */
+  /*Hide the axis*/
+  #bottom-container .x.axis path {
+    stroke: none;
+  }
+  #bottom-container .x.axis line {
+    stroke: none;
+    /*opacity: 0.4;*/
+  }
 
+  /*minimap*/
+  #bottom-row .x.axis .tick {
+    stroke-width: 1px;
+    stroke-dasharray: 2;
+  }
+  /*hide the horizontal line of x axis*/
+  #bottom-row .x.axis .domain {
+    stroke: none;
+  }
 
-/*inputs credit http://codepen.io/tutsplus/pen/epYVoj*/
+/*INPUTS FOR VIS*/
+.header-container {
+  font-family: 'Catamaran', sans-serif;
+}
 .input-container {
-  vertical-align: top;
   display: inline-block;
-  padding-top: 10px;
-  padding-bottom: 20px;
+  padding: 0 10px;
   width: 28%;
-  max-width: 140px;
+  /*max-width: 140px;*/
+}
+.filter-category .input-container .min{
+  text-align: right;
+}
+.filter-category .input-container .max{
+  text-align: left;
 }
 
-.input-container.first {
-  margin-right: 20px;
+.filter-category.length .header-container {
+  text-align: left;
+}
+.filter-category.length .input-container {
+  width: 56%;
+}
+.filter-category.length .input-container .input-item{
+  text-align: right;
 }
 
-.input-container .material-input {
-  position: relative;
-}
-.input-container .material-input input {
+.input-container .input-item{
+  width: 100%;
+  font-size: 32px;
+  color: #2AC8E7;
   background-color: transparent;
-}
-.input-container .material-input label {
-  color: #999;
-  font-size: 13px;
-  position: absolute;
-  pointer-events: none;
-  top: 10px;
-  transition: 0.2s ease all;
-  width: 100%;
-}
-.input-container .material-input input:not([type]),
-.input-container .material-input input[type=text],
-.input-container .material-input input[type=number] {
-  color: #333;
-  font-size: 13px;
-  padding: 10px 10px 10px 0;
-  position: relative;
-  display: block;
-  width: 100%;
   border: none;
-  border-bottom: 1px solid #d5d5d5;
+  text-align: center;
 }
-.input-container .material-input input:not([type]):focus,
-.input-container .material-input input[type=text]:focus,
-.input-container .material-input input[type=number]:focus {
+.input-container input:focus {
   outline: none;
 }
-.input-container .material-input input:not([type]):focus + label,
-.input-container .material-input input[type=text]:focus + label,
-.input-container .material-input input[type=number]:focus + label,
-.input-container .material-input input:not([type]):valid + label,
-.input-container .material-input input[type=text]:valid + label,
-.input-container .material-input input[type=number]:valid + label {
-  top: -10px;
-  font-size: 10px;
-  color: #42b68a;
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
-.input-container .material-input input:not([type]):focus ~ .bar:before,
-.input-container .material-input input[type=text]:focus ~ .bar:before,
-.input-container .material-input input[type=number]:focus ~ .bar:before,
-.input-container .material-input input:not([type]):focus ~ .bar:after,
-.input-container .material-input input[type=text]:focus ~ .bar:after,
-.input-container .material-input input[type=number]:focus ~ .bar:after,
-.input-container .material-input input:not([type]):valid ~ .bar:before,
-.input-container .material-input input[type=text]:valid ~ .bar:before,
-.input-container .material-input input[type=number]:valid ~ .bar:before,
-.input-container .material-input input:not([type]):valid ~ .bar:after,
-.input-container .material-input input[type=text]:valid ~ .bar:after,
-.input-container .material-input input[type=number]:valid ~ .bar:after {
-  width: 50%;
-  background: #42b68a;
-  border-bottom: 0px;
-}
-.input-container .material-input .bar {
-  position: relative;
-  display: block;
-  width: 100%;
-}
-.input-container .material-input .bar:before,
-.input-container .material-input .bar:after {
-  content: '';
-  height: 2px;
-  width: 0;
-  position: absolute;
-  bottom: 0.5px;
-  background: #42b68a;
-  transition: 0.2s ease all;
-  -moz-transition: 0.2s ease all;
-  -webkit-transition: 0.2s ease all;
-}
-.input-container .material-input .bar:before {
-  left: 50%;
-}
-.input-container .material-input .bar:after {
-  right: 50%;
-}
-.input-container .material-input .bar + label:after {
-  display: block;
-  content: "";
-  position: absolute;
-  top: 65px;
-  opacity: 0;
-  transition: 0.2s opacity ease-out, 0.2s color ease-out;
-  -moz-transition: 0.2s opacity ease-out, 0.2s color ease-out;
-  -webkit-transition: 0.2s opacity ease-out, 0.2s color ease-out;
+
+.input-container input::-webkit-input-placeholder {
+  color: #3C4254;
+  font-family: 'Catamaran', sans-serif;
 }

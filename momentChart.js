@@ -1,6 +1,6 @@
 var BEAM_SIZE_FONT_SIZE = 42;
 
-var mMargin = {top: 20, right: 30, bottom: 30, left: 40},
+var mMargin = {top: 20, right: 30, bottom: 0, left: 50},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
     mHeight = RIGHT_ROW_1_HEIGHT - mMargin.top - mMargin.bottom - 10;
 
@@ -17,7 +17,7 @@ var mVoronoi = d3.geom.voronoi()
 
 var mXAxis = d3.svg.axis()
     .scale(mx0)
-    .orient('bottom');
+    .orient('top');
 
 var mYAxis = d3.svg.axis()
     .scale(my0)
@@ -34,7 +34,7 @@ var mSvg = d3.select('#top-row').append('svg')
     .attr('transform', 'translate(' + mMargin.left + ',' + mMargin.top + ')');
 
 function initializeMomentChart(){
-  mx0.domain([0, MAX_UNBRACED]);
+  mx0.domain([0, MAX_UNBRACED - 1]);
   my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
   // Actual line chart
@@ -280,11 +280,11 @@ function mUpdateWeight() {
 }
 
 function mFilterOpacity(d){
-  return validateBeam(d, {valid: 0.5, invalid: 0.09, nullState: 0.09});
+  return validateBeam(d, {valid: 0.8, invalid: 0.09, nullState: 0.09});
 }
 
 function mFilterStroke(d){
-  return validateBeam(d, {valid: '#00A1DC'});
+  return validateBeam(d, {valid: '#60677D'});
 }
 
 function mFilterStrokeWidth(d){

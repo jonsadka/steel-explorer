@@ -55,9 +55,9 @@ function showBeamProfile(d){
 
   var rectangles = [
     // FIRST ARGUMENT IN offsetX SHIFTS FROM LEFT ALIGNED TO RIGHT ALIGNED
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: 'crimson', opacity: 1},
-    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: 'crimson', opacity: 1},
-    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: 'crimson', opacity: 1}
+    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: CUSTOM_WHITE, opacity: 1},
+    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: CUSTOM_WHITE, opacity: 1},
+    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: CUSTOM_WHITE, opacity: 1}
   ];
 
   var annotationTWeb = [
@@ -96,7 +96,7 @@ function showBeamProfile(d){
       .attr('width', function(d){ return px(d.width);})
       .attr('height', function(d){ return py(d.height);})
       .attr('fill', function(d){ return d.fill || 'none';})
-      .attr('stroke', function(d){ return d.stroke || 'crimson';})
+      .attr('stroke', function(d){ return d.stroke || CUSTOM_WHITE;})
       .attr('pointer-events', 'none')
       .attr('stroke-width', 1)
       .attr('opacity', function(d, i){ return d.opacity || 0;})

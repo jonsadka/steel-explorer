@@ -1,98 +1,66 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
   <div id="nav-bar">
-    Pure Steel
+    Steel Explorer
     <a class="link" href="http://jonsadka.com/" target="_blank">Jon Sadka</a>
     <a class="link about" href="http://jonsadka.com/" target="_blank">About</a>
   </div>
   <div id="charts">
     <div id="left-column">
       <div id="top-container">
-<!--         <h2>Units</h2>
+<!--         Units
         <div>
           <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
           <label><input type="radio" name="mode" value="ASD">ASD</label>
         </div> -->
         <div class="filter-category">
-          <div class="header-container">
-            <h2>Moment <span class="units">k-ft</span></h2>
-            <p>Moments in LRFD</p>
+          <div class="input-container">
+            <input class="input-item min" type="number" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Min">
           </div>
-          <div class="input-container first">
-            <div class="material-input">
-              <input class="input-item" type="number" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" required>
-              <label>Min</label>
-              <span class="bar"></span>
-            </div>
+          <div class="header-container">
+            Moment <span class="units">k-ft</span>
           </div>
           <div class="input-container">
-            <div class="material-input">
-              <input class="input-item" type="number" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" required>
-              <label>Max</label>
-              <span class="bar"></span>
-            </div>
+            <input class="input-item max" type="number" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Max">
           </div>
         </div>
 
         <div class="filter-category">
-          <div class="header-container">
-            <h2>Weight <span class="units">plf</span></h2>
-            <p>Force on the beam due to gravity</p>
+          <div class="input-container">
+            <input class="input-item min" type="number" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Min">
           </div>
-          <div class="input-container first">
-            <div class="material-input">
-              <input class="input-item" type="number" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" required>
-              <label>Min</label>
-              <span class="bar"></span>
-            </div>
+          <div class="header-container">
+            Weight <span class="units">plf</span>
           </div>
           <div class="input-container">
-            <div class="material-input">
-              <input class="input-item" type="number" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" required>
-              <label>Max</label>
-              <span class="bar"></span>
-            </div>
+            <input class="input-item max" type="number" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Max">
           </div>
         </div>
 
         <div class="filter-category">
-          <div class="header-container">
-            <h2>I<sub>x</sub><span class="units"> in<sup>4</sup></span></h2>
-            <p>Moment of inertia</p>
+          <div class="input-container">
+            <input class="input-item min" type="number" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Min">
           </div>
-          <div class="input-container first">
-            <div class="material-input">
-              <input class="input-item" type="number" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" required>
-              <label>Min</label>
-              <span class="bar"></span>
-            </div>
+          <div class="header-container">
+            I<sub>x</sub><span class="units"> in<sup>4</sup></span>
           </div>
           <div class="input-container">
-            <div class="material-input">
-              <input class="input-item" type="number" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" required>
-              <label>Max</label>
-              <span class="bar"></span>
-            </div>
+            <input class="input-item max" type="number" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max">
           </div>
         </div>
 
-        <div class="filter-category">
-          <div class="header-container">
-            <h2>Length<span class="units"> ft</span></h2>
-            <p>Extent of beam from end to end</p>
+        <div class="filter-category length">
+          <div class="input-container">
+            <input class="input-item" type="number" id="length-input" min="0" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" placeholder="Unbraced">
           </div>
-          <div class="input-container first">
-            <div class="material-input">
-              <input class="input-item" type="number" id="length-input" min="1000" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" required>
-              <label>Unbraced</label>
-              <span class="bar"></span>
-            </div>
+          <div class="header-container">
+            Length<span class="units"> ft</span>
           </div>
         </div>
       </div>
 
       <div id="middle-container">
-        <h1>Efficient beams</h1>
+        <div class="concave"></div>
       </div>
       <div id="bottom-container">
         <h3>Need a color scale</h3>
@@ -100,6 +68,7 @@
     </div>
     <div id="right-column">
       <div id="top-row">
+        <div class="convex"></div>
 <!--         <a class="btn">Delta goes here</a>
         <a class="btn">Mn</a> -->
       </div>
@@ -109,8 +78,8 @@
   </div>
 <body>
 <link rel="stylesheet" type="text/css" href="style.css"/>
-<!-- <script src="./node_modules/d3/d3.js"></script> -->
-<script src="//d3js.org/d3.v3.js"></script>
+<script src="./node_modules/d3/d3.js"></script>
+<!-- <script src="//d3js.org/d3.v3.js"></script> -->
 <script src="./index.js"></script>
 <script src="./colorbrewer.min.js"></script>
 <script src="./matchList.js"></script>

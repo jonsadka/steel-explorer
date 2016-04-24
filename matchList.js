@@ -1,4 +1,4 @@
-var MATCHES_SHOWN = 5;
+var MATCHES_SHOWN = 3;
 
 function initializeMatchList(){
   var container = document.getElementById('middle-container'),
@@ -16,21 +16,21 @@ function initializeMatchList(){
 
   var tr = table.insertRow();
   var td = tr.insertCell();
-  td.appendChild(document.createTextNode('By weight'));
+  td.appendChild(document.createTextNode('Weight'));
   for(var i = 0; i < MATCHES_SHOWN; i++){
     var td = tr.insertCell();
     var beam = wByWeight[i];
-    td.appendChild(createDiv('<div class="primary">' + beam.W + 'plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div>'));
+    td.appendChild(createDiv('<div class="primary">' + beam.W + ' plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div>'));
     if (i === 0){ td.setAttribute('class', 'best-beam');}
   }
 
   var tr = table.insertRow();
   var td = tr.insertCell();
-  td.appendChild(document.createTextNode('By depth'));
+  td.appendChild(document.createTextNode('Depth'));
   for(var i = 0; i < MATCHES_SHOWN; i++){
     var td = tr.insertCell();
     var beam = wByDepth[i];
-    td.appendChild(createDiv('<div class="primary">' + beam.d + 'in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div>'));
+    td.appendChild(createDiv('<div class="primary">' + beam.d + ' in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div>'));
     if (i === 0){ td.setAttribute('class', 'best-beam');}
   }
   container.appendChild(table);
@@ -56,12 +56,12 @@ function updateMatchList(){
       if (i === 0){
         var beam = sortedBeams.weight[j];
         if (beam){
-          cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.W + 'plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
+          cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.W + ' plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
         } else {cell.innerHTML = '';}
       } else{
         var beam = sortedBeams.depth[j];
         if (beam){
-          cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.d + 'in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
+          cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.d + ' in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
         } else {cell.innerHTML = '';}
       }
     }

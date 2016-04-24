@@ -1,4 +1,4 @@
-var dMargin = {top: 20, right: 30, bottom: 20, left: 40},
+var dMargin = {top: 0, right: 30, bottom: 20, left: 50},
     dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
     dHeight = RIGHT_ROW_2_HEIGHT - dMargin.top - dMargin.bottom - 10;
 
@@ -15,12 +15,15 @@ var dVoronoi = d3.geom.voronoi()
 
 var dXAxis = d3.svg.axis()
     .scale(dx0)
-    .orient('top');
+    .tickSize(dHeight)
+    .tickFormat(function(d) { return d + ' plf'; })
+    .tickPadding(-8)
+    .orient('bottom');
 
-var dYAxis = d3.svg.axis()
-    .scale(dy0)
-    .tickValues([0, 25, 50])
-    .orient('left');
+// var dYAxis = d3.svg.axis()
+//     .scale(dy0)
+//     .tickValues([0, 25, 50])
+//     .orient('left');
 
 var dSvg = d3.select('#bottom-row').append('svg')
     .attr('width', dWidth + dMargin.left + dMargin.right)
@@ -64,21 +67,20 @@ function initializeDistributionChart(){
       .attr('class', 'x axis d')
       .attr('transform', 'translate(0,' + 0 + ')')
       .call(dXAxis)
-    .append('text')
-      .attr('y', 12)
-      .attr('x', dWidth)
-      .style('text-anchor', 'end')
-      .text('Weight (plf.)');
+    .selectAll('text')
+      .attr('x', 6)
+      .style('text-anchor', 'start');
 
-  dSvg.append('g')
-      .attr('class', 'y axis d')
-      .call(dYAxis)
-    .append('text')
-      .attr('transform', 'rotate(-90), translate(' + (-dHeight + dMargin.bottom + dMargin.top) + ',0)')
-      .attr('y', 6)
-      .attr('dy', '.71em')
-      .style('text-anchor', 'end')
-      .text('Depth (in)');
+
+  // dSvg.append('g')
+  //     .attr('class', 'y axis d')
+  //     .call(dYAxis)
+  //   .append('text')
+  //     .attr('transform', 'rotate(-90), translate(' + (-dHeight + dMargin.bottom + dMargin.top) + ',0)')
+  //     .attr('y', 6)
+  //     .attr('dy', '.71em')
+  //     .style('text-anchor', 'end')
+  //     .text('Depth (in)');
 
   // Voronoi chart for hover effects
   var voronoiGroup = dSvg.append('g')
@@ -110,7 +112,7 @@ function highlightBeamDistribution(d){
   dSvg.select('.focus').select('text').text(beam.AISC_Manual_Label);
 
   dSvg.select('rect.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', 'crimson')
+    .attr('fill', CUSTOM_WHITE)
     .attr('rx', 3)
     .attr('width', 2)
     .attr('opacity', 1)
@@ -120,12 +122,12 @@ function highlightBeamDistribution(d){
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
     .attr('opacity', 1)
-    .attr('fill', 'crimson')
+    .attr('fill', CUSTOM_WHITE)
     .attr('cx', function(d){ return dx0(+d.W) + 1; })
     .attr('r', 1.75)
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', 'crimson')
+    .attr('fill', CUSTOM_WHITE)
     .attr('cx', function(d){ return dx0(+d.W) + 1; })
     .attr('r', 4)
 }
