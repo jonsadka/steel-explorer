@@ -2,7 +2,7 @@ var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
 var MAX_UNBRACED = 41; // ft
-var UNBRACED_STEP = 1; // ft
+var UNBRACED_STEP = 2; // ft
 var TRANSITION_TIME = 1400; // ms
 
 // User inputs
