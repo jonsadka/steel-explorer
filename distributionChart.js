@@ -32,7 +32,7 @@ var dSvg = d3.select('#bottom-row').append('svg')
     .attr('transform', 'translate(' + dMargin.left + ',' + dMargin.top + ')');
 
 function initializeDistributionChart(){
-  dx0.domain([0, 800]);
+  dx0.domain([0, 780]);
   dy0.domain([50, 0]);
 
   var beams = Object.keys(W_BEAMS_MAP).map(function(shape){ return W_BEAMS_MAP[shape]; }).reverse();
@@ -112,7 +112,7 @@ function highlightBeamDistribution(d){
   dSvg.select('.focus').select('text').text(beam.AISC_Manual_Label);
 
   dSvg.select('rect.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', CUSTOM_WHITE)
+    .attr('fill', CUSTOM_GREEN)
     .attr('rx', 3)
     .attr('width', 2)
     .attr('opacity', 1)
@@ -122,14 +122,15 @@ function highlightBeamDistribution(d){
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
     .attr('opacity', 1)
-    .attr('fill', CUSTOM_WHITE)
+    .attr('fill', CUSTOM_GREEN_DARK)
     .attr('cx', function(d){ return dx0(+d.W) + 1; })
-    .attr('r', 1.75)
+    .attr('stroke-width', 1)
+    .attr('r', 2)
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', CUSTOM_WHITE)
+    .attr('fill', CUSTOM_GREEN_DARK)
     .attr('cx', function(d){ return dx0(+d.W) + 1; })
-    .attr('r', 4)
+    .attr('r', 5)
 }
 
 function removeBeamDistribution(d){

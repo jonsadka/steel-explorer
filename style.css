@@ -37,6 +37,7 @@ body {
 
 .link.about {
   float: right;
+  padding-right: 46px;
 }
 .link:visited {color: #60677D;}
 .link:hover {color: #20B7C4;}
@@ -68,7 +69,7 @@ text {
 }
 
 path.beam--hover {
-  stroke: #2AC8E7;
+  stroke: #81BC00;
   stroke-width: 6px;
   stroke-opacity: 1;
 }
@@ -119,14 +120,14 @@ input {
   border-radius: 0 0 40px 0;
 }
 #middle-container {
-  background-color: #373E4E;
+  background-color: #F6F6F6;
   padding: 5px 30px 10px 10px;
   border-radius: 0 0 40px 0;
   position: relative;
   transition: height 1s ease-in;
 }
 .concave {
-  background-color: #373E4E;
+  background-color: #F6F6F6;
   position: absolute;
   width: 40px;
   height: 40px;
@@ -146,8 +147,8 @@ input {
 .convex {
   background-color: #222735;
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 15px;
+  height: 15px;
   left: 0;
   top: 0;
 }
@@ -155,9 +156,9 @@ input {
   content: '';
   background-color: white;
   position: absolute;
-  border-radius: 40px;
-  width: 80px;
-  height: 80px;
+  border-radius: 15px;
+  width: 30px;
+  height: 30px;
   top: 0px;
   left: 0px;
 }

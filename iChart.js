@@ -16,7 +16,7 @@ var iVoronoi = d3.geom.voronoi()
 // Color in Ix per W
 // console.log(colorbrewer)
 var colorScale = d3.scale.quantize()
-  .range(['#3ca0a0','#4aa6a7','#59abae','#66b1b4','#75b6bc','#85bbc2','#9abfc5','#b4c2c5','#c0c7c8','#cacccd','#d3d3d3'])
+  .range(['#45accf','#d6a36f','#fa8148','#ee3d63'])
 
 var iXAxis = d3.svg.axis()
     .scale(ix0)
@@ -67,10 +67,10 @@ function initializeIChart(){
       .call(iYAxis)
     .append('text')
       .attr('transform', 'rotate(-90)')
-      .attr('y', 6)
+      .attr('y', -14)
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
-      .text('Ix (in^4)');
+      .text('Ix');
 
   // Voronoi chart for hover effects
   var voronoiGroup = iSvg.append('g')
@@ -193,7 +193,7 @@ function highlightBeamI(d) {
   var wGroup = iSvg.select('.w-group.I.' + section)
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(beam.W))
 
-  wBeam.attr('fill', CUSTOM_WHITE)
+  wBeam.attr('fill', CUSTOM_GREEN_DARK)
     .attr('height', 3)
     .transition().duration(50)
     .attr('width', ix0(section) + ix0.rangeBand())
@@ -201,15 +201,15 @@ function highlightBeamI(d) {
 
   var format = d3.format(',');
   wGroup.append('text')
-    .text(format(+beam.Ix))
+    .text(format(+beam.Ix) + ' in⁴')
     .attr('class', function(d){ return 'w-beam value X' + beam.W;})
-    .attr('x', ix0(section) - 9)
-    .attr('fill', CUSTOM_WHITE)
+    .attr('x', ix0(section) - 4)
+    .attr('fill', CUSTOM_GREEN_DARK)
     .attr('y', function(d){ return iy0(+beam.Ix); })
     .attr('alignment-baseline', 'middle')
     .transition().duration(50)
     .attr('text-anchor', 'end')
-    .attr('x', -9)
+    .attr('x', -4)
 }
 
 function iMouseover(d) {

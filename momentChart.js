@@ -1,6 +1,6 @@
 var BEAM_SIZE_FONT_SIZE = 42;
 
-var mMargin = {top: 20, right: 30, bottom: 0, left: 50},
+var mMargin = {top: 18, right: 60, bottom: 0, left: 50},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
     mHeight = RIGHT_ROW_1_HEIGHT - mMargin.top - mMargin.bottom - 10;
 
@@ -294,7 +294,7 @@ function mFilterStrokeWidth(d){
 function mMouseover(d) {
   // wBeam.parentNode.appendChild(wBeam);
   mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
-  mSvg.select('.focus').select('text').text(d.length + ' ft., ' + Math.round(d.Mn * PHI * 10) / 10 + ' k-ft.');
+  mSvg.select('.focus').select('text').text(d.length + ' ft., ' + Math.round(d.Mn * PHI * 100 / 100) + ' k-ft.');
   showBeamDetails(d);
   showBeamProfile(d);
   highlightBeamI(d);
@@ -309,7 +309,7 @@ function showBeamDetails(d){
   mSvg.append('text')
     .text(d.AISC_Manual_Label)
     .attr('class', 'beam-text ' + d.AISC_Manual_Label)
-    .attr('x', mWidth - mMargin.left)
+    .attr('x', mWidth)
     .attr('y', mMargin.top * 2)
     .style('font-size', BEAM_SIZE_FONT_SIZE)
     .attr('opacity', 0.3)

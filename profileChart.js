@@ -55,9 +55,9 @@ function showBeamProfile(d){
 
   var rectangles = [
     // FIRST ARGUMENT IN offsetX SHIFTS FROM LEFT ALIGNED TO RIGHT ALIGNED
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: CUSTOM_WHITE, opacity: 1},
-    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: CUSTOM_WHITE, opacity: 1},
-    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: CUSTOM_WHITE, opacity: 1}
+    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: CUSTOM_GREEN, opacity: 1},
+    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: CUSTOM_GREEN, opacity: 1},
+    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: CUSTOM_GREEN, opacity: 1}
   ];
 
   var annotationTWeb = [
@@ -88,7 +88,7 @@ function showBeamProfile(d){
   mSvg.selectAll('.w-group.selected-beam.profile')
       .data(drawings)
     .enter().append('rect')
-      .attr('transform', 'translate(' + (mWidth - mMargin.left - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+      .attr('transform', 'translate(' + (mWidth - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
       .attr('class', function(d){ return 'w-group selected-beam profile ' + escapeCharacter(beam.AISC_Manual_Label); })
       .attr('x', function(d){ return px(d.offsetX);})
       .attr('rx', 2)
@@ -96,7 +96,7 @@ function showBeamProfile(d){
       .attr('width', function(d){ return px(d.width);})
       .attr('height', function(d){ return py(d.height);})
       .attr('fill', function(d){ return d.fill || 'none';})
-      .attr('stroke', function(d){ return d.stroke || CUSTOM_WHITE;})
+      .attr('stroke', function(d){ return d.stroke || CUSTOM_GREEN;})
       .attr('pointer-events', 'none')
       .attr('stroke-width', 1)
       .attr('opacity', function(d, i){ return d.opacity || 0;})
@@ -107,7 +107,7 @@ function showBeamProfile(d){
       .data(drawings)
     .enter()
     .append('text')
-      .attr('transform', 'translate(' + (mWidth - mMargin.left - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+      .attr('transform', 'translate(' + (mWidth - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
       .attr('class', function(d){ return 'w-group selected-beam text ' + escapeCharacter(beam.AISC_Manual_Label); })
       .text(function(d){
         if (d.text === 'tf') return 't';

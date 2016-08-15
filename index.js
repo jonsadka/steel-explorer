@@ -1,8 +1,8 @@
 var DEFAULT_Fy = 50; // ksi
 var DEFAULT_E = 29000; // ksi
 var DEFAULT_Cb = 1; //
-var MAX_UNBRACED = 41; // ft
-var UNBRACED_STEP = 2; // ft
+var MAX_UNBRACED = 31; // ft
+var UNBRACED_STEP = 1; // ft
 var TRANSITION_TIME = 1400; // ms
 
 // User inputs
@@ -32,7 +32,12 @@ var W_BEAMS_FILTERED = [];
 var SPECIAL = null;
 var PHI = 0.9;
 
-var CUSTOM_WHITE = '#20B7C4';
+var CUSTOM_BLUE = '#45ACCF';
+var CUSTOM_GRAY = '#F6F6F6';
+var CUSTOM_GREEN = '#B7D84B';
+var CUSTOM_GREEN_DARK = '#83B329';
+var CUSTOM_ORANGE = '#FF9C34';
+var CUSTOM_RED = '#EE3D63';
 
 // HACK
 (function(){
@@ -53,10 +58,10 @@ var CUSTOM_WHITE = '#20B7C4';
     SPECIAL = calculateSpecialProperties(W_BEAMS, {});
 
     initializeMatchList();
-    initializeDistributionChart();
     initializeIChart();
-    initializeMomentChart();
     initializeProfileChart();
+    initializeMomentChart();
+    initializeDistributionChart();
   });
 })();
 
