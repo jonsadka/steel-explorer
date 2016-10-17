@@ -18,7 +18,7 @@ var USER_I_MIN = null;
 var CHARTS_HEIGHT = window.innerHeight - document.getElementById('nav-bar').offsetHeight;
 var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight;
 var LEFT_ROW_2_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.30;
-var LEFT_ROW_3_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.70;
+var LEFT_ROW_3_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.60;
 var RIGHT_ROW_1_HEIGHT = 0.8 * CHARTS_HEIGHT;
 var RIGHT_ROW_2_HEIGHT = 0.2 * CHARTS_HEIGHT;
 // WIDTHS
@@ -34,13 +34,22 @@ var PHI = 0.9;
 
 var CUSTOM_BLUE = '#45ACCF';
 var CUSTOM_GRAY = '#F6F6F6';
+var CUSTOM_GRAY_DARK = '#AFAFAF';
+var CUSTOM_GRAY_DARKER = '#818181';
+var CUSTOM_GRAY_DARKEST = '#515357';
 var CUSTOM_GREEN = '#B7D84B';
 var CUSTOM_GREEN_DARK = '#83B329';
 var CUSTOM_ORANGE = '#FF9C34';
 var CUSTOM_RED = '#EE3D63';
 
+// Color in Ix per W
+var COLOR_SCALE = null;
+
 // HACK
 (function(){
+  COLOR_SCALE = d3.scale.quantize()
+    .range([CUSTOM_GREEN_DARK, CUSTOM_GREEN, CUSTOM_GRAY_DARK, CUSTOM_ORANGE, '#f35c59']);
+
   d3.csv('data.csv', function(error, data) {
     if (error) throw error;
 
@@ -56,6 +65,12 @@ var CUSTOM_RED = '#EE3D63';
     W_BEAMS = beams.filter(isWSection);
     W_BEAMS.forEach(calculateProperties);
     SPECIAL = calculateSpecialProperties(W_BEAMS, {});
+
+    COLOR_SCALE.domain([
+      SPECIAL.IxPerW.Min,
+      SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2,
+      SPECIAL.IxPerW.Max
+    ]);
 
     initializeMatchList();
     initializeIChart();
@@ -167,6 +182,13 @@ function updateI() {
 function updateVisual(){
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
   filterBeams();
+
+  // Update color scale
+  COLOR_SCALE.domain([
+    SPECIAL.IxPerW.Min,
+    SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2,
+    SPECIAL.IxPerW.Max
+  ]);
 
   updateMatchList();
   mUpdateWeight();

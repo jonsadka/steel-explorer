@@ -49,9 +49,10 @@ function initializeMomentChart(){
       .attr('class', function(d){ return 'w-beam X' + d.W;})
       .attr('d', function(d){ return mLine(d.MnValues); })
       .attr('stroke-width', 0)
+      .attr('stroke', mFilterStroke)
       .attr('opacity', 1)
     .transition().delay(function(d, i){ return i * 80;})
-      .attr('opacity', 0.15)
+      .attr('opacity', 0.18)
       .attr('stroke-width', 1)
 
   // Voronoi chart for hover effects
@@ -284,7 +285,7 @@ function mFilterOpacity(d){
 }
 
 function mFilterStroke(d){
-  return validateBeam(d, {valid: '#60677D'});
+  return validateBeam(d, {valid: '#60677D', nullState: COLOR_SCALE(+d.Ix / +d.W)});
 }
 
 function mFilterStrokeWidth(d){
@@ -305,7 +306,9 @@ function showBeamDetails(d){
   var wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
   var wBeam = wGroup.select('.X' + escapeCharacter(d.W));
   wGroup.classed('group--hover', true);
-  wBeam.classed('beam--hover', true);
+  wBeam.classed('beam--hover', true)
+    .attr('opacity', 1);
+
   mSvg.append('text')
     .text(d.AISC_Manual_Label)
     .attr('class', 'beam-text ' + d.AISC_Manual_Label)
@@ -322,7 +325,8 @@ function removeBeamDetails(d){
   var wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
   var wBeam = wGroup.select('.X' + escapeCharacter(d.W));
   wGroup.classed('group--hover', false);
-  wBeam.classed('beam--hover', false);
+  wBeam.classed('beam--hover', false)
+    .attr('opacity', 0.18);
 }
 
 function mMouseout(d) {

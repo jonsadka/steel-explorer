@@ -109,10 +109,11 @@ function initializeDistributionChart(){
 function highlightBeamDistribution(d){
   beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   dSvg.select('.focus').attr('transform', 'translate(' +  (dx0(+beam.W) + 8) + ',' + (dy0(+beam.d) + dMargin.top) + ')');
-  dSvg.select('.focus').select('text').text(beam.AISC_Manual_Label);
+  dSvg.select('.focus').select('text').text(beam.d + '" deep' )
+    .attr('fill', CUSTOM_GRAY_DARKEST)
 
   dSvg.select('rect.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', CUSTOM_GREEN)
+    .attr('fill', CUSTOM_GRAY_DARKEST)
     .attr('rx', 3)
     .attr('width', 2)
     .attr('opacity', 1)
@@ -122,15 +123,15 @@ function highlightBeamDistribution(d){
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
     .attr('opacity', 1)
-    .attr('fill', CUSTOM_GREEN_DARK)
+    .attr('fill', CUSTOM_GRAY_DARKER)
     .attr('cx', function(d){ return dx0(+d.W) + 1; })
     .attr('stroke-width', 1)
-    .attr('r', 2)
+    .attr('r', 3)
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', CUSTOM_GREEN_DARK)
+    .attr('fill', CUSTOM_GRAY_DARKEST)
     .attr('cx', function(d){ return dx0(+d.W) + 1; })
-    .attr('r', 5)
+    .attr('r', 6)
 }
 
 function removeBeamDistribution(d){

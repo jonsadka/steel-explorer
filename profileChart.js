@@ -55,9 +55,9 @@ function showBeamProfile(d){
 
   var rectangles = [
     // FIRST ARGUMENT IN offsetX SHIFTS FROM LEFT ALIGNED TO RIGHT ALIGNED
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: CUSTOM_GREEN, opacity: 1},
-    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: CUSTOM_GREEN, opacity: 1},
-    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: CUSTOM_GREEN, opacity: 1}
+    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: CUSTOM_GRAY_DARK, opacity: 1},
+    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: CUSTOM_GRAY_DARK, opacity: 1},
+    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: CUSTOM_GRAY_DARK, opacity: 1}
   ];
 
   var annotationTWeb = [

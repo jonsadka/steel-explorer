@@ -69,9 +69,7 @@ text {
 }
 
 path.beam--hover {
-  stroke: #81BC00;
   stroke-width: 6px;
-  stroke-opacity: 1;
 }
 
 .bar {

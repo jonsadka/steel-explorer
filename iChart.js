@@ -13,11 +13,6 @@ var iVoronoi = d3.geom.voronoi()
   .y(function(d){ return iy0(+d.Ix); })
   .clipExtent([[0, 0], [iWidth, iHeight]]);
 
-// Color in Ix per W
-// console.log(colorbrewer)
-var colorScale = d3.scale.quantize()
-  .range(['#45accf','#d6a36f','#fa8148','#ee3d63'])
-
 var iXAxis = d3.svg.axis()
     .scale(ix0)
     .tickSize(-iHeight)
@@ -37,7 +32,6 @@ var iSvg = d3.select('#bottom-container').append('svg')
 function initializeIChart(){
   ix0.domain(W_BEAMS.map(function(d){ return d.key}));
   iy0.domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
-  colorScale.domain([SPECIAL.IxPerW.Min, SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2, SPECIAL.IxPerW.Max]);
 
   var wGroup = iSvg.selectAll('.w-group.I')
       .data(W_BEAMS, function(d) { return d.key; })
@@ -53,9 +47,12 @@ function initializeIChart(){
         return ix0(section);
       })
       .attr('y', function(d){ return iy0(+d.Ix); })
+      .attr('rx', 2)
+      .attr('ry', 2)
       .attr('width', ix0.rangeBand())
       .attr('height', 3)
-      .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
+      .attr('fill-opacity', 0.4)
+      .attr('fill', function(d){ return COLOR_SCALE(+d.Ix / +d.W); })
 
   iSvg.append('g')
       .attr('class', 'x axis I')
@@ -112,7 +109,7 @@ function iUpdateWeight() {
     .attr('y', function(d){ return iy0(+d.Ix); })
     .attr('width', ix0.rangeBand())
     .attr('height', 3)
-    .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
+    .attr('fill', function(d){ return COLOR_SCALE(+d.Ix / +d.W); })
 
   // Update scales only after the new dots have been entered
   ix0.domain(W_BEAMS_FILTERED.map(function(d){ return d.key;}));
@@ -124,9 +121,8 @@ function iUpdateWeight() {
     .call(iYAxis);
 
   // Transition dots into their places
-  colorScale.domain([SPECIAL.IxPerW.Min, SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2, SPECIAL.IxPerW.Max]);
   wBeams.transition().duration(500)
-    .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
+    .attr('fill', function(d){ return COLOR_SCALE(+d.Ix / +d.W); })
     .attr('opacity', iFilterOpacity);
 
   wBeams.transition().duration(TRANSITION_TIME).delay(500)
@@ -136,7 +132,7 @@ function iUpdateWeight() {
       return ix0(section);
     })
     .attr('y', function(d){ return iy0(+d.Ix); })
-    .attr('fill', function(d){ return colorScale(+d.Ix / +d.W); })
+    .attr('fill', function(d){ return COLOR_SCALE(+d.Ix / +d.W); })
 
   wBeams.exit().remove()
   wGroup.exit().remove()
@@ -160,7 +156,7 @@ function iUpdateWeight() {
 }
 
 function iFilterOpacity(d) {
-  var calculatedFill = colorScale(+d.Ix / +d.W);
+  var calculatedFill = COLOR_SCALE(+d.Ix / +d.W);
   return validateBeam(d, {valid: 1, invalid: 0});
 }
 
@@ -177,7 +173,8 @@ function removeHighlightBeamI(d) {
   wBeam.transition().duration(100)
     .attr('width', ix0.rangeBand())
     .attr('height', 3)
-    .attr('fill', colorScale(+beam.Ix / +d.W))
+    .attr('fill', COLOR_SCALE(+beam.Ix / +d.W))
+    .attr('fill-opacity', 0.4)
     .attr('x', function(){
       var section = d.AISC_Manual_Label.split('X')[0];
       return ix0(section);
@@ -193,18 +190,19 @@ function highlightBeamI(d) {
   var wGroup = iSvg.select('.w-group.I.' + section)
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(beam.W))
 
-  wBeam.attr('fill', CUSTOM_GREEN_DARK)
+  wBeam
     .attr('height', 3)
     .transition().duration(50)
     .attr('width', ix0(section) + ix0.rangeBand())
     .attr('x', 0)
+    .attr('fill-opacity', 1)
 
   var format = d3.format(',');
   wGroup.append('text')
     .text(format(+beam.Ix) + ' in⁴')
     .attr('class', function(d){ return 'w-beam value X' + beam.W;})
     .attr('x', ix0(section) - 4)
-    .attr('fill', CUSTOM_GREEN_DARK)
+    .attr('fill', COLOR_SCALE(+beam.Ix / +beam.W))
     .attr('y', function(d){ return iy0(+beam.Ix); })
     .attr('alignment-baseline', 'middle')
     .transition().duration(50)
