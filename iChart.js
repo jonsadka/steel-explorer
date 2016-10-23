@@ -1,6 +1,6 @@
-var iMargin = {top: 20, right: 27, bottom: 30, left: 52},
+var iMargin = {top: 20, right: 27, bottom: 35, left: 60},
     iWidth = LEFT_CHARTS_WIDTH - iMargin.left - iMargin.right,
-    iHeight = LEFT_ROW_3_HEIGHT - iMargin.top - iMargin.bottom - 10;
+    iHeight = LEFT_ROW_3_HEIGHT - iMargin.top - iMargin.bottom;
 
 var ix0 = d3.scale.ordinal()
     .rangeBands([iWidth, 0], .1);

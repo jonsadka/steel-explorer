@@ -15,10 +15,11 @@ var USER_I_MAX = null;
 var USER_I_MIN = null;
 
 // HEIGHTS
-var CHARTS_HEIGHT = window.innerHeight - document.getElementById('nav-bar').offsetHeight;
+var CHARTS_HEIGHT = window.innerHeight;
 var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight;
-var LEFT_ROW_2_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.30;
-var LEFT_ROW_3_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.60;
+var LEFT_ROW_2_HEIGHT = document.getElementById('middle-container').offsetHeight;
+// HACK: Figure out where this 20 px is coming from
+var LEFT_ROW_3_HEIGHT = CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT - LEFT_ROW_2_HEIGHT - 20;
 var RIGHT_ROW_1_HEIGHT = 0.8 * CHARTS_HEIGHT;
 var RIGHT_ROW_2_HEIGHT = 0.2 * CHARTS_HEIGHT;
 // WIDTHS

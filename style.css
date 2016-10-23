@@ -14,6 +14,7 @@ html {
 }
 
 body {
+  overflow-x: hidden;
   font: 10px sans-serif;
   margin: 0;
   background-color: white;
@@ -22,26 +23,23 @@ body {
 #nav-bar {
   font-family: 'Catamaran', sans-serif;
   height: 40px;
-  background: #222735;
   padding: 20px 20px 50px 20px;
-  font-size: 24px;
-  color: #60677D;
+  font-size: 32px;
+  color: #818181;
+}
+.title {
+  text-rendering: optimizeLegibility;
+  color: white;
 }
 
 .link {
   vertical-align: top;
   font-size: 14px;
-  text-decoration: none;
-  color: #60677D;
+  color: #AFAFAF;
 }
-
-.link.about {
-  float: right;
-  padding-right: 46px;
-}
-.link:visited {color: #60677D;}
-.link:hover {color: #20B7C4;}
-.link:active {color: #60677D;}
+.link:visited {color: #AFAFAF;}
+.link:hover {color: #83B329;}
+.link:active {color: #AFAFAF;}
 
 #top-container,
 #middle-container,
@@ -51,7 +49,8 @@ body {
 }
 
 text {
-  font: 10px sans-serif;
+  font: 12px sans-serif;
+  fill: #818181;
 }
 
 .axis path,
@@ -79,7 +78,7 @@ path.beam--hover {
 .w-group.m {
   fill: none;
   stroke-width: 1px;
-  stroke: gray;
+  stroke: #F6F6F6;
 }
 
 .w-group.I {
@@ -104,16 +103,16 @@ input {
 }
 
 #left-column {
-  width: 30%;
+  width: 35%;
 }
 
 #right-column {
-  width: 70%;
+  width: 65%;
 }
 
 
 #top-container {
-  background-color: #222735;
+  background-color: #DFDFDF;;
   padding: 0 30px 30px 20px;
   border-radius: 0 0 40px 0;
 }
@@ -134,7 +133,7 @@ input {
 }
 .concave::after {
   content: '';
-  background-color: #222735;
+  background-color: #DFDFDF;
   position: absolute;
   border-radius: 40px;
   width: 80px;
@@ -143,7 +142,7 @@ input {
   left: -40px;
 }
 .convex {
-  background-color: #222735;
+  background-color: #DFDFDF;
   position: relative;
   width: 15px;
   height: 15px;
@@ -165,7 +164,7 @@ input {
   display: inline-block;
   width: 36%;
   text-align: center;
-  color: #3C4254;
+  color: #F6F6F6;
   font-size: 18px;
 }
 
@@ -181,16 +180,19 @@ input {
 #match-list-table {
   width: 100%;
   font-weight: 400;
+  overflow-x: auto;
+  display: inline-block;
 }
 #match-list-table td {
-  padding: 10px;
+  padding: 10px 5px;
+  font-weight: 300
 }
 #match-list-table .efficient-beam {
   text-align: center;
 }
 
 #match-list-table tr td:first-child {
-  color: #60677D;
+  color: #818181;
   font-size: 16px;
   text-align: center;
   padding: 0;
@@ -201,39 +203,44 @@ input {
 }
 #match-list-table .primary {
   padding: 10px;
-  /*background-color: white;*/
-  border-radius: 10px 10px 0 0;
-  border: 1px solid #222735;
+  background-color: white;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #AFAFAF;
   border-bottom: none;
-  color: #60677D;
-  /*box-shadow: 0 0 20px rgba(46, 59, 125, 0.23);*/
+  color: #AFAFAF;
+  box-shadow: 0 0 20px rgba(129, 129, 129, 0.23);
   font-size: 14px;
+  letter-spacing: 1px;
 }
 #match-list-table .best-beam .primary {
-  padding: 15px;
-  font-size: 20px;
-  border: 0.5px solid #60677D;
+  letter-spacing: 2px;
+  padding: 12px;
+  font-size: 18px;
+  border: 0.5px solid #83B329;
   border-bottom: none;
-  color: #60677D;
+  color: #83B329;
 }
 #match-list-table .secondary {
   padding: 5px;
-  background-color: #222735;
-  color: #60677D;
-  border-radius: 0 0 10px 10px;
-  /*box-shadow: 0 0 20px rgba(46, 59, 125, 0.23);*/
+  background-color: #AFAFAF;
+  color: white;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 0 20px rgba(129, 129, 129, 0.23);
   font-size: 12px;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 #match-list-table .best-beam .secondary {
-  background-color: #60677D;
-  color: #222735;
-  font-size: 14px;
+  background-color: #83B329;
+  color: white;
+  font-size: 16px;
   padding: 10px;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
 }
 
-
+#match-list-table .best-beam .primary,
+#match-list-table .best-beam .secondary{
+  box-shadow: 0 0 20px rgba(183, 216, 75, 0.23);
+}
 /*AXES */
   /*Hide the axis*/
   #bottom-container .x.axis path {
@@ -283,8 +290,8 @@ input {
 
 .input-container .input-item{
   width: 100%;
-  font-size: 32px;
-  color: #2AC8E7;
+  font-size: 28px;
+  color: #515357;
   background-color: transparent;
   border: none;
   text-align: center;
@@ -299,6 +306,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .input-container input::-webkit-input-placeholder {
-  color: #3C4254;
+  color: #F6F6F6;
   font-family: 'Catamaran', sans-serif;
 }

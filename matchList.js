@@ -5,6 +5,8 @@ function initializeMatchList(){
       table  = document.createElement('table');
   table.id = 'match-list-table'
 
+  MATCHES_SHOWN = Math.floor((container.offsetWidth - 150) / 88) || MATCHES_SHOWN; // 50 px per cell
+
   // Sort beams by those with highest unbraced length of 0
   var wBeamsList = Object.keys(W_BEAMS_MAP)
       .map(function(shape){ return W_BEAMS_MAP[shape]; })
@@ -16,23 +18,25 @@ function initializeMatchList(){
 
   var tr = table.insertRow();
   var td = tr.insertCell();
-  td.appendChild(document.createTextNode('Weight'));
+  td.appendChild(document.createTextNode('Lightest'));
   for(var i = 0; i < MATCHES_SHOWN; i++){
     var td = tr.insertCell();
     var beam = wByWeight[i];
-    td.appendChild(createDiv('<div class="primary">' + beam.W + ' plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div>'));
+    td.appendChild(createDiv('<div class="primary">' + beam.AISC_Manual_Label + '</div><div class="secondary">' + beam.W + ' plf' + '</div>'));
     if (i === 0){ td.setAttribute('class', 'best-beam');}
   }
 
   var tr = table.insertRow();
   var td = tr.insertCell();
-  td.appendChild(document.createTextNode('Depth'));
+  td.appendChild(document.createTextNode('Shallowest'));
   for(var i = 0; i < MATCHES_SHOWN; i++){
     var td = tr.insertCell();
     var beam = wByDepth[i];
-    td.appendChild(createDiv('<div class="primary">' + beam.d + ' in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div>'));
+    td.appendChild(createDiv('<div class="primary">' + beam.AISC_Manual_Label + '</div><div class="secondary">' + beam.d + ' in' + '</div>'));
     if (i === 0){ td.setAttribute('class', 'best-beam');}
   }
+  container.removeChild(container.lastChild);
+  container.removeChild(container.lastChild);
   container.appendChild(table);
 }
 
@@ -56,12 +60,12 @@ function updateMatchList(){
       if (i === 0){
         var beam = sortedBeams.weight[j];
         if (beam){
-          cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.W + ' plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
+          cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.AISC_Manual_Label + '</div><div class="secondary">' + beam.W + ' plf' + '</div></div>';
         } else {cell.innerHTML = '';}
       } else{
         var beam = sortedBeams.depth[j];
         if (beam){
-          cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.d + ' in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
+          cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.AISC_Manual_Label + '</div><div class="secondary">' + beam.d + ' in' + '</div></div>';
         } else {cell.innerHTML = '';}
       }
     }

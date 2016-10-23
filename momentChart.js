@@ -1,6 +1,6 @@
 var BEAM_SIZE_FONT_SIZE = 42;
 
-var mMargin = {top: 18, right: 60, bottom: 0, left: 50},
+var mMargin = {top: 18, right: 60, bottom: 0, left: 70},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
     mHeight = RIGHT_ROW_1_HEIGHT - mMargin.top - mMargin.bottom - 10;
 
@@ -79,7 +79,7 @@ function initializeMomentChart(){
     // Generate voronoi polygons
     var voronoiData = mVoronoi(nestedData);
 
-    // For debugging only
+    // // For debugging only
     // voronoiGroup.selectAll('circle')
     //     .data(nestedData)
     //   .enter().append('circle')
@@ -285,7 +285,7 @@ function mFilterOpacity(d){
 }
 
 function mFilterStroke(d){
-  return validateBeam(d, {valid: '#60677D', nullState: COLOR_SCALE(+d.Ix / +d.W)});
+  return validateBeam(d, {valid: COLOR_SCALE(+d.Ix / +d.W), nullState: CUSTOM_GRAY_DARKER});
 }
 
 function mFilterStrokeWidth(d){
