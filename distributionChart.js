@@ -1,6 +1,6 @@
 var dMargin = {top: 0, right: 30, bottom: 20, left: 50},
     dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
-    dHeight = RIGHT_ROW_2_HEIGHT - dMargin.top - dMargin.bottom - 10;
+    dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom - 10;
 
 var dx0 = d3.scale.linear()
     .range([0, dWidth]);
@@ -35,7 +35,7 @@ function initializeDistributionChart(){
   dx0.domain([0, 800]);
   dy0.domain([50, 0]);
 
-  var beams = Object.keys(W_BEAMS_MAP).map(function(shape){ return W_BEAMS_MAP[shape]; }).reverse();
+  var beams = Object.values(W_BEAMS_MAP).reverse();
 
   var wBeams = dSvg.selectAll('.w-beam.d')
       .data(beams)
@@ -44,23 +44,23 @@ function initializeDistributionChart(){
   // y: 0 -> max depth
   wBeams
     .enter().append('rect')
-      .attr('class', function(d){ return 'w-beam d ' + d.AISC_Manual_Label.split('X')[0] + ' ' + d.AISC_Manual_Label;} )
-      .attr('x', function(d){ return dx0(+d.W); })
-      .attr('y', function(d){ return 0; })
+      .attr('class', d => 'w-beam d ' + d.AISC_Manual_Label.split('X')[0] + ' ' + d.AISC_Manual_Label)
+      .attr('x', d => dx0(+d.W))
+      .attr('y', d => 0)
       .attr('opacity', 0.10)
       .attr('height', 0)
       .attr('width', 1.5)
-    .transition().duration(600).delay(function(d, i){ return i * 8;})
+    .transition().duration(600).delay((d, i) => i * 8)
       .attr('width', 0.25)
-      .attr('height', function(d){ return dy0(+d.d); })
+      .attr('height', d => dy0(+d.d))
 
   wBeams
     .enter().append('circle')
-      .attr('class', function(d){ return 'w-beam d ' + d.AISC_Manual_Label.split('X')[0] + ' ' + d.AISC_Manual_Label;} )
-      .attr('cx', function(d){ return dx0(+d.W); })
-      .attr('cy', function(d){ return dy0(+d.d); })
+      .attr('class', d => 'w-beam d ' + d.AISC_Manual_Label.split('X')[0] + ' ' + d.AISC_Manual_Label)
+      .attr('cx', d => dx0(+d.W))
+      .attr('cy', d => dy0(+d.d))
       .attr('r', 0)
-    .transition().delay(function(d, i){ return i * 8 + 600;})
+    .transition().delay((d, i) => i * 8 + 600)
       .attr('r', .75)
 
   dSvg.append('g')
@@ -92,7 +92,7 @@ function initializeDistributionChart(){
   voronoiGroup.selectAll('path')
       .data(voronoiData)
     .enter().append('path')
-      .attr('d', function(d){ return 'M' + d.join('L') + 'Z';})
+      .attr('d', d => 'M' + d.join('L') + 'Z')
       .datum(function(d){ return d.point; })
       .on('mouseover', dMouseover)
       .on('mouseout', dMouseout);
@@ -112,7 +112,7 @@ function highlightBeamDistribution(d){
   dSvg.select('.focus').select('text').text(beam.AISC_Manual_Label);
 
   dSvg.select('rect.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', CUSTOM_WHITE)
+    .attr('fill', CUSTOM_BLUE)
     .attr('rx', 3)
     .attr('width', 2)
     .attr('opacity', 1)
@@ -122,12 +122,12 @@ function highlightBeamDistribution(d){
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
     .attr('opacity', 1)
-    .attr('fill', CUSTOM_WHITE)
+    .attr('fill', CUSTOM_BLUE)
     .attr('cx', function(d){ return dx0(+d.W) + 1; })
     .attr('r', 1.75)
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', CUSTOM_WHITE)
+    .attr('fill', CUSTOM_BLUE)
     .attr('cx', function(d){ return dx0(+d.W) + 1; })
     .attr('r', 4)
 }

@@ -1,85 +1,64 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-  <div id="nav-bar">
-    Steel Explorer
-    <a class="link" href="http://jonsadka.com/" target="_blank">Jon Sadka</a>
-    <a class="link about" href="http://jonsadka.com/" target="_blank">About</a>
-  </div>
-  <div id="charts">
-    <div id="left-column">
-      <div id="top-container">
-<!--         Units
-        <div>
-          <label><input type="radio" name="mode" value="LRFD" checked>LRFD</label>
-          <label><input type="radio" name="mode" value="ASD">ASD</label>
-        </div> -->
-        <div class="filter-category">
-          <div class="input-container">
-            <input class="input-item min" type="number" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Min">
-          </div>
-          <div class="header-container">
-            Moment <span class="units">k-ft</span>
-          </div>
-          <div class="input-container">
-            <input class="input-item max" type="number" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Max">
-          </div>
-        </div>
-
-        <div class="filter-category">
-          <div class="input-container">
-            <input class="input-item min" type="number" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Min">
-          </div>
-          <div class="header-container">
-            Weight <span class="units">plf</span>
-          </div>
-          <div class="input-container">
-            <input class="input-item max" type="number" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Max">
-          </div>
-        </div>
-
-        <div class="filter-category">
-          <div class="input-container">
-            <input class="input-item min" type="number" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Min">
-          </div>
-          <div class="header-container">
-            I<sub>x</sub><span class="units"> in<sup>4</sup></span>
-          </div>
-          <div class="input-container">
-            <input class="input-item max" type="number" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max">
-          </div>
-        </div>
-
-        <div class="filter-category length">
-          <div class="input-container">
-            <input class="input-item" type="number" id="length-input" min="0" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" placeholder="Unbraced">
-          </div>
-          <div class="header-container">
-            Length<span class="units"> ft</span>
-          </div>
-        </div>
-      </div>
-
-      <div id="middle-container">
-        <div class="concave"></div>
-      </div>
-      <div id="bottom-container">
-        <h3>Need a color scale</h3>
-      </div>
-    </div>
-    <div id="right-column">
-      <div id="top-row">
-        <div class="convex"></div>
-<!--         <a class="btn">Delta goes here</a>
-        <a class="btn">Mn</a> -->
-      </div>
-      <div id="bottom-row">
-      </div>
-    </div>
-  </div>
 <body>
+  <div id="left-column">
+    <div id="top-container">
+      <div>STEEL</div>
+      <div>EXPLORER</div>
+    </div>
+
+    <div id="middle-container">
+    </div>
+
+    <div id="bottom-container">
+    </div>
+  </div>
+  <div id="right-column">
+    <div id="top-row">
+      <div class="filter-category">
+        <div class="header-container">
+          Moment <span class="units">k-ft</span>
+        </div>
+        <div class="input-container">
+          <input class="input-item min" type="number" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Min">
+        </div>
+        <div class="input-container">
+          <input class="input-item max" type="number" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Max">
+        </div>
+      </div>
+
+      <div class="filter-category">
+        <div class="header-container">
+          Weight <span class="units">plf</span>
+        </div>
+        <div class="input-container">
+          <input class="input-item min" type="number" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Min">
+        </div>
+        <div class="input-container">
+          <input class="input-item max" type="number" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Max">
+        </div>
+      </div>
+
+      <div class="filter-category">
+        <div class="header-container">
+          I<sub>x</sub><span class="units"> in<sup>4</sup></span>
+        </div>
+        <div class="input-container">
+          <input class="input-item min" type="number" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Min">
+        </div>
+        <div class="input-container">
+          <input class="input-item max" type="number" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max">
+        </div>
+      </div>
+    </div>
+    <div id="middle-row">
+    </div>
+    <div id="bottom-row">
+    </div>
+  </div>
+</body>
 <link rel="stylesheet" type="text/css" href="style.css"/>
-<!-- <script src="./node_modules/d3/d3.js"></script> -->
-<script src="//d3js.org/d3.v3.js"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
 <script src="./index.js"></script>
 <script src="./colorbrewer.min.js"></script>
 <script src="./matchList.js"></script>

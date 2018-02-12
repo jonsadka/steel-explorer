@@ -1,9 +1,9 @@
-var DEFAULT_Fy = 50; // ksi
-var DEFAULT_E = 29000; // ksi
-var DEFAULT_Cb = 1; //
-var MAX_UNBRACED = 41; // ft
-var UNBRACED_STEP = 2; // ft
-var TRANSITION_TIME = 1400; // ms
+const DEFAULT_Fy = 50; // ksi
+const DEFAULT_E = 29000; // ksi
+const DEFAULT_Cb = 1; //
+const MAX_UNBRACED = 41; // ft
+const UNBRACED_STEP = 2; // ft
+const TRANSITION_TIME = 1400; // ms
 
 // User inputs
 var START_LENGTH = null;
@@ -15,14 +15,16 @@ var USER_I_MAX = null;
 var USER_I_MIN = null;
 
 // HEIGHTS
-var CHARTS_HEIGHT = window.innerHeight - document.getElementById('nav-bar').offsetHeight;
-var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight;
-var LEFT_ROW_2_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.30;
-var LEFT_ROW_3_HEIGHT = (CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT) * 0.70;
-var RIGHT_ROW_1_HEIGHT = 0.8 * CHARTS_HEIGHT;
-var RIGHT_ROW_2_HEIGHT = 0.2 * CHARTS_HEIGHT;
+var CHARTS_HEIGHT = window.innerHeight;
+var PADDING = 30;
+var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight + 2 * PADDING;
+var LEFT_ROW_2_HEIGHT = 194 + 2 * PADDING;
+var LEFT_ROW_3_HEIGHT = CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT - LEFT_ROW_2_HEIGHT - PADDING;
+var RIGHT_ROW_1_HEIGHT = document.getElementById('top-row').offsetHeight;
+var RIGHT_ROW_2_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT - 3 * PADDING) * 0.75;
+var RIGHT_ROW_3_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT - 3 * PADDING) * 0.25;
 // WIDTHS
-var LEFT_CHARTS_WIDTH = document.getElementById('left-column').offsetWidth;
+var LEFT_CHARTS_WIDTH = document.getElementById('bottom-container').offsetWidth;
 var RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
 
 // CACHED GLOBAL PROPERTIES
@@ -32,11 +34,11 @@ var W_BEAMS_FILTERED = [];
 var SPECIAL = null;
 var PHI = 0.9;
 
-var CUSTOM_WHITE = '#20B7C4';
+var CUSTOM_BLUE = '#344A82';
 
 // HACK
 (function(){
-  d3.csv('data.csv', function(error, data) {
+  d3.csv('http://jonsadka.github.io/steel-explorer/data.csv', function(error, data) {
     if (error) throw error;
 
     W_BEAMS_MAP = data.reduce(function(map, cv){
@@ -116,17 +118,6 @@ function validateBeam (d, options){
   }
   if (passedValid) return options.valid;
   return options.nullState;
-}
-
-function updateLength() {
-  userLength = +document.getElementById('length-input').value;
-  if (START_LENGTH === (userLength - 2)) return;
-  START_LENGTH = Math.max(0, userLength - 2);
-  endLength = (userLength === 0) ? (MAX_UNBRACED - 1) : Math.min(MAX_UNBRACED - 1, userLength + 2);
-
-  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
-
-  mUpdateLength();
 }
 
 function updateMoment(){

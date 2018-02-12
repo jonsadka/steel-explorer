@@ -5,18 +5,22 @@ function initializeMatchList(){
       table  = document.createElement('table');
   table.id = 'match-list-table'
 
-  // Sort beams by those with highest unbraced length of 0
-  var wBeamsList = Object.keys(W_BEAMS_MAP)
-      .map(function(shape){ return W_BEAMS_MAP[shape]; })
-      .sort(function(a, b){ return +b.MnValues[0].Mn - +a.MnValues[0].Mn; });
+  // Sort beams by those with highest moment at unbraced length of 0
+  var wBeamsList = Object.values(W_BEAMS_MAP)
+      .sort((a, b) => +b.MnValues[0].Mn - +a.MnValues[0].Mn);
   // Get top sorted by Weight
-  wByWeight = wBeamsList.sort(function(a, b){ return +a.W - +b.W; }).slice(0, MATCHES_SHOWN);
+  wByWeight = wBeamsList.sort((a, b) => +a.W - +b.W)
+                        .slice(0, MATCHES_SHOWN);
   // Get top sorted by Weight
-  wByDepth = wBeamsList.sort(function(a, b){ return +a.d - +b.d; }).slice(0, MATCHES_SHOWN);
+  wByDepth = wBeamsList.sort((a, b) => +a.d - +b.d)
+                        .slice(0, MATCHES_SHOWN);
 
   var tr = table.insertRow();
   var td = tr.insertCell();
-  td.appendChild(document.createTextNode('Weight'));
+  td.appendChild(document.createTextNode('LOWEST WEIGHTS'));
+  td.setAttribute('class', 'section-title');
+  td.setAttribute('colspan', MATCHES_SHOWN);
+  var tr = table.insertRow();
   for(var i = 0; i < MATCHES_SHOWN; i++){
     var td = tr.insertCell();
     var beam = wByWeight[i];
@@ -26,7 +30,10 @@ function initializeMatchList(){
 
   var tr = table.insertRow();
   var td = tr.insertCell();
-  td.appendChild(document.createTextNode('Depth'));
+  td.appendChild(document.createTextNode('LOWEST DEPTHS'));
+  td.setAttribute('class', 'section-title');
+  td.setAttribute('colspan', MATCHES_SHOWN);
+  var tr = table.insertRow();
   for(var i = 0; i < MATCHES_SHOWN; i++){
     var td = tr.insertCell();
     var beam = wByDepth[i];
@@ -49,16 +56,18 @@ function updateMatchList(){
   var sortedBeams = getOptimalBeams(W_BEAMS_FILTERED)
 
   for (var i = 0; i < rows.length; i++){
+    // Skip over title rows
+    if (i === 0 || i === 2) continue;
+
     var row = rows[i];
     for(var j = 0; j < row.cells.length; j++){
-      if (j === 0) continue;
       var cell = row.cells[j];
-      if (i === 0){
+      if (i === 1){
         var beam = sortedBeams.weight[j];
         if (beam){
           cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.W + ' plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
         } else {cell.innerHTML = '';}
-      } else{
+      } else {
         var beam = sortedBeams.depth[j];
         if (beam){
           cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.d + ' in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
@@ -69,13 +78,13 @@ function updateMatchList(){
 }
 
 function getOptimalBeams(filteredBeams){
-  // Sort beams by those with highest unbraced length of 0
-  var wBeamsList = [].concat.apply([], filteredBeams.map(function(group){ return group.values; }))
-      .sort(function(a, b){ return +b.MnValues[0].Mn - +a.MnValues[0].Mn; });
-  // Add filler to array to take place of header
-  wBeamsList.unshift('Header');
+  // Sort beams by those with highest moment at unbraced length of 0
+  var wBeamsList = [].concat.apply([], filteredBeams.map(group => group.values))
+      .sort((a, b) => +b.MnValues[0].Mn - +a.MnValues[0].Mn);
   return {
-    weight: wBeamsList.sort(function(a, b){ return +a.W - +b.W; }).slice(0, MATCHES_SHOWN + 1),
-    depth: wBeamsList.sort(function(a, b){ return +a.d - +b.d; }).slice(0, MATCHES_SHOWN + 1)
+    weight: wBeamsList.sort((a, b) => +a.W - +b.W)
+                      .slice(0, MATCHES_SHOWN + 1),
+    depth: wBeamsList.sort((a, b) => +a.d - +b.d)
+                      .slice(0, MATCHES_SHOWN + 1)
   }
 }
