@@ -18,27 +18,32 @@ text {
 
 #top-container,
 #bottom-container {
-  border: 1px dotted pink;
+  border: 1px dotted #D8D8D8;
 }
 
 #top-container {
-  color: white;
+  color: #D8D8D8;
   font-size: 18px;
-  letter-spacing: 5px;
+  letter-spacing: 7px;
   padding-left: 30px;
 }
 
 #middle-container {
-  box-shadow: 5px 5px 10px 0px RGBA(0,0,0,0.50);
+  box-shadow: 5px 5px 30px RGBA(0,0,0,0.50);
   margin: 30px 0;
-  padding: 30px;
+  padding: 40px 30px;
 
 }
 .section-title {
   color: white;
   font-size: 14px;
   letter-spacing: 5px;
+  padding-bottom: 20px;
 }
+tr:not(:first-of-type) .section-title {
+  padding-top: 40px;
+}
+
 .efficient-beam {
   margin-right: 30px;
 }
@@ -51,6 +56,7 @@ text {
   color: #878B9B;
   font-size: 14px;
   letter-spacing: 3px;
+  padding-top: 10px;
 }
 
 #bottom-container {

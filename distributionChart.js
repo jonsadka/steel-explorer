@@ -18,6 +18,7 @@ var dXAxis = d3.svg.axis()
     .tickSize(dHeight)
     .tickFormat(function(d) { return d + ' plf'; })
     .tickPadding(-8)
+    .tickValues([0, 100, 200, 300, 400, 500, 600, 700])
     .orient('bottom');
 
 // var dYAxis = d3.svg.axis()
