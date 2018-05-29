@@ -1,36 +1,57 @@
-var dMargin = {top: 0, right: 30, bottom: 20, left: 50},
+var dMargin = {top: 0, right: 50, bottom: 20, left: 20},
     dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
     dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom - 10;
 
-var dx0 = d3.scale.linear()
+var dx0 = d3.scaleLinear()
     .range([0, dWidth]);
 
-var dy0 = d3.scale.linear()
+var dy0 = d3.scaleLinear()
     .range([dHeight, 0]);
 
-var dVoronoi = d3.geom.voronoi()
-  .x(function(d){ return dx0(+d.W); })
-  .y(function(d){ return dy0(+d.d); })
-  .clipExtent([[0, 0], [dWidth, dHeight]]);
+var dVoronoi = d3.voronoi()
+  .x(d => dx0(+d.W))
+  .y(d => dy0(+d.d))
+  .extent([[0, 0], [dWidth, dHeight]]);
 
-var dXAxis = d3.svg.axis()
+let voronoiDiagram = null;
+let highlightedBeam = null;
+
+var dXAxis = d3.axisTop()
     .scale(dx0)
-    .tickSize(dHeight)
-    .tickFormat(function(d) { return d + ' plf'; })
+    .tickSize(-dHeight)
+    .tickFormat(d => d + ' plf')
     .tickPadding(-8)
-    .tickValues([0, 100, 200, 300, 400, 500, 600, 700])
-    .orient('bottom');
-
-// var dYAxis = d3.svg.axis()
-//     .scale(dy0)
-//     .tickValues([0, 25, 50])
-//     .orient('left');
+    .tickValues([100, 200, 300, 400, 500, 600, 700]);
 
 var dSvg = d3.select('#bottom-row').append('svg')
     .attr('width', dWidth + dMargin.left + dMargin.right)
     .attr('height', dHeight + dMargin.top + dMargin.bottom)
   .append('g')
-    .attr('transform', 'translate(' + dMargin.left + ',' + dMargin.top + ')');
+    .attr('transform', 'translate(' + dMargin.left + ',' + dMargin.top + ')')
+    // .on('touchmove mousemove', moved);
+
+function moved() {
+  findcell(d3.mouse(this));
+}
+
+function findcell(m) {
+  console.log(m)
+  return
+  const found = voronoiDiagram.find(m[0], m[1]);
+  if (found.AISC_Manual_Label === (highlightedBeam && highlightedBeam.AISC_Manual_Label)) {
+    return;
+  }
+
+  if (highlightedBeam) {
+    dMouseout(highlightedBeam);
+  }
+
+  if (found) {
+    dMouseover(found.data);
+  }
+
+  highlightedBeam = found.data;
+}
 
 function initializeDistributionChart(){
   dx0.domain([0, 800]);
@@ -72,45 +93,33 @@ function initializeDistributionChart(){
       .attr('x', 6)
       .style('text-anchor', 'start');
 
-
-  // dSvg.append('g')
-  //     .attr('class', 'y axis d')
-  //     .call(dYAxis)
-  //   .append('text')
-  //     .attr('transform', 'rotate(-90), translate(' + (-dHeight + dMargin.bottom + dMargin.top) + ',0)')
-  //     .attr('y', 6)
-  //     .attr('dy', '.71em')
-  //     .style('text-anchor', 'end')
-  //     .text('Depth (in)');
-
   // Voronoi chart for hover effects
-  var voronoiGroup = dSvg.append('g')
+  const voronoiGroup = dSvg.append('g')
     .attr('class', 'voronoi');
 
   // Generate voronoi polygons
-  var voronoiData = dVoronoi(beams);
+  voronoiDiagram = dVoronoi(beams);
 
   voronoiGroup.selectAll('path')
-      .data(voronoiData)
+    .data(voronoiDiagram.polygons())
     .enter().append('path')
       .attr('d', d => 'M' + d.join('L') + 'Z')
-      .datum(function(d){ return d.point; })
+      .datum(d => d.data)
       .on('mouseover', dMouseover)
       .on('mouseout', dMouseout);
 
-    var dFocus = dSvg.append('g')
+    const dFocus = dSvg.append('g')
         .attr('transform', 'translate(-100,-100)')
         .attr('class', 'focus');
 
     dFocus.append('text')
         .attr('y', -10);
-
 }
 
 function highlightBeamDistribution(d){
   beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   dSvg.select('.focus').attr('transform', 'translate(' +  (dx0(+beam.W) + 8) + ',' + (dy0(+beam.d) + dMargin.top) + ')');
-  dSvg.select('.focus').select('text').text(beam.AISC_Manual_Label);
+  dSvg.select('.focus').select('text').text(beam.d + 'in');
 
   dSvg.select('rect.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
     .attr('fill', CUSTOM_BLUE)
@@ -124,12 +133,12 @@ function highlightBeamDistribution(d){
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
     .attr('opacity', 1)
     .attr('fill', CUSTOM_BLUE)
-    .attr('cx', function(d){ return dx0(+d.W) + 1; })
+    .attr('cx', d => dx0(+d.W) + 1)
     .attr('r', 1.75)
 
   dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
     .attr('fill', CUSTOM_BLUE)
-    .attr('cx', function(d){ return dx0(+d.W) + 1; })
+    .attr('cx', d => dx0(+d.W) + 1)
     .attr('r', 4)
 }
 

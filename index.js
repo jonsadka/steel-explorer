@@ -17,12 +17,12 @@ var USER_I_MIN = null;
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight;
 var PADDING = 30;
-var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight + 2 * PADDING;
-var LEFT_ROW_2_HEIGHT = 311 + 2 * PADDING;
+var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight + 2 * PADDING + 11;
+var LEFT_ROW_2_HEIGHT = 267 + 2 * PADDING;
 var LEFT_ROW_3_HEIGHT = CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT - LEFT_ROW_2_HEIGHT - PADDING;
-var RIGHT_ROW_1_HEIGHT = document.getElementById('top-row').offsetHeight;
-var RIGHT_ROW_2_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT - 3 * PADDING) * 0.75;
-var RIGHT_ROW_3_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT - 3 * PADDING) * 0.25;
+var RIGHT_ROW_1_HEIGHT = document.getElementById('top-row').offsetHeight + 3 * PADDING;
+var RIGHT_ROW_2_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT) * 0.75;
+var RIGHT_ROW_3_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT) * 0.25;
 // WIDTHS
 var LEFT_CHARTS_WIDTH = document.getElementById('bottom-container').offsetWidth;
 var RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
@@ -38,16 +38,14 @@ var CUSTOM_BLUE = '#344A82';
 
 // HACK
 (function(){
-  d3.csv('http://jonsadka.github.io/steel-explorer/data.csv', function(error, data) {
-    if (error) throw error;
-
-    W_BEAMS_MAP = data.reduce(function(map, cv){
+  d3.csv('http://jonsadka.github.io/steel-explorer/data.csv').then((data) => {
+    W_BEAMS_MAP = data.reduce((map, cv) => {
       if (cv.Type === 'W') map[cv.AISC_Manual_Label] = cv;
       return map;
     }, {})
 
-    var beams = d3.nest()
-      .key(function(d){ return d.AISC_Manual_Label.split('X')[0]; })
+    const beams = d3.nest()
+      .key(d => d.AISC_Manual_Label.split('X')[0])
       .entries(data)
 
     W_BEAMS = beams.filter(isWSection);
@@ -122,7 +120,7 @@ function validateBeam (d, options){
 
 function updateMoment(){
   var NEW_USER_MOMENT_MIN = +document.getElementById('moment-min-input').value;
-  var NEW_USER_MOMENT_MAX = +document.getElementById('moment-max-input').value;
+  var NEW_USER_MOMENT_MAX = document.getElementById('moment-max-input') ? +document.getElementById('moment-max-input').value : Infinity;
   if (NEW_USER_MOMENT_MIN && NEW_USER_MOMENT_MAX && NEW_USER_MOMENT_MIN > NEW_USER_MOMENT_MAX) return;
   if (USER_MOMENT_MAX === NEW_USER_MOMENT_MAX && USER_MOMENT_MIN === NEW_USER_MOMENT_MIN) return;
   USER_MOMENT_MIN = NEW_USER_MOMENT_MIN;
@@ -131,7 +129,7 @@ function updateMoment(){
 }
 
 function updateWeight() {
-  var NEW_USER_WEIGHT_MIN = +document.getElementById('weight-min-input').value;
+  var NEW_USER_WEIGHT_MIN = document.getElementById('weight-min-input') ? +document.getElementById('weight-min-input').value : -Infinity;
   var NEW_USER_WEIGHT_MAX = +document.getElementById('weight-max-input').value;
   if (NEW_USER_WEIGHT_MIN && NEW_USER_WEIGHT_MAX && NEW_USER_WEIGHT_MIN > NEW_USER_WEIGHT_MAX) return;
   if (USER_WEIGHT_MAX === NEW_USER_WEIGHT_MAX && USER_WEIGHT_MIN === NEW_USER_WEIGHT_MIN) return;
@@ -142,7 +140,7 @@ function updateWeight() {
 
 function updateI() {
   var NEW_USER_I_MIN = +document.getElementById('I-min-input').value;
-  var NEW_USER_I_MAX = +document.getElementById('I-max-input').value;
+  var NEW_USER_I_MAX = document.getElementById('I-max-input') ? +document.getElementById('I-max-input').value : Infinity;
   if (NEW_USER_I_MIN && NEW_USER_I_MAX && NEW_USER_I_MIN > NEW_USER_I_MAX) return;
   if (USER_I_MAX === NEW_USER_I_MAX && USER_I_MIN === NEW_USER_I_MIN) return;
   USER_I_MIN = NEW_USER_I_MIN;
@@ -283,10 +281,10 @@ function calculateSpecialProperties(beams, options){
 }
 
 function filterBeams(){
-  W_BEAMS_FILTERED = W_BEAMS.map(function(group){
-    var groupValues = [];
+  W_BEAMS_FILTERED = W_BEAMS.map(group => {
+    const groupValues = [];
     for (var i = 0; i < group.values.length; i++){
-      var beam = group.values[i];
+      const beam = group.values[i];
       if (validateBeam(beam, {valid: true, invalid: false, nullState: true})) groupValues.push(beam);
     }
     return {key: group.key, values: groupValues};

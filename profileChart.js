@@ -3,8 +3,8 @@ var pWidth = pHeight;
 var maxHeight = null;
 var maxWidth = null;
 
-var px = d3.scale.linear();
-var py = d3.scale.linear();
+var px = d3.scaleLinear();
+var py = d3.scaleLinear();
 
 function initializeProfileChart(){
   pWidth = pHeight * SPECIAL.bf.boundMax / SPECIAL.d.boundMax;

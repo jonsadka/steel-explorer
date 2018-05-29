@@ -15,41 +15,35 @@
   </div>
   <div id="right-column">
     <div id="top-row">
-      <div class="filter-category">
-        <div class="header-container">
-          Moment <span class="units">k-ft</span>
-        </div>
-        <div class="input-container">
-          <input class="input-item min" type="number" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Min">
-        </div>
-        <div class="input-container">
-          <input class="input-item max" type="number" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Max">
-        </div>
+      <div class="inputs-title">Inputs</div>
+
+      <div class="input-container">
+        <input class="input-item min" type="number" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Min">
+        <div class="label">Min Moment</div>
+      </div>
+      <!-- <div class="input-container">
+        <input class="input-item max" type="number" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Max">
+        <div class="label">Max Moment</div>
+      </div> -->
+
+      <!-- <div class="input-container">
+        <input class="input-item min" type="number" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Min">
+        <div class="label">Min Weight</div>
+      </div> -->
+      <div class="input-container">
+        <input class="input-item max" type="number" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Max">
+        <div class="label">Max Weight</div>
       </div>
 
-      <div class="filter-category">
-        <div class="header-container">
-          Weight <span class="units">plf</span>
-        </div>
-        <div class="input-container">
-          <input class="input-item min" type="number" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Min">
-        </div>
-        <div class="input-container">
-          <input class="input-item max" type="number" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Max">
-        </div>
+      <div class="input-container">
+        <input class="input-item min" type="number" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Min">
+        <div class="label">Min Ix</div>
       </div>
+      <!-- <div class="input-container">
+        <input class="input-item max" type="number" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max">
+        <div class="label">Max Ix</div>
+      </div> -->
 
-      <div class="filter-category">
-        <div class="header-container">
-          I<sub>x</sub><span class="units"> in<sup>4</sup></span>
-        </div>
-        <div class="input-container">
-          <input class="input-item min" type="number" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Min">
-        </div>
-        <div class="input-container">
-          <input class="input-item max" type="number" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Max">
-        </div>
-      </div>
     </div>
     <div id="middle-row">
     </div>
@@ -58,7 +52,7 @@
   </div>
 </body>
 <link rel="stylesheet" type="text/css" href="style.css"/>
-<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="./index.js"></script>
 <script src="./colorbrewer.min.js"></script>
 <script src="./matchList.js"></script>

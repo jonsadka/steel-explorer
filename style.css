@@ -8,17 +8,11 @@ html {
 body {
   margin: 0;
   background-color: #344A82;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
 text {
   font: 10px sans-serif;
-}
-
-#top-container,
-#bottom-container {
-  border: 1px dotted #D8D8D8;
 }
 
 #top-container {
@@ -29,44 +23,50 @@ text {
 }
 
 #middle-container {
-  box-shadow: 5px 5px 30px RGBA(0,0,0,0.50);
-  margin: 30px 0;
-  padding: 40px 30px;
-
+  margin: 54px 0 30px 0;
+  padding: 30px;
+  min-height: 267px;
 }
 .section-title {
-  color: white;
+  color: #9B9B9B;
   font-size: 14px;
   letter-spacing: 5px;
-  padding-bottom: 20px;
+  padding-top: 10px;
 }
-tr:not(:first-of-type) .section-title {
-  padding-top: 40px;
+tr:nth-child(2n):not(:last-of-type) .section-title {
+  padding-bottom: 40px;
 }
 
 .efficient-beam {
   margin-right: 30px;
 }
 .primary {
-  color: white;
+  color: #344A82;
   font-size: 20px;
   letter-spacing: 5px;
 }
 .secondary {
-  color: #878B9B;
+  color: #9B9B9B;
   font-size: 14px;
+  font-weight: 100;
   letter-spacing: 3px;
   padding-top: 10px;
 }
 
+#middle-container,
 #bottom-container {
-  box-shadow: 0 0 5px 0px RGBA(0,0,0,0.50);
+  box-shadow: 0 0 10px 0px RGBA(0, 0, 0, 0.50);
 }
 
+#middle-container,
 #bottom-container,
 #middle-row,
 #bottom-row {
   background-color: #E2E7EF;
+}
+
+#top-row {
+  margin-bottom: 20px;
 }
 
 #right-column {
@@ -77,13 +77,18 @@ tr:not(:first-of-type) .section-title {
 .axis line {
   fill: none;
   stroke: #000;
+  stroke-width: 0;
   shape-rendering: crispEdges;
+}
+
+#bottom-row .axis line {
+  stroke-width: 1;
 }
 
 .voronoi {
   fill: none;
   stroke: pink;
-  stroke-opacity: 0;
+  stroke-opacity: 1;
   pointer-events: all;
 }
 
@@ -108,26 +113,28 @@ path.beam--hover {
   stroke-width: 1px;
 }
 
-
 /*AXES */
-  /*Hide the axis*/
-  #bottom-container .x.axis path {
-    stroke: none;
-  }
-  #bottom-container .x.axis line {
-    stroke: none;
-    /*opacity: 0.4;*/
-  }
+.y.axis.moment {
+  text-anchor: start;
+}
+/*Hide the axis*/
+#bottom-container .x.axis path {
+  stroke: none;
+}
+#bottom-container .x.axis line {
+  stroke: none;
+  /*opacity: 0.4;*/
+}
 
-  /*minimap*/
-  #bottom-row .x.axis .tick {
-    stroke-width: 1px;
-    stroke-dasharray: 2;
-  }
-  /*hide the horizontal line of x axis*/
-  #bottom-row .x.axis .domain {
-    stroke: none;
-  }
+/*minimap*/
+#bottom-row .x.axis .tick {
+  stroke-width: 1px;
+  stroke-dasharray: 2;
+}
+/*hide the horizontal line of x axis*/
+#bottom-row .x.axis .domain {
+  stroke: none;
+}
 
 input {
   width: 100px;
@@ -140,36 +147,44 @@ input {
 }
 
 #left-column {
-  width: 540px;
+  width: 570px;
   padding: 60px 30px 30px 30px;
 }
 
 #right-column {
-  width: calc(100% - 546px);
+  width: calc(100% - 576px);
 }
 
 /*INPUTS FOR VIS*/
-.header-container,
+.inputs-title {
+  color: white;
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
 .input-container {
   display: inline-block;
-  padding: 0 10px;
-  width: 28%;
-  /*max-width: 140px;*/
+  width: 154px;
 }
-.filter-category .input-container .min{
-  text-align: right;
-}
-.filter-category .input-container .max{
-  text-align: left;
+
+.input-container .label {
+  color: #878B9B;
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: 100;
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 
 .input-container .input-item{
-  width: 100%;
-  font-size: 32px;
-  color: white;
   background-color: transparent;
   border: none;
-  text-align: center;
+  color: white;
+  font-size: 20px;
+  letter-spacing: 5px;
+  width: 100%;
 }
 .input-container input:focus {
   outline: none;
@@ -181,5 +196,5 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .input-container input::-webkit-input-placeholder {
-  color: black;
+  color: white;
 }
