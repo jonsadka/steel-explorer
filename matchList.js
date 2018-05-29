@@ -24,7 +24,7 @@ function initializeMatchList(){
   }
   var tr = table.insertRow();
   var td = tr.insertCell();
-  td.appendChild(document.createTextNode('LOWEST WEIGHTS'));
+  td.appendChild(document.createTextNode('LIGHTEST BEAMS'));
   td.setAttribute('class', 'section-title');
   td.setAttribute('colspan', MATCHES_SHOWN);
 
@@ -37,7 +37,7 @@ function initializeMatchList(){
   }
   var tr = table.insertRow();
   var td = tr.insertCell();
-  td.appendChild(document.createTextNode('LOWEST DEPTHS'));
+  td.appendChild(document.createTextNode('SHALLOWEST BEAMS'));
   td.setAttribute('class', 'section-title');
   td.setAttribute('colspan', MATCHES_SHOWN);
 

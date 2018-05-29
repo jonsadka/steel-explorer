@@ -38,7 +38,7 @@ var CUSTOM_BLUE = '#344A82';
 
 // HACK
 (function(){
-  d3.csv('http://jonsadka.github.io/steel-explorer/data.csv').then((data) => {
+  d3.csv('https://jonsadka.github.io/steel-explorer/data.csv').then((data) => {
     W_BEAMS_MAP = data.reduce((map, cv) => {
       if (cv.Type === 'W') map[cv.AISC_Manual_Label] = cv;
       return map;
