@@ -1,8 +1,8 @@
 const BEAM_SIZE_FONT_SIZE = 42;
 
-const mMargin = {top: 20, right: 50, bottom: 0, left: 20},
+const mMargin = {top: 20, right: 20, bottom: 0, left: 20},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
-    mHeight = RIGHT_ROW_2_HEIGHT - mMargin.top - mMargin.bottom - 10;
+    mHeight = RIGHT_ROW_2_HEIGHT - mMargin.top - mMargin.bottom;
 
 const mx0 = d3.scaleLinear()
     .range([0, mWidth]);
@@ -14,8 +14,8 @@ const mVoronoi = d3.voronoi()
     .x(d => mx0(d.length))
     .y(d => my0(d.Mn * PHI))
     .extent([
-      [0, -mMargin.top],
-      [mWidth, mHeight + mMargin.bottom]
+      [0, 0],
+      [mWidth, mHeight]
     ]);
 
 const mXAxis = d3.axisTop()

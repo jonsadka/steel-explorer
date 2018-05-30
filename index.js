@@ -17,15 +17,15 @@ var USER_I_MIN = null;
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight;
 var PADDING = 30;
-var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight + 2 * PADDING + 11;
-var LEFT_ROW_2_HEIGHT = 267 + 2 * PADDING;
+var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight + 2 * PADDING;
+var LEFT_ROW_2_HEIGHT = 260 + 58 + PADDING;
 var LEFT_ROW_3_HEIGHT = CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT - LEFT_ROW_2_HEIGHT - PADDING;
-var RIGHT_ROW_1_HEIGHT = document.getElementById('top-row').offsetHeight + 3 * PADDING;
+var RIGHT_ROW_1_HEIGHT = document.getElementById('top-row').offsetHeight + 3 * PADDING + 20;
 var RIGHT_ROW_2_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT) * 0.75;
 var RIGHT_ROW_3_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT) * 0.25;
 // WIDTHS
 var LEFT_CHARTS_WIDTH = document.getElementById('bottom-container').offsetWidth;
-var RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth;
+var RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth - PADDING;
 
 // CACHED GLOBAL PROPERTIES
 var W_BEAMS = [];

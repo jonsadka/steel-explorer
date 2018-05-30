@@ -1,6 +1,6 @@
-var dMargin = {top: 0, right: 50, bottom: 20, left: 20},
+var dMargin = {top: 0, right: 20, bottom: 10, left: 20},
     dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
-    dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom - 10;
+    dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom;
 
 var dx0 = d3.scaleLinear()
     .range([0, dWidth]);
