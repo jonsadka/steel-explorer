@@ -19,7 +19,8 @@ const mVoronoi = d3.voronoi()
     ]);
 
 const mXAxis = d3.axisTop()
-    .scale(mx0);
+    .scale(mx0)
+    .tickValues([5, 10, 15, 20, 25, 30, 35]);
 
 const mYAxis = d3.axisLeft()
     .scale(my0);
@@ -110,14 +111,14 @@ function initializeMomentChart(){
 
   mSvg.append('g')
       .attr('class', 'x axis moment')
-      .attr('transform', 'translate(0,' + mHeight + ')')
-      .call(mXAxis)
+      .attr('transform', 'translate(0,' + (mHeight + 4) + ')')
+    .call(mXAxis);
 
   mSvg.append('text')
-      .attr('x', mWidth)
-      .attr('y', mHeight - 10)
-      .attr('text-anchor', 'end')
-      .text('Unbraced Length');
+      .attr('class', 'x axis label')
+      .attr('x', 2)
+      .attr('y', mHeight - 5)
+      .text('Unbraced');
 
   mSvg.append('g')
       .attr('class', 'y axis moment')

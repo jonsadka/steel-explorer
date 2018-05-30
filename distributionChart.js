@@ -87,11 +87,17 @@ function initializeDistributionChart(){
 
   dSvg.append('g')
       .attr('class', 'x axis d')
-      .attr('transform', 'translate(0,' + 0 + ')')
+      .attr('transform', 'translate(0,' + 2 + ')')
       .call(dXAxis)
     .selectAll('text')
       .attr('x', 6)
       .style('text-anchor', 'start');
+
+  dSvg.append('text')
+    .attr('class', 'x axis label')
+    .attr('x', 2)
+    .attr('y', 10)
+    .text('Weight');
 
   // Voronoi chart for hover effects
   const voronoiGroup = dSvg.append('g')

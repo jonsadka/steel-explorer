@@ -83,6 +83,9 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
   border-radius: 4px 4px 0 0;
   box-shadow: 0 0 10px 0 RGBA(0, 0, 0, 0.50);
 }
+#middle-row svg {
+  vertical-align: bottom;
+}
 
 #bottom-row {
   border-radius: 0 0 4px 4px;
@@ -105,6 +108,14 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
   shape-rendering: crispEdges;
 }
 
+.axis.label,
+.axis text {
+  letter-spacing: 1px;
+  fill: #9B9B9B;
+  font-size: 10px;
+  font-weight: 100;
+}
+
 #bottom-row .axis line {
   stroke-width: 1;
 }
@@ -112,7 +123,7 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
 .voronoi {
   fill: none;
   stroke: pink;
-  stroke-opacity: 1;
+  stroke-opacity: 0;
   pointer-events: all;
 }
 
