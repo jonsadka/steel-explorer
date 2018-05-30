@@ -94,6 +94,7 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
 
 #top-row {
   margin-bottom: 20px;
+  margin-left: 20px;
 }
 
 #right-column {

@@ -1,4 +1,4 @@
-var dMargin = {top: 0, right: 20, bottom: 10, left: 20},
+var dMargin = {top: 0, right: 20, bottom: 20, left: 20},
     dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
     dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom;
 

@@ -6,9 +6,10 @@ var maxWidth = null;
 var px = d3.scaleLinear();
 var py = d3.scaleLinear();
 
+const RIGHT_MARGIN = 40;
+
 function initializeProfileChart(){
   pWidth = pHeight * SPECIAL.bf.boundMax / SPECIAL.d.boundMax;
-  // pHeight =
 
   maxHeight = SPECIAL.d.boundMax;
   maxWidth = SPECIAL.bf.boundMax;
@@ -19,22 +20,21 @@ function initializeProfileChart(){
     .domain([0, maxHeight]);
 
   // FOR debugging
-  // mSvg.append('rect').attr({
-  //   x: 0,
-  //   y: 0,
-  //   height: py(maxHeight),
-  //   width: px(maxWidth),
-  //   "stroke-width": 1,
-  //   stroke: 'RGBA(77, 55, 75, 0.5)',
-  //   fill: 'none',
-  //   'transform': 'translate(' + (mWidth - mMargin.left - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')'
-  // })
-  // mSvg.append('circle').attr({
-  //   x: 0,
-  //   y: 0,
-  //   r: 4,
-  //   'transform': 'translate(' + (mWidth - mMargin.left - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')'
-  // })
+  // mSvg.append('rect')
+  //   .attr('x', 0)
+  //   .attr('y', 0)
+  //   .attr('height', py(maxHeight))
+  //   .attr('width', px(maxWidth))
+  //   .attr('stroke-width', 1)
+  //   .attr('stroke', 'RGBA(77, 55, 75, 0.5)')
+  //   .attr('fill', 'none')
+  //   .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+
+  // mSvg.append('circle')
+  //   .attr(x, 0)
+  //   .attr(y, 0)
+  //   .attr(r, 4)
+  //   .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
 }
 
 function removeBeamProfile(d){
@@ -88,18 +88,18 @@ function showBeamProfile(d){
   mSvg.selectAll('.w-group.selected-beam.profile')
       .data(drawings)
     .enter().append('rect')
-      .attr('transform', 'translate(' + (mWidth - mMargin.left - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
-      .attr('class', function(d){ return 'w-group selected-beam profile ' + escapeCharacter(beam.AISC_Manual_Label); })
-      .attr('x', function(d){ return px(d.offsetX);})
+      .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+      .attr('class', d => 'w-group selected-beam profile ' + escapeCharacter(beam.AISC_Manual_Label))
+      .attr('x', d => px(d.offsetX))
       .attr('rx', 2)
-      .attr('y', function(d){ return py(d.offsetY);})
-      .attr('width', function(d){ return px(d.width);})
-      .attr('height', function(d){ return py(d.height);})
-      .attr('fill', function(d){ return d.fill || 'none';})
-      .attr('stroke', function(d){ return d.stroke || CUSTOM_BLUE;})
+      .attr('y', d => py(d.offsetY))
+      .attr('width', d => px(d.width))
+      .attr('height', d => py(d.height))
+      .attr('fill', d => d.fill || 'none')
+      .attr('stroke', d => d.stroke || CUSTOM_BLUE)
       .attr('pointer-events', 'none')
       .attr('stroke-width', 1)
-      .attr('opacity', function(d, i){ return d.opacity || 0;})
+      .attr('opacity', d => d.opacity || 0)
     .transition()
       .attr('opacity', 1)
 
@@ -107,29 +107,29 @@ function showBeamProfile(d){
       .data(drawings)
     .enter()
     .append('text')
-      .attr('transform', 'translate(' + (mWidth - mMargin.left - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
-      .attr('class', function(d){ return 'w-group selected-beam text ' + escapeCharacter(beam.AISC_Manual_Label); })
-      .text(function(d){
+      .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+      .attr('class', d => 'w-group selected-beam text ' + escapeCharacter(beam.AISC_Manual_Label))
+      .text(d => {
         if (d.text === 'tf') return 't';
         if (d.text === 'kdes') return 'k';
         if (d.text === 'bf') return 'b';
         if (d.text === 'tw') return 't';
         return d.text;
       })
-      .attr('x', function(d){
+      .attr('x', d => {
         if (d.textPos === 'right') return px(d.offsetX) + 4;
         if (d.textPos === 'left') return px(d.offsetX) - 4;
         if (d.textPos === 'middle') return px(d.offsetX + d.width / 2);
       })
-      .attr('y', function(d){
+      .attr('y', d => {
         if (d.textPos === 'right') return py(d.offsetY + d.height/2);
         if (d.textPos === 'left') return py(d.offsetY + d.height/2);
         if (d.textPos === 'middle') return py(d.offsetY) + 10;
       })
-      .attr('alignment-baseline', function(d){
+      .attr('alignment-baseline', d => {
         if (d.textPos === 'left') return 'central';
       })
-      .attr('text-anchor', function(d){
+      .attr('text-anchor', d => {
         if (d.textPos === 'left') return 'end';
         if (d.textPos === 'middle') return 'middle';
       })
@@ -143,14 +143,14 @@ function showBeamProfile(d){
         if (d.text === 'tw') return 'w';
       })
     .append('tspan')
-      .attr('dy', function(d){
+      .attr('dy', d => {
         if (d.text === 'tf') return '-.35em';
         if (d.text === 'kdes') return '-.35em';
         if (d.text === 'bf') return '-.7em';
         if (d.text === 'tw') return '-.35em';
         return '0';
       })
-      .text(function(d) {
+      .text(d => {
         if (beam[d.text]) return ' = ' + beam[d.text] + '"';
       })
 
