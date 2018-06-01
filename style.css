@@ -129,13 +129,13 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
 }
 
 path.beam--hover {
-  stroke: #2AC8E7;
+  stroke: #344A82;
   stroke-width: 6px;
   stroke-opacity: 1;
 }
 
 .bar {
-  fill: #2AC8E7;
+  fill: #344A82;
 }
 
 .w-group.m {

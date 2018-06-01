@@ -40,7 +40,7 @@ function initializeMomentChart(){
   my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
   // Actual line chart
-  var wGroup = mSvg.selectAll('.w-group.m')
+  const wGroup = mSvg.selectAll('.w-group.m')
       .data(W_BEAMS)
     .enter().append('g')
       .attr('class', d => 'g w-group m ' + d.key)
@@ -57,29 +57,14 @@ function initializeMomentChart(){
       .attr('stroke-width', 1)
 
   // Voronoi chart for hover effects
-  var voronoiGroup = mSvg.append('g')
+  const voronoiGroup = mSvg.append('g')
     .attr('class', 'voronoi');
 
   setTimeout(() => {
     // Format / flatten data
-    const nestedData = d3.nest()
-      .key(d => mx0(d.length) + ',' + my0(d.Mn * PHI))
-      .rollup(v => v[0])
-      .entries(d3.merge(W_BEAMS.map(d =>
-        d3.merge(d.values.map(d => {
-          const beam = d;
-          return d.MnValues.map(d => {
-            // Cache beam data
-            d.AISC_Manual_Label = beam.AISC_Manual_Label;
-            d.W = beam.W;
-            return d;
-          });
-        }))
-      )))
-      .map(d => d.value);
+    const nestedData = createNestedData(W_BEAMS)
     // Generate voronoi polygons
-
-    var voronoiDiagram = mVoronoi(nestedData);
+    const voronoiDiagram = mVoronoi(nestedData);
 
     // For debugging only
     // voronoiGroup.selectAll('circle')
@@ -94,11 +79,10 @@ function initializeMomentChart(){
         .data(voronoiDiagram.polygons())
       .enter().append('path')
         .attr('d', d => 'M' + d.join('L') + 'Z')
-        .datum(d => d.data)
-        .on('mouseover', mMouseover)
-        .on('mouseout', mMouseout);
+        .on('mouseover', d => mMouseover(d.data))
+        .on('mouseout', d => mMouseout(d.data));
 
-    var mFocus = mSvg.append('g')
+    const mFocus = mSvg.append('g')
         .attr('transform', 'translate(-100,-100)')
         .attr('class', 'focus');
 
@@ -147,15 +131,15 @@ function mUpdateWeight() {
     .x(d => mx0(d.length))
     .y(d => my0(d.Mn * PHI));
 
-  var wGroup = mSvg.selectAll('.w-group')
+  const wGroup = mSvg.selectAll('.w-group')
       .data(W_BEAMS)
 
-  wGroup.selectAll('path')
-      .data(d => d.values)
-      .transition().duration(500)
-      .attr('opacity', mFilterOpacity)
-      .attr('stroke', mFilterStroke)
-      .attr('stroke-width', mFilterStrokeWidth);
+  // wGroup.selectAll('path')
+      // .data(d => d.values)
+      // .transition().duration(500)
+      // .attr('opacity', mFilterOpacity)
+      // .attr('stroke', mFilterStroke)
+      // .attr('stroke-width', mFilterStrokeWidth);
 
   wGroup.selectAll('path')
       .data(d => d.values)
@@ -164,44 +148,57 @@ function mUpdateWeight() {
 
   // Wait until the transition is done to recalculate and update the voronoi
   setTimeout(() => {
-    // Format / flatten data
-    const nestedData = d3.nest()
-      .key(d => mx0(d.length) + ',' + my0(d.Mn * PHI))
-      .rollup(v => v[0])
-      .entries(d3.merge(W_BEAMS.map(d =>
-        d3.merge(d.values.map(d => {
-          const beam = d;
-          return d.MnValues.map(d => {
-            // Cache beam data
-            d.AISC_Manual_Label = beam.AISC_Manual_Label;
-            d.W = beam.W;
-            return d;
-          });
-        }))
-      )))
-      .map(d => d.value);
-    // Generate voronoi polygons
+    const nestedData = createNestedData(W_BEAMS_FILTERED);
     var voronoiDiagram = mVoronoi(nestedData);
 
     const voronoiData = voronoiDiagram.polygons();
-    var voronoiGroup = mSvg.selectAll('.voronoi');
-    voronoiGroup.selectAll('path')
-    //   .data(voronoiDiagram.polygons())
-    //   .attr('d', d => {console.log(d); return 'M' + (d.join('L') || '0,0') + 'Z'})
-    //   .datum(d => d.data)
+    const voronoiGroup = mSvg.selectAll('.voronoi')
+      .selectAll('path')
+        .data(voronoiDiagram.polygons());
+
+    voronoiGroup.exit()
+      .style("opacity", 0)
+      .remove();
+
+    voronoiGroup
+      .attr('d', d => 'M' + (d.join('L') || '0,0') + 'Z')
+
+    voronoiGroup.enter().append('path')
+      .attr('d', d => 'M' + d.join('L') + 'Z')
+      .on('mouseover', d => mMouseover(d.data))
+      .on('mouseout', d => mMouseout(d.data));
+
   }, TRANSITION_TIME + 500);
 }
 
+function createNestedData(beamData) {
+  return d3.nest()
+    .key(d => mx0(d.length) + ',' + my0(d.Mn * PHI))
+    .rollup(v => v[0])
+    .entries(d3.merge(beamData.map(d =>
+      d3.merge(d.values.map(d => {
+        const beam = d;
+        return d.MnValues.map(d => {
+          // Cache beam data
+          d.AISC_Manual_Label = beam.AISC_Manual_Label;
+          d.W = beam.W;
+          return d;
+        });
+      }))
+    )))
+    .map(d => d.value);
+}
+
 function mFilterOpacity(d){
-  return validateBeam(d, {valid: 0.8, invalid: 0.09, nullState: 0.09});
+  return validateBeam(d, {valid: 0.8, invalid: 0, nullState: 0});
 }
 
 function mFilterStroke(d){
-  return validateBeam(d, {valid: '#60677D'});
+  return validateBeam(d, {valid: '#344A82'});
 }
 
 function mFilterStrokeWidth(d){
-  return validateBeam(d, {valid: 1.25, invalid: 0.5});
+  return validateBeam(d, {valid: 2, invalid: 1});
 }
 
 function mMouseover(d) {
@@ -215,8 +212,8 @@ function mMouseover(d) {
 }
 
 function showBeamDetails(d){
-  var wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
-  var wBeam = wGroup.select('.X' + escapeCharacter(d.W));
+  const wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
+  const wBeam = wGroup.select('.X' + escapeCharacter(d.W));
   wGroup.classed('group--hover', true);
   wBeam.classed('beam--hover', true);
   mSvg.append('text')
@@ -232,8 +229,8 @@ function showBeamDetails(d){
 
 function removeBeamDetails(d){
   mSvg.select('.beam-text.' + escapeCharacter(d.AISC_Manual_Label)).remove();
-  var wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
-  var wBeam = wGroup.select('.X' + escapeCharacter(d.W));
+  const wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
+  const wBeam = wGroup.select('.X' + escapeCharacter(d.W));
   wGroup.classed('group--hover', false);
   wBeam.classed('beam--hover', false);
 }

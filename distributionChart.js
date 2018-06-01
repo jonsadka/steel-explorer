@@ -30,28 +30,28 @@ var dSvg = d3.select('#bottom-row').append('svg')
     .attr('transform', 'translate(' + dMargin.left + ',' + dMargin.top + ')')
     // .on('touchmove mousemove', moved);
 
-function moved() {
-  findcell(d3.mouse(this));
-}
+// function moved() {
+//   findcell(d3.mouse(this));
+// }
 
-function findcell(m) {
-  console.log(m)
-  return
-  const found = voronoiDiagram.find(m[0], m[1]);
-  if (found.AISC_Manual_Label === (highlightedBeam && highlightedBeam.AISC_Manual_Label)) {
-    return;
-  }
+// function findcell(m) {
+//   console.log(m)
+//   return
+//   const found = voronoiDiagram.find(m[0], m[1]);
+//   if (found.AISC_Manual_Label === (highlightedBeam && highlightedBeam.AISC_Manual_Label)) {
+//     return;
+//   }
 
-  if (highlightedBeam) {
-    dMouseout(highlightedBeam);
-  }
+//   if (highlightedBeam) {
+//     dMouseout(highlightedBeam);
+//   }
 
-  if (found) {
-    dMouseover(found.data);
-  }
+//   if (found) {
+//     dMouseover(found.data);
+//   }
 
-  highlightedBeam = found.data;
-}
+//   highlightedBeam = found.data;
+// }
 
 function initializeDistributionChart(){
   dx0.domain([0, 800]);
@@ -84,6 +84,14 @@ function initializeDistributionChart(){
       .attr('r', 0)
     .transition().delay((d, i) => i * 8 + 600)
       .attr('r', .75)
+
+  dSvg
+    .append('circle')
+      .attr('class', 'w-beam top-hover')
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('fill', CUSTOM_BLUE)
+      .attr('r', 4)      ;
 
   dSvg.append('g')
       .attr('class', 'x axis d')
@@ -122,12 +130,13 @@ function initializeDistributionChart(){
         .attr('y', -10);
 }
 
-function highlightBeamDistribution(d){
+function highlightBeamDistribution(d, {allInDepth} = {}){
   beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   dSvg.select('.focus').attr('transform', 'translate(' +  (dx0(+beam.W) + 8) + ',' + (dy0(+beam.d) + dMargin.top) + ')');
   dSvg.select('.focus').select('text').text(beam.d + 'in');
+  const escapedAISC = escapeCharacter(d.AISC_Manual_Label);
 
-  dSvg.select('rect.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
+  dSvg.select('rect.w-beam.d.' + escapedAISC)
     .attr('fill', CUSTOM_BLUE)
     .attr('rx', 3)
     .attr('width', 2)
@@ -136,16 +145,23 @@ function highlightBeamDistribution(d){
   dSvg.selectAll('circle.w-beam.d')
     .attr('opacity', 0.35)
 
-  dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
-    .attr('opacity', 1)
-    .attr('fill', CUSTOM_BLUE)
-    .attr('cx', d => dx0(+d.W) + 1)
-    .attr('r', 1.75)
+  if (allInDepth){
+    dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
+      .attr('opacity', 1)
+      .attr('fill', CUSTOM_BLUE)
+      .attr('cx', d => dx0(+d.W) + 1)
+      .attr('r', 1.75)
+  }
 
-  dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
+  dSvg.selectAll('circle.w-beam.d.' + escapedAISC)
     .attr('fill', CUSTOM_BLUE)
     .attr('cx', d => dx0(+d.W) + 1)
     .attr('r', 4)
+    .attr('opacity', 1)
+
+  dSvg.selectAll('.top-hover')
+    .attr('cx', dx0(+d.W) + 1)
+    .attr('opacity', 1);
 }
 
 function removeBeamDistribution(d){
@@ -160,13 +176,17 @@ function removeBeamDistribution(d){
     .attr('fill', 'black')
     .attr('opacity', 1)
     .attr('r', 0.75)
+
+
+  dSvg.selectAll('.top-hover')
+    .attr('opacity', 0);
 }
 
 function dMouseover(d) {
   showBeamDetails(d);
   showBeamProfile(d);
   highlightBeamI(d);
-  highlightBeamDistribution(d);
+  highlightBeamDistribution(d, {allInDepth: true});
 }
 
 function dMouseout(d) {
