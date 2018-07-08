@@ -90,6 +90,7 @@ function initializeDistributionChart(){
       .attr('class', 'w-beam top-hover')
       .attr('cx', 0)
       .attr('cy', 0)
+      .attr('opacity', 0)
       .attr('fill', CUSTOM_BLUE)
       .attr('r', 4)      ;
 
@@ -176,7 +177,6 @@ function removeBeamDistribution(d){
     .attr('fill', 'black')
     .attr('opacity', 1)
     .attr('r', 0.75)
-
 
   dSvg.selectAll('.top-hover')
     .attr('opacity', 0);
