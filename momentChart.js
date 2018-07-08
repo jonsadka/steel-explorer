@@ -194,7 +194,7 @@ function mFilterOpacity(d){
 }
 
 function mFilterStroke(d){
-  return validateBeam(d, {valid: '#344A82'});
+  return validateBeam(d, {valid: CUSTOM_BLUE});
 }
 
 function mFilterStrokeWidth(d){

@@ -133,8 +133,13 @@ function initializeDistributionChart(){
 
 function highlightBeamDistribution(d, {allInDepth} = {}){
   beam = W_BEAMS_MAP[d.AISC_Manual_Label];
-  dSvg.select('.focus').attr('transform', 'translate(' +  (dx0(+beam.W) + 8) + ',' + (dy0(+beam.d) + dMargin.top) + ')');
-  dSvg.select('.focus').select('text').text(beam.d + 'in');
+  const bottomY = dy0(+beam.d);
+  const bottomRadius = 4;
+
+  dSvg.select('.focus').attr('transform', 'translate(' +  (dx0(+beam.W) + 8) + ',' + (bottomY + dMargin.top) + ')');
+  dSvg.select('.focus').select('text')
+    .attr('y', -bottomY / 2 + bottomRadius)
+    .text(beam.d + 'in');
   const escapedAISC = escapeCharacter(d.AISC_Manual_Label);
 
   dSvg.select('rect.w-beam.d.' + escapedAISC)
@@ -157,7 +162,7 @@ function highlightBeamDistribution(d, {allInDepth} = {}){
   dSvg.selectAll('circle.w-beam.d.' + escapedAISC)
     .attr('fill', CUSTOM_BLUE)
     .attr('cx', d => dx0(+d.W) + 1)
-    .attr('r', 4)
+    .attr('r', bottomRadius)
     .attr('opacity', 1)
 
   dSvg.selectAll('.top-hover')
