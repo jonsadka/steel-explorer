@@ -117,10 +117,6 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
   font-weight: 100;
 }
 
-#bottom-row .axis line {
-  stroke-width: 1;
-}
-
 .voronoi {
   fill: none;
   stroke: pink;
@@ -141,7 +137,7 @@ path.beam--hover {
 .w-group.m {
   fill: none;
   stroke-width: 1px;
-  stroke: gray;
+  stroke: #878B9B;
 }
 
 .w-group.I {
@@ -163,10 +159,12 @@ path.beam--hover {
 }
 
 /*minimap*/
-#bottom-row .x.axis .tick {
-  stroke-width: 1px;
-  stroke-dasharray: 2;
+#bottom-row .axis line {
+  stroke-width: 1;
+  stroke: #878B9B;
+  /* stroke-dasharray: 2; */
 }
+
 /*hide the horizontal line of x axis*/
 #bottom-row .x.axis .domain {
   stroke: none;

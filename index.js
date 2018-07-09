@@ -120,31 +120,62 @@ function validateBeam (d, options){
 
 function updateMoment(){
   var NEW_USER_MOMENT_MIN = +document.getElementById('moment-min-input').value;
-  var NEW_USER_MOMENT_MAX = document.getElementById('moment-max-input') ? +document.getElementById('moment-max-input').value : Infinity;
-  if (NEW_USER_MOMENT_MIN && NEW_USER_MOMENT_MAX && NEW_USER_MOMENT_MIN > NEW_USER_MOMENT_MAX) return;
-  if (USER_MOMENT_MAX === NEW_USER_MOMENT_MAX && USER_MOMENT_MIN === NEW_USER_MOMENT_MIN) return;
+  // var NEW_USER_MOMENT_MAX = document.getElementById('moment-max-input') ? +document.getElementById('moment-max-input').value : Infinity;
+
+  // Don't update when a value is out of bounds
+  const GREATEST_BEAM_MOMENT = 12125;
+  if (NEW_USER_MOMENT_MIN > GREATEST_BEAM_MOMENT) return;
+
+  // Don't update when the min is greater than the max
+  // if (NEW_USER_MOMENT_MIN && NEW_USER_MOMENT_MAX && NEW_USER_MOMENT_MIN > NEW_USER_MOMENT_MAX) return;
+
+  // Dont update when there is no change in the values
+  // if (USER_MOMENT_MAX === NEW_USER_MOMENT_MAX && USER_MOMENT_MIN === NEW_USER_MOMENT_MIN) return;
+  if (USER_MOMENT_MIN === NEW_USER_MOMENT_MIN) return;
+
   USER_MOMENT_MIN = NEW_USER_MOMENT_MIN;
-  USER_MOMENT_MAX = NEW_USER_MOMENT_MAX;
+  // USER_MOMENT_MAX = NEW_USER_MOMENT_MAX;
   updateVisual();
 }
 
 function updateWeight() {
-  var NEW_USER_WEIGHT_MIN = document.getElementById('weight-min-input') ? +document.getElementById('weight-min-input').value : -Infinity;
+  // var NEW_USER_WEIGHT_MIN = document.getElementById('weight-min-input') ? +document.getElementById('weight-min-input').value : -Infinity;
   var NEW_USER_WEIGHT_MAX = +document.getElementById('weight-max-input').value;
-  if (NEW_USER_WEIGHT_MIN && NEW_USER_WEIGHT_MAX && NEW_USER_WEIGHT_MIN > NEW_USER_WEIGHT_MAX) return;
-  if (USER_WEIGHT_MAX === NEW_USER_WEIGHT_MAX && USER_WEIGHT_MIN === NEW_USER_WEIGHT_MIN) return;
-  USER_WEIGHT_MIN = NEW_USER_WEIGHT_MIN;
+
+  // Don't update when a value is out of bounds
+  const LIGHTEST_BEAM_WEIGHT = 8.5;
+  const USER_EMPTY_VALUE = 0;
+  if (NEW_USER_WEIGHT_MAX < LIGHTEST_BEAM_WEIGHT & NEW_USER_WEIGHT_MAX !== USER_EMPTY_VALUE) return;
+
+  // Don't update when the min is greater than the max
+  // if (NEW_USER_WEIGHT_MIN && NEW_USER_WEIGHT_MAX && NEW_USER_WEIGHT_MIN > NEW_USER_WEIGHT_MAX) return;
+
+  // Dont update when there is no change in the values
+  // if (USER_WEIGHT_MAX === NEW_USER_WEIGHT_MAX && USER_WEIGHT_MIN === NEW_USER_WEIGHT_MIN) return;
+  if (USER_WEIGHT_MAX === NEW_USER_WEIGHT_MAX) return;
+
+  // USER_WEIGHT_MIN = NEW_USER_WEIGHT_MIN;
   USER_WEIGHT_MAX = NEW_USER_WEIGHT_MAX;
   updateVisual();
 }
 
 function updateI() {
   var NEW_USER_I_MIN = +document.getElementById('I-min-input').value;
-  var NEW_USER_I_MAX = document.getElementById('I-max-input') ? +document.getElementById('I-max-input').value : Infinity;
-  if (NEW_USER_I_MIN && NEW_USER_I_MAX && NEW_USER_I_MIN > NEW_USER_I_MAX) return;
-  if (USER_I_MAX === NEW_USER_I_MAX && USER_I_MIN === NEW_USER_I_MIN) return;
+  // var NEW_USER_I_MAX = document.getElementById('I-max-input') ? +document.getElementById('I-max-input').value : Infinity;
+
+  // Don't update when a value is out of bounds
+  const GREATEST_BEAM_I = 50600;
+  if (NEW_USER_I_MIN > GREATEST_BEAM_I) return;
+
+  // Don't update when the min is greater than the max
+  // if (NEW_USER_I_MIN && NEW_USER_I_MAX && NEW_USER_I_MIN > NEW_USER_I_MAX) return;
+
+  // Dont update when there is no change in the values
+  // if (USER_I_MAX === NEW_USER_I_MAX && USER_I_MIN === NEW_USER_I_MIN) return;
+  if (USER_I_MIN === NEW_USER_I_MIN) return;
+
   USER_I_MIN = NEW_USER_I_MIN;
-  USER_I_MAX = NEW_USER_I_MAX;
+  // USER_I_MAX = NEW_USER_I_MAX;
   updateVisual();
 }
 
@@ -168,9 +199,9 @@ function calculateSpecialProperties(beams, options){
   var minI = !!USER_I_MIN ? Math.min(6000, USER_I_MIN) : 0;
 
   var groupDimensions = {}
-  var special = beams.slice().reduce(function(pv, cv){
+  var special = beams.slice().reduce((pv, cv) => {
     var wGroup = cv.key;
-    var groupStats = cv.values.reduce(function(pv, cv){
+    var groupStats = cv.values.reduce((pv, cv) => {
       var shouldUpdateMn = false;
       var shouldUpdateW = false;
       var shouldUpdateI = false;

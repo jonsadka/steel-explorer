@@ -2,6 +2,9 @@ var dMargin = {top: 0, right: 20, bottom: 20, left: 20},
     dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
     dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom;
 
+const UNSELECTED_OPACITY = 0.1;
+const UNSELECTED_RADIUS = 1;
+
 var dx0 = d3.scaleLinear()
     .range([0, dWidth]);
 
@@ -18,7 +21,7 @@ let highlightedBeam = null;
 
 var dXAxis = d3.axisTop()
     .scale(dx0)
-    .tickSize(-dHeight)
+    .tickSize(-8)
     .tickFormat(d => d + ' plf')
     .tickPadding(-8)
     .tickValues([100, 200, 300, 400, 500, 600, 700]);
@@ -69,11 +72,10 @@ function initializeDistributionChart(){
       .attr('class', d => 'w-beam d ' + d.AISC_Manual_Label.split('X')[0] + ' ' + d.AISC_Manual_Label)
       .attr('x', d => dx0(+d.W))
       .attr('y', d => 0)
-      .attr('opacity', 0.10)
+      .attr('opacity', UNSELECTED_OPACITY)
       .attr('height', 0)
-      .attr('width', 1.5)
     .transition().duration(600).delay((d, i) => i * 8)
-      .attr('width', 0.25)
+      .attr('width', 1)
       .attr('height', d => dy0(+d.d))
 
   wBeams
@@ -83,7 +85,7 @@ function initializeDistributionChart(){
       .attr('cy', d => dy0(+d.d))
       .attr('r', 0)
     .transition().delay((d, i) => i * 8 + 600)
-      .attr('r', .75)
+      .attr('r', UNSELECTED_RADIUS)
 
   dSvg
     .append('circle')
@@ -92,7 +94,7 @@ function initializeDistributionChart(){
       .attr('cy', 0)
       .attr('opacity', 0)
       .attr('fill', CUSTOM_BLUE)
-      .attr('r', 4)      ;
+      .attr('r', 4);
 
   dSvg.append('g')
       .attr('class', 'x axis d')
@@ -176,12 +178,12 @@ function removeBeamDistribution(d){
     .attr('fill', 'black')
     .attr('rx', 0)
     .attr('width', 0.25)
-    .attr('opacity', 0.5)
+    .attr('opacity', UNSELECTED_OPACITY)
 
   dSvg.selectAll('circle.w-beam.d')
     .attr('fill', 'black')
     .attr('opacity', 1)
-    .attr('r', 0.75)
+    .attr('r', UNSELECTED_RADIUS)
 
   dSvg.selectAll('.top-hover')
     .attr('opacity', 0);
