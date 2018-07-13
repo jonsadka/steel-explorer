@@ -1,4 +1,5 @@
 const BEAM_SIZE_FONT_SIZE = 42;
+const NULL_OPACITY = 0.15;
 
 const mMargin = {top: 20, right: 20, bottom: 0, left: 20},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
@@ -53,7 +54,7 @@ function initializeMomentChart(){
       .attr('stroke-width', 0)
       .attr('opacity', 1)
     .transition().delay((d, i) => i * 80)
-      .attr('opacity', 0.15)
+      .attr('opacity', NULL_OPACITY)
       .attr('stroke-width', 1)
 
   // Voronoi chart for hover effects
@@ -134,10 +135,10 @@ function mUpdateWeight() {
   const wGroup = mSvg.selectAll('.w-group')
       .data(W_BEAMS)
 
-  // wGroup.selectAll('path')
-      // .data(d => d.values)
-      // .transition().duration(500)
-      // .attr('opacity', mFilterOpacity)
+  wGroup.selectAll('path')
+      .data(d => d.values)
+      .transition().duration(500)
+      .attr('opacity', mFilterOpacity)
       // .attr('stroke', mFilterStroke)
       // .attr('stroke-width', mFilterStrokeWidth);
 
@@ -190,7 +191,7 @@ function createNestedData(beamData) {
 }
 
 function mFilterOpacity(d){
-  return validateBeam(d, {valid: 0.8, invalid: 0, nullState: 0});
+  return validateBeam(d, {valid: 0.8, invalid: 0.07, nullState: NULL_OPACITY});
 }
 
 function mFilterStroke(d){

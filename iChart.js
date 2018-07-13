@@ -1,6 +1,8 @@
-var iMargin = {top: 20, right: 20, bottom: 30, left: 20},
+var iMargin = {top: 20, right: 20, bottom: 30, left: 30},
     iWidth = LEFT_CHARTS_WIDTH - iMargin.left - iMargin.right,
     iHeight = LEFT_ROW_3_HEIGHT - iMargin.top - iMargin.bottom;
+
+const chartTitleValue = document.querySelector('#bottom-container .primary');
 
 var ix0 = d3.scaleBand()
   .range([iWidth, 0])
@@ -15,9 +17,8 @@ var iVoronoi = d3.voronoi()
   .extent([[0, 0], [iWidth, iHeight]]);
 
 // Color in Ix per W
-// console.log(colorbrewer)
 const colorScale = d3.scaleQuantize()
-  .range(['#3ca0a0','#4aa6a7','#59abae','#66b1b4','#75b6bc','#85bbc2','#9abfc5','#b4c2c5','#c0c7c8','#cacccd','#d3d3d3'])
+  .range(['#d3d3d3', '#d0c0be', '#ccadaa', '#c89996', '#c28783', '#bb7471', '#b4615e']);
 
 const iXAxis = d3.axisBottom()
     .scale(ix0)
@@ -53,7 +54,7 @@ function initializeIChart(){
       })
       .attr('y', d => iy0(+d.Ix))
       .attr('width', ix0.bandwidth())
-      .attr('height', 3)
+      .attr('height', 2)
       .attr('fill', d => colorScale(+d.Ix / +d.W))
 
   iSvg.append('g')
@@ -106,7 +107,7 @@ function iUpdateWeight() {
     })
     .attr('y', d => iy0(+d.Ix))
     .attr('width', ix0.bandwidth())
-    .attr('height', 3)
+    .attr('height', 2)
     .attr('fill', d => colorScale(+d.Ix / +d.W))
 
   // Update scales only after the new dots have been entered
@@ -168,17 +169,19 @@ function removeHighlightBeamI(d) {
   var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
 
-  // Remove the text label
-  wGroup.select('.value').remove();
+  // Remove the horizontal cursor
+  wGroup.select('.horizontal-cursor').remove();
 
   wBeam.transition().duration(100)
     .attr('width', ix0.bandwidth())
-    .attr('height', 3)
+    .attr('height', 2)
     .attr('fill', colorScale(+beam.Ix / +d.W))
     .attr('x', () =>{
       const section = d.AISC_Manual_Label.split('X')[0];
       return ix0(section);
     })
+
+  chartTitleValue.innerHTML = '_ in<sup>4</sup>';
 }
 
 function highlightBeamI(d) {
@@ -192,21 +195,17 @@ function highlightBeamI(d) {
 
   wBeam.attr('fill', CUSTOM_BLUE)
     .attr('height', 3)
-    .transition().duration(50)
-    .attr('width', ix0(section) + ix0.bandwidth())
-    .attr('x', 0)
 
   var format = d3.format(',');
-  wGroup.append('text')
-    .text(format(+beam.Ix))
-    .attr('class', function(d){ return 'w-beam value X' + beam.W;})
-    .attr('x', ix0(section) - 9)
+  wGroup.append('rect')
+    .attr('class', d => 'w-beam horizontal-cursor X' + beam.W)
     .attr('fill', CUSTOM_BLUE)
-    .attr('y', function(d){ return iy0(+beam.Ix); })
-    .attr('alignment-baseline', 'middle')
-    .transition().duration(50)
-    .attr('text-anchor', 'end')
-    .attr('x', -9)
+    .attr('y', d => iy0(+beam.Ix) + 1)
+    .attr('height', 1)
+    .attr('width', iWidth)
+    .attr('x', 0)
+
+  chartTitleValue.innerHTML = format(+beam.Ix) + ' in<sup>4</sup>';
 }
 
 function iMouseover(d) {

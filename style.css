@@ -15,6 +15,13 @@ text {
   font: 10px sans-serif;
 }
 
+.chart-title {
+  padding-left: 30px;
+}
+.chart-title .primary {
+  padding-top: 15px;
+}
+
 #top-container {
   color: #D8D8D8;
   font-size: 18px;
