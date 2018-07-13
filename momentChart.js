@@ -1,9 +1,13 @@
-const BEAM_SIZE_FONT_SIZE = 42;
 const NULL_OPACITY = 0.15;
 
 const mMargin = {top: 20, right: 20, bottom: 0, left: 20},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
     mHeight = RIGHT_ROW_2_HEIGHT - mMargin.top - mMargin.bottom;
+
+const mChartTitleValue = document.querySelector('#middle-row .primary');
+const selectedBeamName = document.getElementById('selected-beam-name');
+
+const mTitleFormat = d3.format(',');
 
 const mx0 = d3.scaleLinear()
     .range([0, mWidth]);
@@ -116,7 +120,7 @@ function initializeMomentChart(){
       .attr('y', 6)
       .attr('dy', '-1em')
       .attr('text-anchor', 'end')
-      .text('Available Moment (k-ft) - φ not yet applied');
+      .text('Moment [φ not yet applied]');
 }
 
 function mUpdateWeight() {
@@ -205,7 +209,9 @@ function mFilterStrokeWidth(d){
 function mMouseover(d) {
   // wBeam.parentNode.appendChild(wBeam);
   mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
-  mSvg.select('.focus').select('text').text(d.length + ' ft., ' + Math.round(d.Mn * PHI * 10) / 10 + ' k-ft.');
+  mSvg.select('.focus').select('text').text(d.length + ' ft., ' +  + ' k-ft.');
+  const moment = Math.floor(Math.round(d.Mn * PHI * 10) / 10);
+  mChartTitleValue.innerHTML = `${mTitleFormat(moment)}<span class="unit">k-ft</span> <span class="accent">at</span> ${d.length}<span class="unit">ft</span>`
   showBeamDetails(d);
   showBeamProfile(d);
   highlightBeamI(d);
@@ -217,19 +223,12 @@ function showBeamDetails(d){
   const wBeam = wGroup.select('.X' + escapeCharacter(d.W));
   wGroup.classed('group--hover', true);
   wBeam.classed('beam--hover', true);
-  mSvg.append('text')
-    .text(d.AISC_Manual_Label)
-    .attr('class', 'beam-text ' + d.AISC_Manual_Label)
-    .attr('x', mWidth - mMargin.left)
-    .attr('y', mMargin.top * 2)
-    .style('font-size', BEAM_SIZE_FONT_SIZE)
-    .attr('opacity', 0.3)
-    .attr('pointer-events', 'none')
-    .attr('text-anchor', 'end')
+
+  selectedBeamName.innerHTML = d.AISC_Manual_Label;
 }
 
 function removeBeamDetails(d){
-  mSvg.select('.beam-text.' + escapeCharacter(d.AISC_Manual_Label)).remove();
+  selectedBeamName.innerHTML = '';
   const wGroup = mSvg.select('.' + d.AISC_Manual_Label.split('X')[0]);
   const wBeam = wGroup.select('.X' + escapeCharacter(d.W));
   wGroup.classed('group--hover', false);
@@ -238,6 +237,9 @@ function removeBeamDetails(d){
 
 function mMouseout(d) {
   mSvg.select('.focus').attr('transform', 'translate(-100,-100)');
+
+  mChartTitleValue.innerHTML = '_ <span class="unit">k-ft</span> <span class="accent">at</span> _ <span class="unit">ft</span>';
+
   removeBeamProfile();
   removeBeamDetails(d);
   removeHighlightBeamI(d);

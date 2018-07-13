@@ -20,7 +20,7 @@
 
     <div id="bottom-container">
       <div class="chart-title">
-        <div class="primary">_ in<sup>4</sup></div>
+        <div class="primary">_ <span class="unit">in<sup>4</sup><span></div>
         <div class="secondary">MOMENT OF INERTIA</div>
       </div>
     </div>
@@ -58,6 +58,11 @@
 
     </div>
     <div id="middle-row">
+      <div class="chart-title">
+        <div class="primary">_ <span class="unit">k-ft</span> <span class="accent">at</span> _ <span class="unit">ft</span></div>
+        <div class="secondary">AVAILABLE MOMENT</div>
+        <div id="selected-beam-name"></div>
+      </div>
     </div>
     <div id="bottom-row">
     </div>
@@ -66,7 +71,6 @@
 <link rel="stylesheet" type="text/css" href="style.css"/>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="./index.js"></script>
-<script src="./colorbrewer.min.js"></script>
 <script src="./matchList.js"></script>
 <script src="./profileChart.js"></script>
 <script src="./distributionChart.js"></script>

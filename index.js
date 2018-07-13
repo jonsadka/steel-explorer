@@ -19,10 +19,10 @@ var CHARTS_HEIGHT = window.innerHeight;
 var PADDING = 30;
 var LEFT_ROW_1_HEIGHT = document.getElementById('top-container').offsetHeight + 2 * PADDING;
 var LEFT_ROW_2_HEIGHT = 267 + 58 + PADDING;
-var LEFT_ROW_3_HEIGHT = CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT - LEFT_ROW_2_HEIGHT - PADDING - document.getElementsByClassName('chart-title')[0].offsetHeight;
+var LEFT_ROW_3_HEIGHT = CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT - LEFT_ROW_2_HEIGHT - PADDING - document.querySelector('#bottom-container .chart-title').offsetHeight;
 var RIGHT_ROW_1_HEIGHT = document.getElementById('top-row').offsetHeight + 3 * PADDING + 20;
-var RIGHT_ROW_2_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT) * 0.75;
-var RIGHT_ROW_3_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT) * 0.25;
+var RIGHT_ROW_2_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT - document.querySelector('#middle-row .chart-title').offsetHeight) * 0.75;
+var RIGHT_ROW_3_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT - document.querySelector('#middle-row .chart-title').offsetHeight) * 0.25;
 // WIDTHS
 var LEFT_CHARTS_WIDTH = document.getElementById('bottom-container').offsetWidth;
 var RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth - PADDING;

@@ -2,7 +2,7 @@ var iMargin = {top: 20, right: 20, bottom: 30, left: 30},
     iWidth = LEFT_CHARTS_WIDTH - iMargin.left - iMargin.right,
     iHeight = LEFT_ROW_3_HEIGHT - iMargin.top - iMargin.bottom;
 
-const chartTitleValue = document.querySelector('#bottom-container .primary');
+const iChartTitleValue = document.querySelector('#bottom-container .primary');
 
 var ix0 = d3.scaleBand()
   .range([iWidth, 0])
@@ -181,7 +181,7 @@ function removeHighlightBeamI(d) {
       return ix0(section);
     })
 
-  chartTitleValue.innerHTML = '_ in<sup>4</sup>';
+  iChartTitleValue.innerHTML = '_ <span class="unit">in<sup>4</sup><span>';
 }
 
 function highlightBeamI(d) {
@@ -205,7 +205,7 @@ function highlightBeamI(d) {
     .attr('width', iWidth)
     .attr('x', 0)
 
-  chartTitleValue.innerHTML = format(+beam.Ix) + ' in<sup>4</sup>';
+  iChartTitleValue.innerHTML = format(+beam.Ix) + '<span class="unit">in<sup>4</sup><span>';
 }
 
 function iMouseover(d) {

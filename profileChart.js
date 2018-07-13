@@ -6,7 +6,7 @@ var maxWidth = null;
 var px = d3.scaleLinear();
 var py = d3.scaleLinear();
 
-const RIGHT_MARGIN = 40;
+const RIGHT_MARGIN = 50;
 
 function initializeProfileChart(){
   pWidth = pHeight * SPECIAL.bf.boundMax / SPECIAL.d.boundMax;
@@ -28,13 +28,13 @@ function initializeProfileChart(){
   //   .attr('stroke-width', 1)
   //   .attr('stroke', 'RGBA(77, 55, 75, 0.5)')
   //   .attr('fill', 'none')
-  //   .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+  //   .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ', 0)')
 
   // mSvg.append('circle')
   //   .attr(x, 0)
   //   .attr(y, 0)
   //   .attr(r, 4)
-  //   .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+  //   .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ', 0)')
 }
 
 function removeBeamProfile(d){
@@ -88,7 +88,7 @@ function showBeamProfile(d){
   mSvg.selectAll('.w-group.selected-beam.profile')
       .data(drawings)
     .enter().append('rect')
-      .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+      .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ', 0)')
       .attr('class', d => 'w-group selected-beam profile ' + escapeCharacter(beam.AISC_Manual_Label))
       .attr('x', d => px(d.offsetX))
       .attr('rx', 2)
@@ -107,7 +107,7 @@ function showBeamProfile(d){
       .data(drawings)
     .enter()
     .append('text')
-      .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ',' + (BEAM_SIZE_FONT_SIZE + 10) + ')')
+      .attr('transform', 'translate(' + (mWidth - RIGHT_MARGIN - pWidth) + ', 0)')
       .attr('class', d => 'w-group selected-beam text ' + escapeCharacter(beam.AISC_Manual_Label))
       .text(d => {
         if (d.text === 'tf') return 't';

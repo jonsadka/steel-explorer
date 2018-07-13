@@ -16,7 +16,11 @@ text {
 }
 
 .chart-title {
-  padding-left: 30px;
+  position: relative;
+  margin-left: 20px;
+}
+#bottom-container .chart-title {
+  margin-left: 30px;
 }
 .chart-title .primary {
   padding-top: 15px;
@@ -71,6 +75,20 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
   font-weight: 100;
   letter-spacing: 3px;
   padding-top: 10px;
+}
+.accent,
+.unit {
+  font-size: 12px;
+}
+.accent {
+  color: #9B9B9B;
+}
+#selected-beam-name {
+  position: absolute;
+  right: 20px;
+  top: 8px;
+  font-size: 56px;
+  opacity: 0.20;
 }
 
 #middle-container,
