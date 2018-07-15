@@ -4,6 +4,7 @@ var dMargin = {top: 0, right: 20, bottom: 20, left: 20},
 
 const UNSELECTED_OPACITY = 0.1;
 const UNSELECTED_RADIUS = 1;
+let BEAMS = [];
 
 var dx0 = d3.scaleLinear()
     .range([0, dWidth]);
@@ -60,10 +61,10 @@ function initializeDistributionChart(){
   dx0.domain([0, 800]);
   dy0.domain([50, 0]);
 
-  var beams = Object.values(W_BEAMS_MAP).reverse();
+  BEAMS = Object.values(W_BEAMS_MAP).reverse();
 
   var wBeams = dSvg.selectAll('.w-beam.d')
-      .data(beams)
+    .data(BEAMS)
 
   // x: 0 -> max weight
   // y: 0 -> max depth
@@ -114,23 +115,14 @@ function initializeDistributionChart(){
   const voronoiGroup = dSvg.append('g')
     .attr('class', 'voronoi');
 
-  // Generate voronoi polygons
-  voronoiDiagram = dVoronoi(beams);
+  recalculateDistributionVoronoi();
 
-  voronoiGroup.selectAll('path')
-    .data(voronoiDiagram.polygons())
-    .enter().append('path')
-      .attr('d', d => 'M' + d.join('L') + 'Z')
-      .datum(d => d.data)
-      .on('mouseover', dMouseover)
-      .on('mouseout', dMouseout);
+  const dFocus = dSvg.append('g')
+      .attr('transform', 'translate(-100,-100)')
+      .attr('class', 'focus');
 
-    const dFocus = dSvg.append('g')
-        .attr('transform', 'translate(-100,-100)')
-        .attr('class', 'focus');
-
-    dFocus.append('text')
-        .attr('y', -10);
+  dFocus.append('text')
+      .attr('y', -10);
 }
 
 function highlightBeamDistribution(d, {allInDepth} = {}){
@@ -225,4 +217,26 @@ function resizeDistributionChart() {
   dSvg.selectAll('circle.w-beam.d')
     .attr('cx', d => dx0(+d.W))
     .attr('cy', d => dy0(+d.d));
+}
+
+function recalculateDistributionVoronoi() {
+  // Generate voronoi polygons
+  voronoiDiagram = dVoronoi(BEAMS);
+
+  const voronoiGroup = d3.select('#bottom-row')
+    .selectAll('.voronoi')
+    .selectAll('path')
+    .data(voronoiDiagram.polygons());
+
+  voronoiGroup.exit()
+    .style('opacity', 0)
+    .remove();
+
+  voronoiGroup
+    .attr('d', d => 'M' + (d.join('L') || '0,0') + 'Z');
+
+  voronoiGroup.enter().append('path')
+    .attr('d', d => 'M' + d.join('L') + 'Z')
+      .on('mouseover', d => dMouseover(d.data))
+      .on('mouseout', d => dMouseout(d.data));
 }

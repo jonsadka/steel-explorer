@@ -203,7 +203,7 @@ function onResize() {
 }
 
 function endResize() {
-  // recalculateDistributionVoronoi();
+  recalculateDistributionVoronoi();
   recalculateMomentVoronoi();
 }
 
