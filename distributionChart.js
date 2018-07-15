@@ -202,3 +202,28 @@ function dMouseout(d) {
   removeHighlightBeamI(d);
   removeBeamDistribution(d);
 }
+
+function resizeDistributionChart() {
+  RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth - PADDING;
+  dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right;
+
+  // Update scales
+  dx0.range([0, dWidth]);
+  dVoronoi.extent([[0, 0], [dWidth, dHeight]]);
+  d3.select('#bottom-row svg')
+    .attr('width', dWidth + dMargin.left + dMargin.right)
+    .attr('height', dHeight + dMargin.top + dMargin.bottom);
+
+  dXAxis.scale(dx0);
+
+  d3.select('.x.axis.d')
+    .call(dXAxis);
+
+  dSvg.selectAll('rect.w-beam.d')
+    .attr('x', d => dx0(+d.W))
+    .attr('height', d => dy0(+d.d))
+
+  dSvg.selectAll('circle.w-beam.d')
+    .attr('cx', d => dx0(+d.W))
+    .attr('cy', d => dy0(+d.d))
+}

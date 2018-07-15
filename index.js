@@ -188,6 +188,12 @@ function updateVisual(){
   iUpdateWeight();
 }
 
+window.addEventListener('resize', () => {
+  resizeDistributionChart();
+  // resizeMChart();
+  // resizeIProfileChart();
+});
+
 function calculateSpecialProperties(beams, options){
   var startLength = START_LENGTH || 0;
   var endLength = MAX_UNBRACED;
