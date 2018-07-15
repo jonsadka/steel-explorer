@@ -36,6 +36,8 @@ var PHI = 0.9;
 
 var CUSTOM_BLUE = '#344A82';
 
+let resizeId = null;
+
 // HACK
 (function(){
   d3.csv('https://jonsadka.github.io/steel-explorer/data.csv').then((data) => {
@@ -188,11 +190,22 @@ function updateVisual(){
   iUpdateWeight();
 }
 
-window.addEventListener('resize', () => {
+window.addEventListener('resize', onResize);
+
+function onResize() {
+  clearTimeout(resizeId);
+  resizeId = setTimeout(endResize, 300);
+
+  RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth - PADDING;
+
   resizeDistributionChart();
-  // resizeMChart();
-  // resizeIProfileChart();
-});
+  resizeMomentChart();
+}
+
+function endResize() {
+  // recalculateDistributionVoronoi();
+  recalculateMomentVoronoi();
+}
 
 function calculateSpecialProperties(beams, options){
   var startLength = START_LENGTH || 0;

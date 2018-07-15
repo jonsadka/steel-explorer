@@ -204,7 +204,6 @@ function dMouseout(d) {
 }
 
 function resizeDistributionChart() {
-  RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth - PADDING;
   dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right;
 
   // Update scales
@@ -221,9 +220,9 @@ function resizeDistributionChart() {
 
   dSvg.selectAll('rect.w-beam.d')
     .attr('x', d => dx0(+d.W))
-    .attr('height', d => dy0(+d.d))
+    .attr('height', d => dy0(+d.d));
 
   dSvg.selectAll('circle.w-beam.d')
     .attr('cx', d => dx0(+d.W))
-    .attr('cy', d => dy0(+d.d))
+    .attr('cy', d => dy0(+d.d));
 }

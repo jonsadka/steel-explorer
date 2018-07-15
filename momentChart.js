@@ -1,6 +1,6 @@
 const NULL_OPACITY = 0.15;
 
-const mMargin = {top: 20, right: 20, bottom: 0, left: 20},
+let mMargin = {top: 20, right: 20, bottom: 0, left: 20},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
     mHeight = RIGHT_ROW_2_HEIGHT - mMargin.top - mMargin.bottom;
 
@@ -9,13 +9,13 @@ const selectedBeamName = document.getElementById('selected-beam-name');
 
 const mTitleFormat = d3.format(',');
 
-const mx0 = d3.scaleLinear()
+let mx0 = d3.scaleLinear()
     .range([0, mWidth]);
 
-const my0 = d3.scaleLinear()
+let my0 = d3.scaleLinear()
     .range([mHeight, 0]);
 
-const mVoronoi = d3.voronoi()
+let mVoronoi = d3.voronoi()
     .x(d => mx0(d.length))
     .y(d => my0(d.Mn * PHI))
     .extent([
@@ -23,11 +23,11 @@ const mVoronoi = d3.voronoi()
       [mWidth, mHeight]
     ]);
 
-const mXAxis = d3.axisTop()
+let mXAxis = d3.axisTop()
     .scale(mx0)
     .tickValues([5, 10, 15, 20, 25, 30, 35]);
 
-const mYAxis = d3.axisLeft()
+let mYAxis = d3.axisLeft()
     .scale(my0);
 
 let mLine = d3.line()
@@ -66,26 +66,7 @@ function initializeMomentChart(){
     .attr('class', 'voronoi');
 
   setTimeout(() => {
-    // Format / flatten data
-    const nestedData = createNestedData(W_BEAMS)
-    // Generate voronoi polygons
-    const voronoiDiagram = mVoronoi(nestedData);
-
-    // For debugging only
-    // voronoiGroup.selectAll('circle')
-    //     .data(nestedData)
-    //   .enter().append('circle')
-    //     .attr('cx', d => mx0(d.length))
-    //     .attr('cy', d => my0(d.Mn * PHI))
-    //     .attr('r', 1)
-    //     .attr('stroke', 'black')
-
-    voronoiGroup.selectAll('path')
-        .data(voronoiDiagram.polygons())
-      .enter().append('path')
-        .attr('d', d => 'M' + d.join('L') + 'Z')
-        .on('mouseover', d => mMouseover(d.data))
-        .on('mouseout', d => mMouseout(d.data));
+    recalculateMomentVoronoi();
 
     const mFocus = mSvg.append('g')
         .attr('transform', 'translate(-100,-100)')
@@ -96,7 +77,7 @@ function initializeMomentChart(){
 
     mFocus.append('text')
         .attr('y', -10);
-  }, 0)
+  }, 0);
 
   mSvg.append('g')
       .attr('class', 'x axis moment')
@@ -152,28 +133,7 @@ function mUpdateWeight() {
       .attr('d', d => mLine(d.MnValues));
 
   // Wait until the transition is done to recalculate and update the voronoi
-  setTimeout(() => {
-    const nestedData = createNestedData(W_BEAMS_FILTERED);
-    var voronoiDiagram = mVoronoi(nestedData);
-
-    const voronoiData = voronoiDiagram.polygons();
-    const voronoiGroup = mSvg.selectAll('.voronoi')
-      .selectAll('path')
-        .data(voronoiDiagram.polygons());
-
-    voronoiGroup.exit()
-      .style("opacity", 0)
-      .remove();
-
-    voronoiGroup
-      .attr('d', d => 'M' + (d.join('L') || '0,0') + 'Z')
-
-    voronoiGroup.enter().append('path')
-      .attr('d', d => 'M' + d.join('L') + 'Z')
-      .on('mouseover', d => mMouseover(d.data))
-      .on('mouseout', d => mMouseout(d.data));
-
-  }, TRANSITION_TIME + 500);
+  setTimeout(recalculateMomentVoronoi, TRANSITION_TIME + 500);
 }
 
 function createNestedData(beamData) {
@@ -244,4 +204,71 @@ function mMouseout(d) {
   removeBeamDetails(d);
   removeHighlightBeamI(d);
   removeBeamDistribution(d);
+}
+
+function resizeMomentChart() {
+  mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right;
+
+  // Update Scales
+  mx0.range([0, mWidth]);
+  my0.range([mHeight, 0]);
+  mVoronoi
+    .x(d => mx0(d.length))
+    .y(d => my0(d.Mn * PHI))
+    .extent([[0, 0], [mWidth, mHeight]]);
+
+  mXAxis.scale(mx0);
+  mYAxis.scale(my0);
+  mLine
+    .x(d => mx0(d.length))
+    .y(d => my0(d.Mn * PHI));
+
+  d3.select('#middle-row svg')
+    .attr('width', mWidth + mMargin.left + mMargin.right)
+    .attr('height', mHeight + mMargin.top + mMargin.bottom);
+
+  d3.select('.x.axis.moment')
+    .call(mXAxis);
+
+  // d3.selectAll('.y.axis.moment')
+  //   .call(mYAxis.tickFormat(d3.format('.1s')))
+
+  const wGroup = mSvg.selectAll('.w-group')
+  wGroup.selectAll('path')
+      .data(d => d.values)
+      .attr('d', d => mLine(d.MnValues));
+}
+
+function recalculateMomentVoronoi() {
+    const beamData = W_BEAMS_FILTERED.length ? W_BEAMS_FILTERED : W_BEAMS;
+    // Format / flatten data
+    const nestedData = createNestedData(beamData);
+    // Generate voronoi polygons
+    const voronoiDiagram = mVoronoi(nestedData);
+
+    const voronoiGroup = d3.select('#middle-row')
+      .selectAll('.voronoi')
+      .selectAll('path')
+        .data(voronoiDiagram.polygons());
+;
+    // // For debugging only
+    // voronoiGroup.selectAll('circle')
+    //     .data(nestedData)
+    //   .enter().append('circle')
+    //     .attr('cx', d => mx0(d.length))
+    //     .attr('cy', d => my0(d.Mn * PHI))
+    //     .attr('r', 1)
+    //     .attr('stroke', 'black');
+
+    voronoiGroup.exit()
+      .style('opacity', 0)
+      .remove();
+
+    voronoiGroup
+      .attr('d', d => 'M' + (d.join('L') || '0,0') + 'Z');
+
+    voronoiGroup.enter().append('path')
+      .attr('d', d => 'M' + d.join('L') + 'Z')
+      .on('mouseover', d => mMouseover(d.data))
+      .on('mouseout', d => mMouseout(d.data));
 }
