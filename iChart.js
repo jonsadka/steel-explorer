@@ -75,7 +75,7 @@ function initializeIChart(){
   recalculateIVoronoi();
 }
 
-function iUpdateWeight() {
+function updateIChart() {
   iy0
     .range([iHeight, 0])
     .domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
@@ -174,7 +174,7 @@ function iMouseout(d) {
   removeBeamProfile();
   removeBeamDetails(d);
   removeHighlightBeamI(d);
-  removeBeamDistribution(d);
+  removeBeamDistribution();
 }
 
 function resizeIChart() {

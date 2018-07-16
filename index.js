@@ -34,7 +34,8 @@ var W_BEAMS_FILTERED = [];
 var SPECIAL = null;
 var PHI = 0.9;
 
-var CUSTOM_BLUE = '#344A82';
+const CUSTOM_BLUE = '#344A82';
+const CUSTOM_GREY = '#878B9B';
 
 let resizeId = null;
 
@@ -186,8 +187,9 @@ function updateVisual(){
   filterBeams();
 
   updateMatchList();
-  mUpdateWeight();
-  iUpdateWeight();
+  updateDistributionChart();
+  updateMomentChart();
+  updateIChart();
 }
 
 window.addEventListener('resize', onResize);

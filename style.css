@@ -143,6 +143,7 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
 }
 
 .voronoi {
+  /* display: none; */
   fill: none;
   stroke: pink;
   stroke-opacity: 0;

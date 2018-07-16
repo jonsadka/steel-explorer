@@ -88,7 +88,7 @@ function initializeMomentChart(){
       .attr('class', 'x axis label')
       .attr('x', 2)
       .attr('y', mHeight - 5)
-      .text('Unbraced');
+      .text('Unbraced (ft)');
 
   mSvg.append('g')
       .attr('class', 'y axis moment')
@@ -104,7 +104,7 @@ function initializeMomentChart(){
       .text('Moment [φ not yet applied]');
 }
 
-function mUpdateWeight() {
+function updateMomentChart() {
   my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
 
   d3.selectAll('.y.axis.moment')
@@ -203,7 +203,7 @@ function mMouseout(d) {
   removeBeamProfile();
   removeBeamDetails(d);
   removeHighlightBeamI(d);
-  removeBeamDistribution(d);
+  removeBeamDistribution();
 }
 
 function resizeMomentChart() {

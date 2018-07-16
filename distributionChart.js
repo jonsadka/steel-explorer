@@ -2,9 +2,12 @@ var dMargin = {top: 0, right: 20, bottom: 20, left: 20},
     dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
     dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom;
 
-const UNSELECTED_OPACITY = 0.1;
-const UNSELECTED_RADIUS = 1;
-let BEAMS = [];
+const NULL_DISTRIBUTION_OPACITY = 0.30;
+const NULL_RADIUS = 1;
+const VALID_BEAM_RADIUS = 2;
+const HOVERED_BEAM_RADIUS = 4;
+const NULL_BEAM_WIDTH = 1;
+const HOVERED_BEAM_WIDTH = 2;
 
 var dx0 = d3.scaleLinear()
     .range([0, dWidth]);
@@ -61,10 +64,9 @@ function initializeDistributionChart(){
   dx0.domain([0, 800]);
   dy0.domain([50, 0]);
 
-  BEAMS = Object.values(W_BEAMS_MAP).reverse();
-
+  const beamsData = beamsDataForDistributionChart()
   var wBeams = dSvg.selectAll('.w-beam.d')
-    .data(BEAMS)
+    .data(beamsData);
 
   // x: 0 -> max weight
   // y: 0 -> max depth
@@ -73,10 +75,11 @@ function initializeDistributionChart(){
       .attr('class', d => 'w-beam d ' + d.AISC_Manual_Label.split('X')[0] + ' ' + d.AISC_Manual_Label)
       .attr('x', d => dx0(+d.W))
       .attr('y', d => 0)
-      .attr('opacity', UNSELECTED_OPACITY)
+      .attr('opacity', NULL_DISTRIBUTION_OPACITY)
+      .attr('fill', CUSTOM_GREY)
       .attr('height', 0)
     .transition().duration(600).delay((d, i) => i * 8)
-      .attr('width', 1)
+      .attr('width', NULL_BEAM_WIDTH)
       .attr('height', d => dy0(+d.d))
 
   wBeams
@@ -84,9 +87,11 @@ function initializeDistributionChart(){
       .attr('class', d => 'w-beam d ' + d.AISC_Manual_Label.split('X')[0] + ' ' + d.AISC_Manual_Label)
       .attr('cx', d => dx0(+d.W))
       .attr('cy', d => dy0(+d.d))
+      .attr('opacity', NULL_DISTRIBUTION_OPACITY)
+      .attr('fill', CUSTOM_GREY)
       .attr('r', 0)
     .transition().delay((d, i) => i * 8 + 600)
-      .attr('r', UNSELECTED_RADIUS)
+      .attr('r', NULL_RADIUS)
 
   dSvg
     .append('circle')
@@ -95,7 +100,7 @@ function initializeDistributionChart(){
       .attr('cy', 0)
       .attr('opacity', 0)
       .attr('fill', CUSTOM_BLUE)
-      .attr('r', 4);
+      .attr('r', HOVERED_BEAM_RADIUS);
 
   dSvg.append('g')
       .attr('class', 'x axis d')
@@ -125,57 +130,90 @@ function initializeDistributionChart(){
       .attr('y', -10);
 }
 
+function updateDistributionChart() {
+  d3.selectAll('rect.w-beam.d')
+    .transition().duration(500)
+    .attr('opacity', distributionFilterOpacity);
+
+  d3.selectAll('circle.w-beam.d')
+    .transition().duration(500)
+    .attr('opacity', distributionFilterOpacity)
+    .attr('r', distributionFilterRadius)
+    .attr('cx', d => {
+      const xAdjustment = distributionFilterCx(d);
+      return dx0(+d.W) + xAdjustment;
+    });
+
+  recalculateDistributionVoronoi()
+}
+
+function distributionFilterOpacity(d) {
+  return validateBeam(d, { valid: 0.9, invalid: NULL_DISTRIBUTION_OPACITY / 2, nullState: NULL_DISTRIBUTION_OPACITY });
+}
+
+function distributionFilterRadius(d) {
+  return validateBeam(d, { valid: VALID_BEAM_RADIUS, invalid: NULL_RADIUS, nullState: NULL_RADIUS });
+}
+
+function distributionFilterCx(d) {
+  return validateBeam(d, { valid: 1, invalid: 0, nullState: 0 });
+}
+
 function highlightBeamDistribution(d, {allInDepth} = {}){
   beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   const bottomY = dy0(+beam.d);
-  const bottomRadius = 4;
 
   dSvg.select('.focus').attr('transform', 'translate(' +  (dx0(+beam.W) + 8) + ',' + (bottomY + dMargin.top) + ')');
   dSvg.select('.focus').select('text')
-    .attr('y', -bottomY / 2 + bottomRadius)
+    .attr('y', -bottomY / 2 + HOVERED_BEAM_RADIUS)
     .text(beam.d + 'in');
   const escapedAISC = escapeCharacter(d.AISC_Manual_Label);
 
-  dSvg.select('rect.w-beam.d.' + escapedAISC)
-    .attr('fill', CUSTOM_BLUE)
-    .attr('rx', 3)
-    .attr('width', 2)
-    .attr('opacity', 1)
-
-  dSvg.selectAll('circle.w-beam.d')
-    .attr('opacity', 0.35)
-
-  if (allInDepth){
+  if (allInDepth && !W_BEAMS_FILTERED.length){
     dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
       .attr('opacity', 1)
-      .attr('fill', CUSTOM_BLUE)
       .attr('cx', d => dx0(+d.W) + 1)
-      .attr('r', 1.75)
+      .attr('r', VALID_BEAM_RADIUS)
+      .attr('fill', CUSTOM_BLUE);
   }
 
-  dSvg.selectAll('circle.w-beam.d.' + escapedAISC)
-    .attr('fill', CUSTOM_BLUE)
-    .attr('cx', d => dx0(+d.W) + 1)
-    .attr('r', bottomRadius)
+  dSvg.select('rect.w-beam.d.' + escapedAISC)
+    // .attr('x', 3)
+    .attr('width', HOVERED_BEAM_WIDTH)
     .attr('opacity', 1)
+    .attr('fill', CUSTOM_BLUE);
+  dSvg.select('circle.w-beam.d.' + escapedAISC)
+    .attr('cx', d => dx0(+d.W) + 1)
+    .attr('r', HOVERED_BEAM_RADIUS)
+    .attr('opacity', 1)
+    .attr('fill', CUSTOM_BLUE);
+
+//   dSvg.selectAll('circle.w-beam.d')
+//     .attr('opacity', NULL_DISTRIBUTION_OPACITY)
+
+
+//   dSvg.selectAll('circle.w-beam.d.' + escapedAISC)
+//     .attr('cx', d => dx0(+d.W) + 1)
+//     .attr('r', HOVERED_BEAM_RADIUS)
+//     .attr('opacity', 1)
 
   dSvg.selectAll('.top-hover')
     .attr('cx', dx0(+d.W) + 1)
     .attr('opacity', 1);
 }
 
-function removeBeamDistribution(d){
+function removeBeamDistribution(){
   dSvg.select('.focus').attr('transform', 'translate(-100,-100)');
-  dSvg.select('rect.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label))
-    .attr('fill', 'black')
-    .attr('rx', 0)
-    .attr('width', 0.25)
-    .attr('opacity', UNSELECTED_OPACITY)
 
-  dSvg.selectAll('circle.w-beam.d')
-    .attr('fill', 'black')
-    .attr('opacity', 1)
-    .attr('r', UNSELECTED_RADIUS)
+  d3.selectAll('rect.w-beam.d')
+    .attr('fill', CUSTOM_GREY)
+    .attr('width', NULL_BEAM_WIDTH)
+    .attr('opacity', distributionFilterOpacity)
+
+  d3.selectAll('circle.w-beam.d')
+    .attr('fill', CUSTOM_GREY)
+    .attr('opacity', distributionFilterOpacity)
+    .attr('r', distributionFilterRadius)
 
   dSvg.selectAll('.top-hover')
     .attr('opacity', 0);
@@ -192,7 +230,7 @@ function dMouseout(d) {
   removeBeamProfile();
   removeBeamDetails(d);
   removeHighlightBeamI(d);
-  removeBeamDistribution(d);
+  removeBeamDistribution();
 }
 
 function resizeDistributionChart() {
@@ -220,6 +258,17 @@ function resizeDistributionChart() {
   .attr('cy', d => dy0(+d.d));
 }
 
+function beamsDataForDistributionChart() {
+  return W_BEAMS_FILTERED.length ?
+    W_BEAMS_FILTERED.reduce((acc, beamGroup) => {
+      beamGroup.values.forEach(beam => {
+        acc.push(beam);
+      });
+      return acc;
+    }, []) :
+    Object.values(W_BEAMS_MAP).reverse();
+}
+
 function recalculateDistributionVoronoi() {
   if (noResults()) {
     return;
@@ -228,7 +277,8 @@ function recalculateDistributionVoronoi() {
   dVoronoi.extent([[0, 0], [dWidth, dHeight]]);
 
   // Generate voronoi polygons
-  voronoiDiagram = dVoronoi(BEAMS);
+  const beamsData = beamsDataForDistributionChart()
+  voronoiDiagram = dVoronoi(beamsData);
 
   const voronoiGroup = d3.select('#bottom-row')
     .selectAll('.voronoi')
