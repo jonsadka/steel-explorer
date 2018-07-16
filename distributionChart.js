@@ -169,7 +169,8 @@ function highlightBeamDistribution(d, {allInDepth} = {}){
     .text(beam.d + 'in');
   const escapedAISC = escapeCharacter(d.AISC_Manual_Label);
 
-  if (allInDepth && !W_BEAMS_FILTERED.length){
+  // Highlight all beams of the same W profile
+  if (allInDepth && !hasFilterSelected()){
     dSvg.selectAll('circle.w-beam.d.' + escapeCharacter(d.AISC_Manual_Label.split('X')[0]))
       .attr('opacity', 1)
       .attr('cx', d => dx0(+d.W) + 1)
@@ -178,7 +179,6 @@ function highlightBeamDistribution(d, {allInDepth} = {}){
   }
 
   dSvg.select('rect.w-beam.d.' + escapedAISC)
-    // .attr('x', 3)
     .attr('width', HOVERED_BEAM_WIDTH)
     .attr('opacity', 1)
     .attr('fill', CUSTOM_BLUE);
@@ -187,15 +187,6 @@ function highlightBeamDistribution(d, {allInDepth} = {}){
     .attr('r', HOVERED_BEAM_RADIUS)
     .attr('opacity', 1)
     .attr('fill', CUSTOM_BLUE);
-
-//   dSvg.selectAll('circle.w-beam.d')
-//     .attr('opacity', NULL_DISTRIBUTION_OPACITY)
-
-
-//   dSvg.selectAll('circle.w-beam.d.' + escapedAISC)
-//     .attr('cx', d => dx0(+d.W) + 1)
-//     .attr('r', HOVERED_BEAM_RADIUS)
-//     .attr('opacity', 1)
 
   dSvg.selectAll('.top-hover')
     .attr('cx', dx0(+d.W) + 1)

@@ -219,8 +219,11 @@ function endResize() {
 }
 
 function noResults() {
-  const hasFilterSelected = USER_MOMENT_MIN || USER_WEIGHT_MAX || USER_I_MIN;
-  return hasFilterSelected && !W_BEAMS_FILTERED.length;
+  return hasFilterSelected() && !W_BEAMS_FILTERED.length;
+}
+
+function hasFilterSelected() {
+  return USER_MOMENT_MIN || USER_WEIGHT_MAX || USER_I_MIN;
 }
 
 function calculateSpecialProperties(beams, options){
