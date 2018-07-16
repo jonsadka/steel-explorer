@@ -64,7 +64,7 @@ function initializeIChart(){
 
   iSvg.append('g')
       .attr('class', 'y axis I')
-      .call(iYAxis.tickFormat(d3.format('.1s')))
+      .call(iYAxis)
     .selectAll('text')
       .attr('dx', '-1em');
 
@@ -92,7 +92,7 @@ function iUpdateWeight() {
     .call(iXAxis);
   d3.selectAll('.y.axis.I')
     .transition().duration(TRANSITION_TIME).delay(500)
-    .call(iYAxis.tickFormat(d3.format('.1s')))
+    .call(iYAxis)
     .selectAll('text')
     .attr('dx', '-1em')
 

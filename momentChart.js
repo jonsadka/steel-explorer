@@ -92,7 +92,7 @@ function initializeMomentChart(){
 
   mSvg.append('g')
       .attr('class', 'y axis moment')
-    .call(mYAxis.tickFormat(d3.format('.1s')))
+    .call(mYAxis)
     .selectAll('text')
       .attr('dx', '1em')
 
@@ -109,7 +109,7 @@ function mUpdateWeight() {
 
   d3.selectAll('.y.axis.moment')
   .transition().duration(TRANSITION_TIME).delay(500)
-    .call(mYAxis.tickFormat(d3.format('.1s')))
+    .call(mYAxis)
     .selectAll('text')
       .attr('dx', '1em')
 
@@ -225,10 +225,14 @@ function resizeMomentChart() {
     .attr('height', mHeight + mMargin.top + mMargin.bottom);
 
   d3.select('.x.axis.moment')
+    .attr('transform', 'translate(0,' + (mHeight + 4) + ')')
     .call(mXAxis);
 
-  // d3.selectAll('.y.axis.moment')
-  //   .call(mYAxis.tickFormat(d3.format('.1s')))
+  d3.select('.x.axis.label')
+    .attr('y', mHeight - 5);
+
+  d3.select('.y.axis.moment')
+    .call(mYAxis)
 
   const wGroup = mSvg.selectAll('.w-group')
   wGroup.selectAll('path')
