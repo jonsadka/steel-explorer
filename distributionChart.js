@@ -197,29 +197,36 @@ function dMouseout(d) {
 
 function resizeDistributionChart() {
   dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right;
+  dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom;
 
   // Update scales
   dx0.range([0, dWidth]);
-  dVoronoi.extent([[0, 0], [dWidth, dHeight]]);
+  dy0.range([dHeight, 0]);
   d3.select('#bottom-row svg')
-    .attr('width', dWidth + dMargin.left + dMargin.right)
-    .attr('height', dHeight + dMargin.top + dMargin.bottom);
+  .attr('width', dWidth + dMargin.left + dMargin.right)
+  .attr('height', dHeight + dMargin.top + dMargin.bottom);
 
   dXAxis.scale(dx0);
 
   d3.select('.x.axis.d')
-    .call(dXAxis);
+  .call(dXAxis);
 
   dSvg.selectAll('rect.w-beam.d')
-    .attr('x', d => dx0(+d.W))
-    .attr('height', d => dy0(+d.d));
+  .attr('x', d => dx0(+d.W))
+  .attr('height', d => dy0(+d.d));
 
   dSvg.selectAll('circle.w-beam.d')
-    .attr('cx', d => dx0(+d.W))
-    .attr('cy', d => dy0(+d.d));
+  .attr('cx', d => dx0(+d.W))
+  .attr('cy', d => dy0(+d.d));
 }
 
 function recalculateDistributionVoronoi() {
+  if (noResults()) {
+    return;
+  }
+
+  dVoronoi.extent([[0, 0], [dWidth, dHeight]]);
+
   // Generate voronoi polygons
   voronoiDiagram = dVoronoi(BEAMS);
 

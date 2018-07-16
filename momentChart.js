@@ -133,7 +133,7 @@ function mUpdateWeight() {
       .attr('d', d => mLine(d.MnValues));
 
   // Wait until the transition is done to recalculate and update the voronoi
-  setTimeout(recalculateMomentVoronoi, TRANSITION_TIME + 500);
+  setTimeout(recalculateMomentVoronoi, TRANSITION_TIME + 550);
 }
 
 function createNestedData(beamData) {
@@ -169,7 +169,7 @@ function mFilterStrokeWidth(d){
 function mMouseover(d) {
   // wBeam.parentNode.appendChild(wBeam);
   mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
-  mSvg.select('.focus').select('text').text(d.length + ' ft., ' +  + ' k-ft.');
+  mSvg.select('.focus').select('text').text(d.length + ' ft., ' + '__' + ' k-ft.');
   const moment = Math.floor(Math.round(d.Mn * PHI * 10) / 10);
   mChartTitleValue.innerHTML = `${mTitleFormat(moment)}<span class="unit">k-ft</span> <span class="accent">at</span> ${d.length}<span class="unit">ft</span>`
   showBeamDetails(d);
@@ -208,14 +208,11 @@ function mMouseout(d) {
 
 function resizeMomentChart() {
   mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right;
+  mHeight = RIGHT_ROW_2_HEIGHT - mMargin.top - mMargin.bottom;
 
   // Update Scales
   mx0.range([0, mWidth]);
   my0.range([mHeight, 0]);
-  mVoronoi
-    .x(d => mx0(d.length))
-    .y(d => my0(d.Mn * PHI))
-    .extent([[0, 0], [mWidth, mHeight]]);
 
   mXAxis.scale(mx0);
   mYAxis.scale(my0);
@@ -240,35 +237,44 @@ function resizeMomentChart() {
 }
 
 function recalculateMomentVoronoi() {
-    const beamData = W_BEAMS_FILTERED.length ? W_BEAMS_FILTERED : W_BEAMS;
-    // Format / flatten data
-    const nestedData = createNestedData(beamData);
-    // Generate voronoi polygons
-    const voronoiDiagram = mVoronoi(nestedData);
+  if (noResults()) {
+    return;
+  }
 
-    const voronoiGroup = d3.select('#middle-row')
-      .selectAll('.voronoi')
-      .selectAll('path')
-        .data(voronoiDiagram.polygons());
-;
-    // // For debugging only
-    // voronoiGroup.selectAll('circle')
-    //     .data(nestedData)
-    //   .enter().append('circle')
-    //     .attr('cx', d => mx0(d.length))
-    //     .attr('cy', d => my0(d.Mn * PHI))
-    //     .attr('r', 1)
-    //     .attr('stroke', 'black');
+  mVoronoi
+    .x(d => mx0(d.length))
+    .y(d => my0(d.Mn * PHI))
+    .extent([[0, 0], [mWidth, mHeight]]);
 
-    voronoiGroup.exit()
-      .style('opacity', 0)
-      .remove();
+  const beamData = W_BEAMS_FILTERED.length ? W_BEAMS_FILTERED : W_BEAMS;
+  // Format / flatten data
+  const nestedData = createNestedData(beamData);
+  // Generate voronoi polygons
+  const voronoiDiagram = mVoronoi(nestedData);
 
-    voronoiGroup
-      .attr('d', d => 'M' + (d.join('L') || '0,0') + 'Z');
+  const voronoiGroup = d3.select('#middle-row')
+    .selectAll('.voronoi')
+    .selectAll('path')
+      .data(voronoiDiagram.polygons());
 
-    voronoiGroup.enter().append('path')
-      .attr('d', d => 'M' + d.join('L') + 'Z')
-      .on('mouseover', d => mMouseover(d.data))
-      .on('mouseout', d => mMouseout(d.data));
+  // // For debugging only
+  // voronoiGroup.selectAll('circle')
+  //     .data(nestedData)
+  //   .enter().append('circle')
+  //     .attr('cx', d => mx0(d.length))
+  //     .attr('cy', d => my0(d.Mn * PHI))
+  //     .attr('r', 1)
+  //     .attr('stroke', 'black');
+
+  voronoiGroup.exit()
+    .style('opacity', 0)
+    .remove();
+
+  voronoiGroup
+    .attr('d', d => 'M' + (d.join('L') || '0,0') + 'Z');
+
+  voronoiGroup.enter().append('path')
+    .attr('d', d => 'M' + d.join('L') + 'Z')
+    .on('mouseover', d => mMouseover(d.data))
+    .on('mouseout', d => mMouseout(d.data));
 }

@@ -45,7 +45,7 @@ function initializeIChart(){
       .attr('class', d => `g w-group I ${d.key}`)
 
   wGroup.selectAll('rect')
-      .data(d => d.values, d => d.W)
+      .data(d => d.values)
     .enter().append('rect')
       .attr('class', d => 'w-beam X' + d.W)
       .attr('x', d => {
@@ -69,48 +69,23 @@ function initializeIChart(){
       .attr('dx', '-1em');
 
   // Voronoi chart for hover effects
-  var voronoiGroup = iSvg.append('g')
+  const voronoiGroup = iSvg.append('g')
     .attr('class', 'voronoi');
 
-  // Generate voronoi polygons
-  var voronoiDiagram = iVoronoi([].concat.apply([], W_BEAMS.map(d => d.values)));
-
-  voronoiGroup.selectAll('path')
-      .data(voronoiDiagram.polygons())
-    .enter().append('path')
-      .attr('d', d => 'M' + d.join('L') + 'Z')
-      .datum(d => d.data)
-      .on('mouseover', iMouseover)
-      .on('mouseout', iMouseout);
+  recalculateIVoronoi();
 }
 
 function iUpdateWeight() {
-  iy0.domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
+  iy0
+    .range([iHeight, 0])
+    .domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
 
-  var wGroup = iSvg.selectAll('.w-group.I')
-      .data(W_BEAMS, d => d.key)
+  const wGroup = d3.selectAll('.w-group.I')
 
-  wGroup.enter().append('g')
-    .attr('class', d => `g w-group I ${d.key}`)
+  const wBeams = wGroup.selectAll('rect')
+      .data(d => d.values)
 
-  wGroup
-    .attr('class', d => `g w-group I ${d.key}`)
-
-  var wBeams = wGroup.selectAll('rect')
-      .data(d => d.values, d => d.W)
-
-  wBeams.enter().append('rect')
-    .attr('class', d => 'w-beam X' + d.W)
-    .attr('x', function(d){
-      var section = d.AISC_Manual_Label.split('X')[0];
-      return ix0(section);
-    })
-    .attr('y', d => iy0(+d.Ix))
-    .attr('width', ix0.bandwidth())
-    .attr('height', 2)
-    .attr('fill', d => colorScale(+d.Ix / +d.W))
-
-  // Update scales only after the new dots have been entered
+  // Update scales only after the new bars have been entered
   ix0.domain(W_BEAMS_FILTERED.map(d => d.key));
   d3.selectAll('.x.axis.I')
     .transition().duration(TRANSITION_TIME).delay(500)
@@ -121,8 +96,11 @@ function iUpdateWeight() {
     .selectAll('text')
     .attr('dx', '-1em')
 
-  // Transition dots into their places
-  colorScale.domain([SPECIAL.IxPerW.Min, SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2, SPECIAL.IxPerW.Max]);
+  // Transition bars into their places
+  colorScale.domain([
+    SPECIAL.IxPerW.Min,
+    SPECIAL.IxPerW.Min + (SPECIAL.IxPerW.Max- SPECIAL.IxPerW.Min)/2, SPECIAL.IxPerW.Max
+  ]);
   wBeams.transition().duration(500)
     .attr('fill', d => colorScale(+d.Ix / +d.W))
     .attr('opacity', iFilterOpacity);
@@ -133,38 +111,20 @@ function iUpdateWeight() {
       const section = d.AISC_Manual_Label.split('X')[0];
       return ix0(section);
     })
-    .attr('y', d => iy0(+d.Ix))
-    .attr('fill', d => colorScale(+d.Ix / +d.W))
+    .attr('y', d => iy0(+d.Ix) || 0)
+    .attr('fill', d => colorScale(+d.Ix / +d.W));
 
-  wBeams.exit().remove()
-  wGroup.exit().remove()
-
-
-  const voronoiGroup = iSvg.selectAll('.voronoi');
-  const voronoiDiagram = iVoronoi([].concat.apply([], W_BEAMS_FILTERED.map(d => d.values)));
-  const voronoiLines = voronoiGroup.selectAll('path')
-      .data(voronoiDiagram.polygons());
-
-  voronoiLines.enter().append('path')
-      .attr('d', d => 'M' + d.join('L') + 'Z')
-      .datum(d => d.data)
-      .on('mouseover', iMouseover)
-      .on('mouseout', iMouseout);
-
-  voronoiLines.attr('d', d => 'M' + d.join('L') + 'Z')
-      .datum(d => d.data)
-
-  voronoiLines.exit().remove();
+  // Wait until the transition is done to recalculate and update the voronoi
+  setTimeout(recalculateIVoronoi, TRANSITION_TIME + 550);
 }
 
 function iFilterOpacity(d) {
-  var calculatedFill = colorScale(+d.Ix / +d.W);
   return validateBeam(d, {valid: 1, invalid: 0});
 }
 
 function removeHighlightBeamI(d) {
   // Return if selecting a beam currenty filtered out
-  if (!ix0(d.AISC_Manual_Label.split('X')[0])) return
+  if (typeof ix0(d.AISC_Manual_Label.split('X')[0]) !== 'number') return
   var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
   var wGroup = iSvg.select('.w-group.I.' + d.AISC_Manual_Label.split('X')[0])
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
@@ -172,14 +132,9 @@ function removeHighlightBeamI(d) {
   // Remove the horizontal cursor
   wGroup.select('.horizontal-cursor').remove();
 
-  wBeam.transition().duration(100)
-    .attr('width', ix0.bandwidth())
+  wBeam
     .attr('height', 2)
-    .attr('fill', colorScale(+beam.Ix / +d.W))
-    .attr('x', () =>{
-      const section = d.AISC_Manual_Label.split('X')[0];
-      return ix0(section);
-    })
+    .attr('fill', colorScale(+beam.Ix / +d.W));
 
   iChartTitleValue.innerHTML = '_ <span class="unit">in<sup>4</sup><span>';
 }
@@ -220,4 +175,62 @@ function iMouseout(d) {
   removeBeamDetails(d);
   removeHighlightBeamI(d);
   removeBeamDistribution(d);
+}
+
+function resizeIChart() {
+  iHeight = LEFT_ROW_3_HEIGHT - iMargin.top - iMargin.bottom;
+
+  ix0.range([iWidth, 0]);
+  iy0
+    .range([iHeight, 0])
+    .domain([SPECIAL.I.boundMin, SPECIAL.I.boundMax]);
+  iYAxis.scale(iy0);
+
+  d3.select('#bottom-container svg')
+    .attr('height', iHeight + iMargin.top + iMargin.bottom);
+
+  d3.select('.y.axis.I')
+    .call(iYAxis);
+
+  d3.selectAll('.x.axis.I')
+    .attr('transform', 'translate(0,' + (iHeight + 5) + ')');
+
+  d3.selectAll('.w-group.I').selectAll('rect')
+    .data(d => d.values)
+    .attr('y', d => iy0(+d.Ix))
+    .attr('opacity', iFilterOpacity);
+}
+
+function recalculateIVoronoi() {
+  if (noResults()) {
+    return;
+  }
+
+  iVoronoi
+    .x(d => ix0(d.AISC_Manual_Label.split('X')[0]) + ix0.bandwidth()/2)
+    .y(d => iy0(+d.Ix))
+    .extent([[0, 0], [iWidth, iHeight]]);
+
+  // Generate voronoi polygons
+  const voronoiDiagram = iVoronoi([].concat.apply([], W_BEAMS_FILTERED.length ?
+    W_BEAMS_FILTERED.map(d => d.values) :
+    W_BEAMS.map(d => d.values)
+  ));
+
+  const voronoiGroup = d3.select('#bottom-container')
+    .selectAll('.voronoi')
+    .selectAll('path')
+    .data(voronoiDiagram.polygons());
+
+  voronoiGroup.exit()
+    .style('opacity', 0)
+    .remove();
+
+  voronoiGroup
+    .attr('d', d => 'M' + (d.join('L') || '0,0') + 'Z');
+
+  voronoiGroup.enter().append('path')
+    .attr('d', d => 'M' + d.join('L') + 'Z')
+      .on('mouseover', d => iMouseover(d.data))
+      .on('mouseout', d => iMouseout(d.data));
 }

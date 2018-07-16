@@ -86,8 +86,8 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
 #selected-beam-name {
   position: absolute;
   right: 20px;
-  top: 8px;
-  font-size: 56px;
+  top: 4px;
+  font-size: 60px;
   opacity: 0.20;
 }
 

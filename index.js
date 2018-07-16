@@ -196,15 +196,29 @@ function onResize() {
   clearTimeout(resizeId);
   resizeId = setTimeout(endResize, 300);
 
+  // Update heights
+  CHARTS_HEIGHT = window.innerHeight;
+  LEFT_ROW_3_HEIGHT = CHARTS_HEIGHT - LEFT_ROW_1_HEIGHT - LEFT_ROW_2_HEIGHT - PADDING - document.querySelector('#bottom-container .chart-title').offsetHeight;
+  RIGHT_ROW_1_HEIGHT = document.getElementById('top-row').offsetHeight + 3 * PADDING + 20;
+  RIGHT_ROW_2_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT - document.querySelector('#middle-row .chart-title').offsetHeight) * 0.75;
+  RIGHT_ROW_3_HEIGHT = (CHARTS_HEIGHT - RIGHT_ROW_1_HEIGHT - document.querySelector('#middle-row .chart-title').offsetHeight) * 0.25;
+  // Update widths
   RIGHT_CHARTS_WIDTH = document.getElementById('right-column').offsetWidth - PADDING;
 
+  resizeIChart();
   resizeDistributionChart();
   resizeMomentChart();
 }
 
 function endResize() {
+  recalculateIVoronoi();
   recalculateDistributionVoronoi();
   recalculateMomentVoronoi();
+}
+
+function noResults() {
+  const hasFilterSelected = USER_MOMENT_MIN || USER_WEIGHT_MAX || USER_I_MIN;
+  return hasFilterSelected && !W_BEAMS_FILTERED.length;
 }
 
 function calculateSpecialProperties(beams, options){
@@ -215,7 +229,7 @@ function calculateSpecialProperties(beams, options){
   var maxWeight = !!USER_WEIGHT_MAX ? Math.max(8, USER_WEIGHT_MAX) : Infinity;
   var minWeight = !!USER_WEIGHT_MIN ? Math.min(900, USER_WEIGHT_MIN) : 0;
   var maxI = !!USER_I_MAX ? Math.max(11, USER_I_MAX) : Infinity;
-  var minI = !!USER_I_MIN ? Math.min(6000, USER_I_MIN) : 0;
+  var minI = !!USER_I_MIN ? Math.min(60000, USER_I_MIN) : 0;
 
   var groupDimensions = {}
   var special = beams.slice().reduce((pv, cv) => {
@@ -335,13 +349,13 @@ function filterBeams(){
     const groupValues = [];
     for (var i = 0; i < group.values.length; i++){
       const beam = group.values[i];
-      if (validateBeam(beam, {valid: true, invalid: false, nullState: true})) groupValues.push(beam);
+      if (validateBeam(beam, {valid: true, invalid: false, nullState: true})) {
+        groupValues.push(beam);
+      }
     }
     return {key: group.key, values: groupValues};
   })
-  .filter(function(group){
-    return group.values.length
-  })
+  .filter(group => group.values.length);
 }
 
 d3.selectAll('input').on('change', updateDesignType);
