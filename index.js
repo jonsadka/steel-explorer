@@ -65,11 +65,11 @@ let resizeId = null;
 })();
 
 function isWSection (data){
-  return (data.key.slice(0,1) === 'W') && (data.key.slice(0,2) !== 'WT');
+  return (data.key.slice(0, 1) === 'W') && (data.key.slice(0, 2) !== 'WT');
 }
 
 function calculateProperties (beamGroup){
-  beamGroup.values.forEach(function(bm){
+  beamGroup.values.forEach(bm => {
     bm.Mp = DEFAULT_Fy * +bm.Zx; // kip-in
     bm.Lp = 1.76 * +bm.ry * Math.sqrt(DEFAULT_E / DEFAULT_Fy) / 12; // ft. [AISC 16.1-48 (F2-5)]
     var c = 1;                                                 // [AISC 16.1-48 (F2-8a)]
@@ -94,8 +94,8 @@ function calculateProperties (beamGroup){
       }
     }
     // Future optimization: Skip over every other point if you are in the straight line case (i.e. case 1)
-    bm.MnValues = d3.range(0, MAX_UNBRACED, UNBRACED_STEP).map(function(length){
-      return { length: length, Mn: bm.MnFunction(length)/12 }
+    bm.MnValues = d3.range(0, MAX_UNBRACED, UNBRACED_STEP).map(length => {
+      return { length: length, Mn: bm.MnFunction(length) / 12 }
     })
   })
 }
