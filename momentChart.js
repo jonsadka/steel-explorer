@@ -112,7 +112,7 @@ function initializeMomentChart(){
       .attr('y', 6)
       .attr('dy', '-1em')
       .attr('text-anchor', 'end')
-      .text('Moment [φ not yet applied]');
+      .text('φ not yet applied');
 }
 
 function updateMomentChart() {
@@ -166,7 +166,7 @@ function createNestedData(beamData) {
 }
 
 function mFilterOpacity(d){
-  return validateBeam(d, {valid: 0.8, invalid: 0.07, nullState: NULL_OPACITY});
+  return validateBeam(d, {valid: 0.7, invalid: 0.07, nullState: NULL_OPACITY});
 }
 
 function mFilterStroke(d){

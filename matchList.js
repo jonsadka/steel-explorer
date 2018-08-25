@@ -16,10 +16,12 @@ function initializeMatchList(){
                         .slice(0, MATCHES_SHOWN);
 
   var tr = table.insertRow();
-  for(var i = 0; i < MATCHES_SHOWN; i++){
-    var td = tr.insertCell();
-    var beam = wByWeight[i];
+  for(let i = 0; i < MATCHES_SHOWN; i++){
+    let td = tr.insertCell();
+    let beam = wByWeight[i];
     td.appendChild(createDiv('<div class="primary">' + beam.W + ' plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div>'));
+    td.addEventListener('mouseenter', () => matchMouseover(beam));
+    td.addEventListener('mouseleave', () => matchMouseout(beam));
     if (i === 0){ td.setAttribute('class', 'best-beam');}
   }
   var tr = table.insertRow();
@@ -29,10 +31,12 @@ function initializeMatchList(){
   td.setAttribute('colspan', MATCHES_SHOWN);
 
   var tr = table.insertRow();
-  for(var i = 0; i < MATCHES_SHOWN; i++){
-    var td = tr.insertCell();
-    var beam = wByDepth[i];
+  for(let i = 0; i < MATCHES_SHOWN; i++){
+    let td = tr.insertCell();
+    let beam = wByDepth[i];
     td.appendChild(createDiv('<div class="primary">' + beam.d + ' in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div>'));
+    td.addEventListener('mouseenter', () => matchMouseover(beam));
+    td.addEventListener('mouseleave', () => matchMouseout(beam));
     if (i === 0){ td.setAttribute('class', 'best-beam');}
   }
   var tr = table.insertRow();
@@ -52,19 +56,22 @@ function createDiv(html){
 }
 
 function updateMatchList(){
-  var table = document.getElementById('match-list-table');
-  var rows = table.rows;
-  var sortedBeams = getOptimalBeams(W_BEAMS_FILTERED);
+  const table = document.getElementById('match-list-table');
+  const rows = table.rows;
+  const sortedBeams = getOptimalBeams(W_BEAMS_FILTERED);
 
-  for (var i = 0; i < rows.length; i++){
+  for (let i = 0; i < rows.length; i++){
     // Skip over title rows
     if (i === 1 || i === 3) continue;
 
-    var row = rows[i];
-    for(var j = 0; j < row.cells.length; j++){
-      var cell = row.cells[j];
+    const row = rows[i];
+    for(let j = 0; j < row.cells.length; j++){
+      // Clone the cells to remove the previous event listener
+      const oldCell = row.cells[j];
+      const cell = oldCell.cloneNode(true);
+      oldCell.parentNode.replaceChild(cell, oldCell);
       if (i === 0){
-        var beam = sortedBeams.weight[j];
+        let beam = sortedBeams.weight[j];
         if (beam){
           cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.W + ' plf' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
         } else if (j === 0) {
@@ -72,8 +79,10 @@ function updateMatchList(){
         } else {
           cell.innerHTML = '';
         }
+        cell.addEventListener('mouseenter', () => matchMouseover(beam));
+        cell.addEventListener('mouseleave', () => matchMouseout(beam));
       } else {
-        var beam = sortedBeams.depth[j];
+        let beam = sortedBeams.depth[j];
         if (beam){
           cell.innerHTML = '<div class="efficient-beam"><div class="primary">' + beam.d + ' in' + '</div><div class="secondary">' + beam.AISC_Manual_Label + '</div></div>';
         } else if (j === 0) {
@@ -81,6 +90,8 @@ function updateMatchList(){
         } else {
           cell.innerHTML = '';
         }
+        cell.addEventListener('mouseenter', () => matchMouseover(beam));
+        cell.addEventListener('mouseleave', () => matchMouseout(beam));
       }
     }
   }
@@ -96,4 +107,24 @@ function getOptimalBeams(filteredBeams){
     depth: wBeamsList.sort((a, b) => +a.d - +b.d)
                       .slice(0, MATCHES_SHOWN + 1)
   }
+}
+
+function matchMouseover(d) {
+  if (!d) {
+    return;
+  }
+  showBeamDetails(d);
+  showBeamProfile(d);
+  highlightBeamI(d);
+  highlightBeamDistribution(d);
+}
+
+function matchMouseout(d) {
+  removeBeamProfile();
+  removeBeamDistribution();
+  if (!d) {
+    return;
+  }
+  removeBeamDetails(d);
+  removeHighlightBeamI(d);
 }

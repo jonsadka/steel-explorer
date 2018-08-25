@@ -62,6 +62,7 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
 }
 
 .efficient-beam {
+  cursor: pointer;
   margin-right: 30px;
 }
 .primary {
