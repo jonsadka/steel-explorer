@@ -230,9 +230,16 @@ input {
   text-transform: uppercase;
 }
 
+.inputs {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .input-container {
   display: inline-block;
-  width: 154px;
+  flex-grow: 1;
+  width: 33%;
+  max-width: 220px;
 }
 
 .input-container .label {
@@ -250,10 +257,24 @@ input {
   color: white;
   font-size: 20px;
   letter-spacing: 5px;
-  width: 100%;
+  /* padding-right: 35px; */
+  width: 154px;
 }
 .input-container input:focus {
   outline: none;
+}
+.suffix {
+  color: #9B9B9B;
+  font-size: 12px;
+  font-weight: 100;
+  letter-spacing: 3px;
+  text-transform: none;
+}
+@media screen and (max-width: 1080px) {
+  .suffix {
+    display: none;
+    font-size: 10px;
+  }
 }
 
 input[type=number]::-webkit-inner-spin-button,
