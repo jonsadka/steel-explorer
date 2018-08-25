@@ -36,6 +36,7 @@ var PHI = 0.9;
 
 const CUSTOM_BLUE = '#344A82';
 const CUSTOM_GREY = '#878B9B';
+const TILE_BACKGROUND = '#E2E7EF';
 
 let resizeId = null;
 

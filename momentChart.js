@@ -1,4 +1,5 @@
 const NULL_OPACITY = 0.15;
+const CROSSHAIR_RADIUS = 3;
 
 let mMargin = {top: 20, right: 20, bottom: 0, left: 20},
     mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right,
@@ -65,19 +66,29 @@ function initializeMomentChart(){
   const voronoiGroup = mSvg.append('g')
     .attr('class', 'voronoi');
 
-  setTimeout(() => {
-    recalculateMomentVoronoi();
+  // Crosshair
+  const mFocus = mSvg.append('g')
+  .attr('transform', 'translate(-100,-100)')
+  .attr('class', 'focus');
 
-    const mFocus = mSvg.append('g')
-        .attr('transform', 'translate(-100,-100)')
-        .attr('class', 'focus');
+  mFocus.append('circle')
+    .attr('stroke', CUSTOM_BLUE)
+    .attr('stroke-width', 2)
+    .attr('fill', TILE_BACKGROUND)
+    .attr('r', CROSSHAIR_RADIUS);
 
-    mFocus.append('circle')
-        .attr('r', 3.5);
+  mFocus.append('rect')
+    .attr('class', 'horizontal')
+    .attr('height', 2)
+    .attr('fill', CUSTOM_BLUE)
+    .attr('y', 0);
 
-    mFocus.append('text')
-        .attr('y', -10);
-  }, 0);
+  mFocus.append('rect')
+    .attr('class', 'vertical')
+    .attr('fill', CUSTOM_BLUE)
+    .attr('width', 2);
+
+  setTimeout(recalculateMomentVoronoi, 0);
 
   mSvg.append('g')
       .attr('class', 'x axis moment')
@@ -166,10 +177,21 @@ function mFilterStrokeWidth(d){
   return validateBeam(d, {valid: 2, invalid: 1});
 }
 
+const HORIZONTAL_CROSSHAIR_LENGTH = 50;
+const VERTICAL_CROSSHAIR_LENGTH = 20;
+
 function mMouseover(d) {
   // wBeam.parentNode.appendChild(wBeam);
-  mSvg.select('.focus').attr('transform', 'translate(' + mx0(d.length) + ',' + my0(d.Mn * PHI) + ')');
-  mSvg.select('.focus').select('text').text(d.length + ' ft., ' + '__' + ' k-ft.');
+  const xDistance = mx0(d.length);
+  const yDistance = my0(d.Mn * PHI);
+  mSvg.select('.focus')
+    .attr('transform', 'translate(' + xDistance + ',' + yDistance + ')');
+  mSvg.select('.focus .horizontal')
+    .attr('width', HORIZONTAL_CROSSHAIR_LENGTH)
+    .attr('x', -xDistance);
+  mSvg.select('.focus .vertical')
+    .attr('height', VERTICAL_CROSSHAIR_LENGTH)
+    .attr('y', mHeight - yDistance - VERTICAL_CROSSHAIR_LENGTH);
   const moment = Math.floor(Math.round(d.Mn * PHI * 10) / 10);
   mChartTitleValue.innerHTML = `${mTitleFormat(moment)}<span class="unit">k-ft</span> <span class="accent">at</span> ${d.length}<span class="unit">ft</span>`
   showBeamDetails(d);
@@ -196,7 +218,8 @@ function removeBeamDetails(d){
 }
 
 function mMouseout(d) {
-  mSvg.select('.focus').attr('transform', 'translate(-100,-100)');
+  mSvg.select('.focus')
+    .attr('transform', 'translate(-100, -100)');
 
   mChartTitleValue.innerHTML = '_ <span class="unit">k-ft</span> <span class="accent">at</span> _ <span class="unit">ft</span>';
 

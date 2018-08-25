@@ -126,6 +126,12 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
   padding: 60px 30px 30px 0;
 }
 
+#bottom-container svg,
+#middle-row svg,
+#bottom-row svg {
+  cursor: pointer;
+}
+
 .axis path,
 .axis line {
   fill: none;
@@ -188,7 +194,6 @@ path.beam--hover {
 #bottom-row .axis line {
   stroke-width: 1;
   stroke: #878B9B;
-  /* stroke-dasharray: 2; */
 }
 
 /*hide the horizontal line of x axis*/
@@ -249,6 +254,7 @@ input {
 .input-container input:focus {
   outline: none;
 }
+
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;

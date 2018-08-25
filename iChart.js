@@ -130,7 +130,7 @@ function removeHighlightBeamI(d) {
   var wBeam = wGroup.select('.w-beam.X' + escapeCharacter(d.W))
 
   // Remove the horizontal cursor
-  wGroup.select('.horizontal-cursor').remove();
+  iSvg.select('.horizontal-cursor').remove();
 
   wBeam
     .attr('height', 2)
@@ -152,12 +152,12 @@ function highlightBeamI(d) {
     .attr('height', 3)
 
   var format = d3.format(',');
-  wGroup.append('rect')
+  iSvg.append('rect')
     .attr('class', d => 'w-beam horizontal-cursor X' + beam.W)
     .attr('fill', CUSTOM_BLUE)
     .attr('y', d => iy0(+beam.Ix) + 1)
-    .attr('height', 1)
-    .attr('width', iWidth)
+    .attr('height', 2)
+    .attr('width', HORIZONTAL_CROSSHAIR_LENGTH)
     .attr('x', 0)
 
   iChartTitleValue.innerHTML = format(+beam.Ix) + '<span class="unit">in<sup>4</sup><span>';
