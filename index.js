@@ -43,6 +43,13 @@ let resizeId = null;
 // HACK
 (function(){
   d3.csv('https://jonsadka.github.io/steel-explorer/aisc-shapes-database-v15.0.csv').then((data) => {
+    data = data.map(d => (d.AISC_Manual_Label === 'W40X294' ?
+      // HACK: W40X294 and W40X294 have the same Ix. Fuzz one so they dont collide
+      // in the voronoi diagram
+      {...d, Ix: String(Number(d.Ix) + 0.1)} :
+      d
+    ));
+
     W_BEAMS_MAP = data.reduce((map, cv) => {
       if (cv.Type === 'W') map[cv.AISC_Manual_Label] = cv;
       return map;

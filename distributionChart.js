@@ -28,7 +28,7 @@ var dXAxis = d3.axisTop()
     .tickSize(-8)
     .tickFormat(d => d + ' plf')
     .tickPadding(-8)
-    .tickValues([100, 200, 300, 400, 500, 600, 700]);
+    .tickValues([100, 200, 300, 400, 500, 600, 700, 800, 900]);
 
 var dSvg = d3.select('#bottom-row').append('svg')
     .attr('width', dWidth + dMargin.left + dMargin.right)
@@ -61,7 +61,7 @@ var dSvg = d3.select('#bottom-row').append('svg')
 // }
 
 function initializeDistributionChart(){
-  dx0.domain([0, 800]);
+  dx0.domain([0, 950]);
   dy0.domain([50, 0]);
 
   const beamsData = beamsDataForDistributionChart()
