@@ -159,7 +159,7 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
 
 path.beam--hover {
   stroke: #344A82;
-  stroke-width: 6px;
+  stroke-width: 3px;
   stroke-opacity: 1;
 }
 
@@ -238,7 +238,7 @@ input {
 .input-container {
   display: inline-block;
   flex-grow: 1;
-  width: 33%;
+  width: calc(25% - 37px);
   max-width: 220px;
 }
 
@@ -257,12 +257,18 @@ input {
   color: white;
   font-size: 20px;
   letter-spacing: 5px;
+  -webkit-appearance: none;
   /* padding-right: 35px; */
   width: 154px;
 }
-.input-container input:focus {
+.input-container :focus {
   outline: none;
 }
+.input-container.dropdown {
+  flex-grow: 0;
+  width: 110px;
+}
+
 .suffix {
   color: #9B9B9B;
   font-size: 12px;
@@ -270,10 +276,15 @@ input {
   letter-spacing: 3px;
   text-transform: none;
 }
-@media screen and (max-width: 1080px) {
+@media screen and (max-width: 1190px) {
   .suffix {
     display: none;
-    font-size: 10px;
+    font-size: 8px;
+  }
+}
+@media screen and (max-width: 1070px) {
+  .amount {
+    display: none;
   }
 }
 
@@ -285,4 +296,18 @@ input[type=number]::-webkit-outer-spin-button {
 
 .input-container input::-webkit-input-placeholder {
   color: white;
+}
+
+.attribution {
+  float: right;
+}
+
+a {
+  color: #878B9B;
+  margin-top: 5px;
+  font-size: 10px;
+  font-weight: 100;
+  letter-spacing: 2px;
+  text-decoration: none;
+  text-transform: uppercase;
 }

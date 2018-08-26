@@ -18,7 +18,7 @@ let my0 = d3.scaleLinear()
 
 let mVoronoi = d3.voronoi()
     .x(d => mx0(d.length))
-    .y(d => my0(d.Mn * PHI))
+    .y(d => my0(d.Mn))
     .extent([
       [0, 0],
       [mWidth, mHeight]
@@ -33,7 +33,7 @@ let mYAxis = d3.axisLeft()
 
 let mLine = d3.line()
     .x(d => mx0(d.length))
-    .y(d => my0(d.Mn * PHI));
+    .y(d => my0(d.Mn));
 
 const mSvg = d3.select('#middle-row').append('svg')
     .attr('width', mWidth + mMargin.left + mMargin.right)
@@ -43,7 +43,7 @@ const mSvg = d3.select('#middle-row').append('svg')
 
 function initializeMomentChart(){
   mx0.domain([0, MAX_UNBRACED - 1]);
-  my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
+  my0.domain([SPECIAL.Mn.boundMin, SPECIAL.Mn.boundMax]);
 
   // Actual line chart
   const wGroup = mSvg.selectAll('.w-group.m')
@@ -81,11 +81,12 @@ function initializeMomentChart(){
     .attr('class', 'horizontal')
     .attr('height', 2)
     .attr('fill', CUSTOM_BLUE)
-    .attr('y', 0);
+    .attr('y', -1);
 
   mFocus.append('rect')
     .attr('class', 'vertical')
     .attr('fill', CUSTOM_BLUE)
+    .attr('x', -1)
     .attr('width', 2);
 
   setTimeout(recalculateMomentVoronoi, 0);
@@ -106,17 +107,12 @@ function initializeMomentChart(){
     .call(mYAxis)
     .selectAll('text')
       .attr('dx', '1em')
-
-  mSvg.append('text')
-      .attr('transform', 'rotate(-90)')
-      .attr('y', 6)
-      .attr('dy', '-1em')
-      .attr('text-anchor', 'end')
-      .text('φ not yet applied');
 }
 
 function updateMomentChart() {
-  my0.domain([SPECIAL.Mn.boundMin * PHI, SPECIAL.Mn.boundMax * PHI]);
+  my0.domain([SPECIAL.Mn.boundMin, SPECIAL.Mn.boundMax]);
+  mVoronoi.y(d => my0(d.Mn * USER_SAFTEY_FACTOR));
+  mLine.y(d => my0(d.Mn * USER_SAFTEY_FACTOR));
 
   d3.selectAll('.y.axis.moment')
   .transition().duration(TRANSITION_TIME).delay(500)
@@ -126,7 +122,7 @@ function updateMomentChart() {
 
   mLine = d3.line()
     .x(d => mx0(d.length))
-    .y(d => my0(d.Mn * PHI));
+    .y(d => my0(d.Mn * USER_SAFTEY_FACTOR));
 
   const wGroup = mSvg.selectAll('.w-group')
       .data(W_BEAMS)
@@ -144,12 +140,12 @@ function updateMomentChart() {
       .attr('d', d => mLine(d.MnValues));
 
   // Wait until the transition is done to recalculate and update the voronoi
-  setTimeout(recalculateMomentVoronoi, TRANSITION_TIME + 550);
+  setTimeout(() => recalculateMomentVoronoi(USER_SAFTEY_FACTOR), TRANSITION_TIME + 550);
 }
 
-function createNestedData(beamData) {
+function createNestedData(beamData, USER_SAFTEY_FACTOR) {
   return d3.nest()
-    .key(d => mx0(d.length) + ',' + my0(d.Mn * PHI))
+    .key(d => mx0(d.length) + ',' + my0(d.Mn * USER_SAFTEY_FACTOR))
     .rollup(v => v[0])
     .entries(d3.merge(beamData.map(d =>
       d3.merge(d.values.map(d => {
@@ -183,7 +179,7 @@ const VERTICAL_CROSSHAIR_LENGTH = 20;
 function mMouseover(d) {
   // wBeam.parentNode.appendChild(wBeam);
   const xDistance = mx0(d.length);
-  const yDistance = my0(d.Mn * PHI);
+  const yDistance = my0(d.Mn * USER_SAFTEY_FACTOR);
   mSvg.select('.focus')
     .attr('transform', 'translate(' + xDistance + ',' + yDistance + ')');
   mSvg.select('.focus .horizontal')
@@ -192,7 +188,7 @@ function mMouseover(d) {
   mSvg.select('.focus .vertical')
     .attr('height', VERTICAL_CROSSHAIR_LENGTH)
     .attr('y', mHeight - yDistance - VERTICAL_CROSSHAIR_LENGTH);
-  const moment = Math.floor(Math.round(d.Mn * PHI * 10) / 10);
+  const moment = Math.floor(Math.round(d.Mn * USER_SAFTEY_FACTOR * 10) / 10);
   mChartTitleValue.innerHTML = `${mTitleFormat(moment)}<span class="unit">k-ft</span> <span class="accent">at</span> ${d.length}<span class="unit">ft</span>`
   showBeamDetails(d);
   showBeamProfile(d);
@@ -230,6 +226,7 @@ function mMouseout(d) {
 }
 
 function resizeMomentChart() {
+
   mWidth = RIGHT_CHARTS_WIDTH - mMargin.left - mMargin.right;
   mHeight = RIGHT_ROW_2_HEIGHT - mMargin.top - mMargin.bottom;
 
@@ -241,7 +238,7 @@ function resizeMomentChart() {
   mYAxis.scale(my0);
   mLine
     .x(d => mx0(d.length))
-    .y(d => my0(d.Mn * PHI));
+    .y(d => my0(d.Mn * USER_SAFTEY_FACTOR));
 
   d3.select('#middle-row svg')
     .attr('width', mWidth + mMargin.left + mMargin.right)
@@ -263,19 +260,19 @@ function resizeMomentChart() {
       .attr('d', d => mLine(d.MnValues));
 }
 
-function recalculateMomentVoronoi() {
+function recalculateMomentVoronoi(USER_SAFTEY_FACTOR = 1) {
   if (noResults()) {
     return;
   }
 
   mVoronoi
     .x(d => mx0(d.length))
-    .y(d => my0(d.Mn * PHI))
+    .y(d => my0(d.Mn * USER_SAFTEY_FACTOR))
     .extent([[0, 0], [mWidth, mHeight]]);
 
   const beamData = W_BEAMS_FILTERED.length ? W_BEAMS_FILTERED : W_BEAMS;
   // Format / flatten data
-  const nestedData = createNestedData(beamData);
+  const nestedData = createNestedData(beamData, USER_SAFTEY_FACTOR);
   // Generate voronoi polygons
   const voronoiDiagram = mVoronoi(nestedData);
 
@@ -289,7 +286,7 @@ function recalculateMomentVoronoi() {
   //     .data(nestedData)
   //   .enter().append('circle')
   //     .attr('cx', d => mx0(d.length))
-  //     .attr('cy', d => my0(d.Mn * PHI))
+  //     .attr('cy', d => my0(d.Mn * USER_SAFTEY_FACTOR))
   //     .attr('r', 1)
   //     .attr('stroke', 'black');
 

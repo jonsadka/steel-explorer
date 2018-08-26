@@ -156,7 +156,7 @@ function highlightBeamI(d) {
     .attr('class', d => 'w-beam horizontal-cursor X' + beam.W)
     .attr('fill', CUSTOM_BLUE)
     .attr('y', d => iy0(+beam.Ix) + 1)
-    .attr('height', 2)
+    .attr('height', 1)
     .attr('width', HORIZONTAL_CROSSHAIR_LENGTH)
     .attr('x', 0)
 

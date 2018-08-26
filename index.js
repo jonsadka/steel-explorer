@@ -13,6 +13,7 @@ var USER_WEIGHT_MAX = null;
 var USER_WEIGHT_MIN = null;
 var USER_I_MAX = null;
 var USER_I_MIN = null;
+var USER_SAFTEY_FACTOR = 1;
 
 // HEIGHTS
 var CHARTS_HEIGHT = window.innerHeight;
@@ -32,7 +33,8 @@ var W_BEAMS = [];
 var W_BEAMS_MAP = {};
 var W_BEAMS_FILTERED = [];
 var SPECIAL = null;
-var PHI = 0.9;
+const PHI = 0.9;
+const OMEGA = 1.67;
 
 const CUSTOM_BLUE = '#344A82';
 const CUSTOM_GREY = '#878B9B';
@@ -77,33 +79,41 @@ function isWSection (data){
 
 function calculateProperties (beamGroup){
   beamGroup.values.forEach(bm => {
+    const c = 1;                                                     // [AISC 16.1-48 (F2-8a)]
     bm.Mp = DEFAULT_Fy * +bm.Zx; // kip-in
     bm.Lp = 1.76 * +bm.ry * Math.sqrt(DEFAULT_E / DEFAULT_Fy) / 12; // ft. [AISC 16.1-48 (F2-5)]
-    var c = 1;                                                 // [AISC 16.1-48 (F2-8a)]
-    bm.Lr = 1.95 * +bm.rts * (DEFAULT_E / (0.7 * DEFAULT_Fy))  // ft. [AISC 16.1-48 (F2-6)]
-                  * Math.sqrt(+bm.J * c / (+bm.Sx * +bm.ho))
-                  * Math.sqrt(1 + Math.sqrt(1 + 6.76 * Math.pow(
-                    0.7 * DEFAULT_Fy * +bm.Sx * +bm.ho / (DEFAULT_E * +bm.J * c)
-                  , 2))) / 12;
-    // Returns Mn
+    bm.Lr = 1.95 * +bm.rts * (DEFAULT_E / (0.7 * DEFAULT_Fy)) // ft. [AISC 16.1-48 (F2-6)]
+        * Math.sqrt(
+          (+bm.J * c / (+bm.Sx * +bm.ho)) +
+          Math.sqrt(
+            Math.pow(+bm.J * c / (+bm.Sx * +bm.ho), 2) +
+            6.76 * Math.pow(0.7 * DEFAULT_Fy / DEFAULT_E, 2)
+          )
+        ) / 12;
+    // Returns Mn in kip-ft
     // Lb expected in feet
     bm.MnFunction = function(Lb){
       if (Lb <= bm.Lp){
         return bm.Mp;
-      } else if (bm.Lp < Lb && Lb <= bm.Lr){
-        return Math.min(bm.Mp,
-          DEFAULT_Cb * (bm.Mp - (bm.Mp - 0.7 * DEFAULT_Fy * +bm.Sx) * (Lb - bm.Lp)/(bm.Lr - bm.Lp))
+      } else if (bm.Lp < Lb && Lb <= bm.Lr) { // [AISC 16.1-48 (F2-2)]
+        return Math.min(
+          bm.Mp,
+          DEFAULT_Cb *
+            (bm.Mp - (bm.Mp - 0.7 * DEFAULT_Fy * +bm.Sx) * (Lb - bm.Lp)/(bm.Lr - bm.Lp))
         );
-      } else {
-      var Fcr = (DEFAULT_Cb * Math.pow(Math.PI, 2) * DEFAULT_E / Math.pow(Lb*12/+bm.rts, 2)) // kip-in. [AISC 16.1-47 (F2-4)]
-                * Math.sqrt(1 + 0.078 * +bm.J * c / (+bm.Sx * +bm.ho) * Math.pow(Lb*12/+bm.rts, 2));
+      } else { // [AISC 16.1-47 (F2-4)]
+        const Fcr =  // in ksi
+          (DEFAULT_Cb * Math.pow(Math.PI, 2) * DEFAULT_E / Math.pow(Lb * 12 / +bm.rts, 2)) *
+          Math.sqrt(
+            1 + (0.078 * +bm.J * c / (+bm.Sx * +bm.ho) * Math.pow(Lb * 12/ +bm.rts, 2))
+          );
         return Math.min(bm.Mp, Fcr * +bm.Sx);
       }
     }
     // Future optimization: Skip over every other point if you are in the straight line case (i.e. case 1)
     bm.MnValues = d3.range(0, MAX_UNBRACED, UNBRACED_STEP).map(length => {
       return { length: length, Mn: bm.MnFunction(length) / 12 }
-    })
+    });
   })
 }
 
@@ -111,8 +121,8 @@ function validateBeam (d, options){
   var passedValid = false;
   if (USER_MOMENT_MAX || USER_MOMENT_MIN){
     // SHOULD TECHNICALLY INTERPOLATE
-    if (USER_MOMENT_MAX && +d.MnValues[d.MnValues.length - 1].Mn > USER_MOMENT_MAX) return options.invalid;
-    if (USER_MOMENT_MIN && +d.MnValues[0].Mn < USER_MOMENT_MIN) return options.invalid;
+    if (USER_MOMENT_MAX && (+d.MnValues[d.MnValues.length - 1].Mn * USER_SAFTEY_FACTOR) > USER_MOMENT_MAX) return options.invalid;
+    if (USER_MOMENT_MIN && (+d.MnValues[0].Mn * USER_SAFTEY_FACTOR) < USER_MOMENT_MIN) return options.invalid;
     passedValid = true;
   }
   if (USER_WEIGHT_MIN || USER_WEIGHT_MAX){
@@ -134,7 +144,7 @@ function updateMoment(){
   // var NEW_USER_MOMENT_MAX = document.getElementById('moment-max-input') ? +document.getElementById('moment-max-input').value : Infinity;
 
   // Don't update when a value is out of bounds
-  const GREATEST_BEAM_MOMENT = 12125;
+  const GREATEST_BEAM_MOMENT = 17208;
   if (NEW_USER_MOMENT_MIN > GREATEST_BEAM_MOMENT) return;
 
   // Don't update when the min is greater than the max
@@ -175,7 +185,7 @@ function updateI() {
   // var NEW_USER_I_MAX = document.getElementById('I-max-input') ? +document.getElementById('I-max-input').value : Infinity;
 
   // Don't update when a value is out of bounds
-  const GREATEST_BEAM_I = 50600;
+  const GREATEST_BEAM_I = 73000;
   if (NEW_USER_I_MIN > GREATEST_BEAM_I) return;
 
   // Don't update when the min is greater than the max
@@ -187,6 +197,16 @@ function updateI() {
 
   USER_I_MIN = NEW_USER_I_MIN;
   // USER_I_MAX = NEW_USER_I_MAX;
+  updateVisual();
+}
+
+function updateSafteyFactor() {
+  const safteyFactor = document.getElementById('saftey-factor-dropdown');
+  const {selectedIndex} = safteyFactor.options;
+  const checkedId = safteyFactor.options[selectedIndex].value;
+  USER_SAFTEY_FACTOR = checkedId === 'LRFD' ? PHI :
+    checkedId === 'ASD' ? (1 / OMEGA) :
+      1;
   updateVisual();
 }
 
@@ -238,11 +258,11 @@ function calculateSpecialProperties(beams, options){
   var startLength = START_LENGTH || 0;
   var endLength = MAX_UNBRACED;
   var maxMoment = !!USER_MOMENT_MAX ? Math.max(1, USER_MOMENT_MAX) : Infinity;
-  var minMoment = !!USER_MOMENT_MIN ? Math.min(13000, USER_MOMENT_MIN) : 0;
+  var minMoment = !!USER_MOMENT_MIN ? Math.min(17200, USER_MOMENT_MIN) : 0;
   var maxWeight = !!USER_WEIGHT_MAX ? Math.max(8, USER_WEIGHT_MAX) : Infinity;
-  var minWeight = !!USER_WEIGHT_MIN ? Math.min(900, USER_WEIGHT_MIN) : 0;
+  var minWeight = !!USER_WEIGHT_MIN ? Math.min(925, USER_WEIGHT_MIN) : 0;
   var maxI = !!USER_I_MAX ? Math.max(11, USER_I_MAX) : Infinity;
-  var minI = !!USER_I_MIN ? Math.min(60000, USER_I_MIN) : 0;
+  var minI = !!USER_I_MIN ? Math.min(73000, USER_I_MIN) : 0;
 
   var groupDimensions = {}
   var special = beams.slice().reduce((pv, cv) => {
@@ -253,7 +273,7 @@ function calculateSpecialProperties(beams, options){
       var shouldUpdateI = false;
       var shouldUpdateIxPerW = false;
       var shouldUpdateDimensions = false;
-      if (minMoment <= +cv.MnValues[0].Mn && +cv.MnValues[0].Mn <= maxMoment){
+      if (minMoment <= (+cv.MnValues[0].Mn * USER_SAFTEY_FACTOR) && (+cv.MnValues[0].Mn * USER_SAFTEY_FACTOR) <= maxMoment){
         if (minWeight <= +cv.W && +cv.W <= maxWeight){
           if (minI <= +cv.Ix && +cv.Ix <= maxI){
             shouldUpdateMn = true;
@@ -266,8 +286,8 @@ function calculateSpecialProperties(beams, options){
       }
 
       if (shouldUpdateMn){
-        pv.Mn.Min = Math.min(pv.Mn.Min, cv.MnFunction(endLength));
-        pv.Mn.Max = Math.max(pv.Mn.Max, cv.MnFunction(startLength));
+        pv.Mn.Min = Math.min(pv.Mn.Min, cv.MnFunction(endLength) * USER_SAFTEY_FACTOR);
+        pv.Mn.Max = Math.max(pv.Mn.Max, cv.MnFunction(startLength) * USER_SAFTEY_FACTOR);
       }
       if (shouldUpdateW){
         pv.W.Min = Math.min(pv.W.Min, +cv.W);
@@ -353,7 +373,6 @@ function calculateSpecialProperties(beams, options){
   special.d.boundMax = Math.ceil(special.d.Max + special.d.Max * 0.05);
   special.bf.boundMin = Math.floor(special.bf.Min - special.bf.Min * 0.05);
   special.bf.boundMax = Math.ceil(special.bf.Max + special.bf.Max * 0.05);
-  console.log('~~SPECIAL', special);
   return special;
 }
 
@@ -369,17 +388,6 @@ function filterBeams(){
     return {key: group.key, values: groupValues};
   })
   .filter(group => group.values.length);
-}
-
-d3.selectAll('input').on('change', updateDesignType);
-
-function updateDesignType() {
-  var designType = this.value;
-  if (designType === 'LRFD'){
-    PHI = 0.9;
-  } else if (designType === 'ASD'){
-    PHI = 999999;
-  }
 }
 
 function escapeCharacter(string){

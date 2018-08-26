@@ -2,7 +2,7 @@ var dMargin = {top: 0, right: 20, bottom: 20, left: 20},
     dWidth = RIGHT_CHARTS_WIDTH - dMargin.left - dMargin.right,
     dHeight = RIGHT_ROW_3_HEIGHT - dMargin.top - dMargin.bottom;
 
-const NULL_DISTRIBUTION_OPACITY = 0.25;
+const NULL_DISTRIBUTION_OPACITY = 0.15;
 const NULL_RADIUS = 1;
 const VALID_BEAM_RADIUS = 2;
 const HOVERED_BEAM_RADIUS = 4;

@@ -31,31 +31,40 @@
 
       <div class="inputs">
         <div class="input-container">
-          <input class="input-item min" type="number" lang="en-150" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Add Min">
-          <div class="label">Min Moment <span class="suffix">k-ft</span></div>
+          <input class="input-item min" type="number" id="moment-min-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Add">
+          <div class="label"><span class="amount">Min </span>Moment <span class="suffix">k-ft</span></div>
         </div>
         <!-- <div class="input-container">
-          <input class="input-item max" type="number" lang="en-150" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Add Max">
+          <input class="input-item max" type="number" id="moment-max-input" min="0" onkeyup="updateMoment()" onmousedown="updateMoment()" onmouseup="updateMoment()" placeholder="Add">
           <div class="label">Max Moment</div>
         </div> -->
 
         <!-- <div class="input-container">
-          <input class="input-item min" type="number" lang="en-150" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Add Min">
+          <input class="input-item min" type="number" id="weight-min-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Add">
           <div class="label">Min Weight</div>
         </div> -->
         <div class="input-container">
-          <input class="input-item max" type="number" lang="en-150" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Add Max">
-          <div class="label">Max Weight <span class="suffix">plf</span></div>
+          <input class="input-item max" type="number" id="weight-max-input" min="0" onkeyup="updateWeight()" onmousedown="updateWeight()" onmouseup="updateWeight()" placeholder="Add">
+          <div class="label"><span class="amount">Max </span> Weight <span class="suffix">plf</span></div>
         </div>
 
         <div class="input-container">
-          <input class="input-item min" type="number" lang="en-150" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Add Min">
-          <div class="label">Min I<sub>x</sub> <span class="suffix">in<sup>4</sup></span></div>
+          <input class="input-item min" type="number" id="I-min-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Add">
+          <div class="label"><span class="amount">Min </span> I<sub>x</sub> <span class="suffix">in<sup>4</sup></span></div>
         </div>
         <!-- <div class="input-container">
-          <input class="input-item max" type="number" lang="en-150" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Add Max">
+          <input class="input-item max" type="number" id="I-max-input" min="0" onkeyup="updateI()" onmousedown="updateI()" onmouseup="updateI()" placeholder="Add">
           <div class="label">Max Ix</div>
         </div> -->
+
+          <div class="input-container dropdown">
+            <select class="input-item" name="saftey-factor" onchange="updateSafteyFactor()" id="saftey-factor-dropdown">
+              <option value="unfactored" selected>Nominal</option>
+              <option value="ASD">ASD</option>
+              <option value="LRFD">LRFD</option>
+            </select>
+            <div class="label">Capacity</div>
+          </div>
       </div>
 
     </div>
@@ -67,6 +76,27 @@
       </div>
     </div>
     <div id="bottom-row">
+    </div>
+      <div class="attribution">
+      <a target="_blank" href="https://www.aisc.org/publications/steel-construction-manual-resources#37584">
+        Data Attribution: AISC Shapes v15.0
+      </a>
+    </div>
+      <div class="attribution">
+      <a target="_blank" href="https://www.aisc.org/publications/steel-construction-manual-resources#37583">
+        Calculation Attribution: AISC Design Examples v15.0
+      </a>
+    </div>
+      <div>
+      Assumptions
+      <ul>
+        <li>Cb = 1</li>
+        <li>DOUBLY SYMMETRIC COMPACT I-SHAPED MEMBERS AND CHANNELS BENT ABOUT THEIR MAJOR AXIS</li>
+        <li>Fy = 50 ksi </li>
+        <li>E = 29000 ksi</li>
+        <li>straight line interpolation between points</li>
+        <li>c = 1 from AISC Specification Equation F2-8a for doubly symmetric I-shaped members</li>
+      </ul>
     </div>
   </div>
 </body>
