@@ -31,6 +31,7 @@ text {
   font-size: 18px;
   letter-spacing: 7px;
   padding-left: 30px;
+  position: relative;
 }
 
 .logo {
@@ -40,6 +41,16 @@ text {
 }
 .logo.app-name {
   padding-left: 60px;
+}
+.jon-sadka {
+  color: #D8D8D8;
+  bottom: 2px;
+  position: absolute;
+  text-transform: none;
+
+  margin-left: 5px;
+  font-size: 12px;
+  font-weight: 300;
 }
 .logo svg {
   position: absolute;
