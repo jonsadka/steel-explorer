@@ -18,11 +18,25 @@ text {
 .warning-banner {
   background-color: #c28783;
   color: white;
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 100;
   padding: 5px;
   position: absolute;
   text-align: center;
   width: 100%;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px 0 RGBA(0, 0, 0, 0.50);
+  animation: 0.5s ease-out 0s 1 slideInFromTop;
+}
+
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 @media only screen and (min-width : 800px) {
