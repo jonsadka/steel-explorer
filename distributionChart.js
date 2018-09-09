@@ -78,7 +78,7 @@ function initializeDistributionChart(){
       .attr('opacity', NULL_DISTRIBUTION_OPACITY)
       .attr('fill', CUSTOM_GREY)
       .attr('height', 0)
-    .transition().duration(600).delay((d, i) => i * 8)
+    .transition().duration(600).delay((d, i) => i * 6)
       .attr('width', NULL_BEAM_WIDTH)
       .attr('height', d => dy0(+d.d))
 
@@ -90,7 +90,7 @@ function initializeDistributionChart(){
       .attr('opacity', NULL_DISTRIBUTION_OPACITY)
       .attr('fill', CUSTOM_GREY)
       .attr('r', 0)
-    .transition().delay((d, i) => i * 8 + 600)
+    .transition().delay((d, i) => i * 6 + 600)
       .attr('r', NULL_RADIUS)
 
   dSvg

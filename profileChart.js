@@ -43,47 +43,49 @@ function removeBeamProfile(d){
 }
 
 function showBeamProfile(d){
-  var beam = W_BEAMS_MAP[d.AISC_Manual_Label];
-  var tf = +beam.tf;
-  var tw = +beam.tw;
-  var bf = +beam.bf;
-  var d = +beam.d;
-  var kdes = +beam.kdes;
+  const beam = W_BEAMS_MAP[d.AISC_Manual_Label];
+  const tf = +beam.tf;
+  const tw = +beam.tw;
+  const bf = +beam.bf;
+  const depth = +beam.d;
+  const kdes = +beam.kdes;
 
   // Tick length
-  var eL = 0.75;
+  const eL = 0.75;
 
-  var rectangles = [
+  const leftOriginX = maxWidth - bf;
+
+  const rectangles = [
     // FIRST ARGUMENT IN offsetX SHIFTS FROM LEFT ALIGNED TO RIGHT ALIGNED
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2, offsetY: 0, width: tw, height: d, stroke: 'none', fill: CUSTOM_BLUE, opacity: 1},
-    {offsetX: (maxWidth - bf), offsetY: 0, width: bf, height: tf, stroke: 'none', fill: CUSTOM_BLUE, opacity: 1},
-    {offsetX: (maxWidth - bf), offsetY: d - tf, width: bf, height: tf, stroke: 'none', fill: CUSTOM_BLUE, opacity: 1}
+    {offsetX: leftOriginX + bf / 2 - tw / 2, offsetY: 0, width: tw, height: depth, stroke: 'none', fill: CUSTOM_BLUE, opacity: 1},
+    {offsetX: leftOriginX, offsetY: 0, width: bf, height: tf, stroke: 'none', fill: CUSTOM_BLUE, opacity: 1},
+    {offsetX: leftOriginX, offsetY: depth - tf, width: bf, height: tf, stroke: 'none', fill: CUSTOM_BLUE, opacity: 1}
   ];
 
-  var annotationTWeb = [
+  const annotationTWeb = [
     // d text
-    {offsetX: maxWidth + 2*eL, offsetY: -eL, width: 0.2, height: d + 2*eL, stroke: 'none', fill: 'black', text: 'd', textPos: 'right'},
-    {offsetX: maxWidth + eL, offsetY: 0, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
-    {offsetX: maxWidth + eL, offsetY: d, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: maxWidth + 2 * eL, offsetY: -eL, width: 0.2, height: depth + 2 * eL, stroke: 'none', fill: 'black', text: 'd', textPos: 'right'},
+    {offsetX: maxWidth + eL, offsetY: 0, width: 2 * eL, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: maxWidth + eL, offsetY: depth, width: 2 * eL, height: 0.2, stroke: 'none', fill: 'black'},
     // tf text
-    {offsetX: (maxWidth - bf) - 2*eL, offsetY: -eL, width: 0.2, height: tf + 2*eL, stroke: 'none', fill: 'black', text: 'tf', textPos: 'left'},
-    {offsetX: (maxWidth - bf) - 3*eL, offsetY: 0, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
-    {offsetX: (maxWidth - bf) - 3*eL, offsetY: tf, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: leftOriginX - 2 * eL, offsetY: -eL, width: 0.2, height: tf + 2 * eL, stroke: 'none', fill: 'black', text: 'tf', textPos: 'left'},
+    {offsetX: leftOriginX - 3 * eL, offsetY: 0, width: 2 * eL, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: leftOriginX - 3 * eL, offsetY: tf, width: 2 * eL, height: 0.2, stroke: 'none', fill: 'black'},
     // kdes text
-    {offsetX: (maxWidth - bf) - 2*eL, offsetY: (d - kdes) - eL, width: 0.2, height: kdes + 2*eL, stroke: 'none', fill: 'black', text: 'kdes', textPos: 'left'},
-    {offsetX: (maxWidth - bf) - 3*eL, offsetY: d, width: 2*eL, height: 0.2, stroke: 'none', fill: 'black'},
-    {offsetX: (maxWidth - bf) - 3*eL, offsetY: (d - kdes), width: 2*eL + (bf/2), height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: leftOriginX - 2 * eL, offsetY: (depth - kdes) - eL, width: 0.2, height: kdes + 2 * eL, stroke: 'none', fill: 'black', text: 'kdes', textPos: 'left'},
+    {offsetX: leftOriginX - 3 * eL, offsetY: depth, width: 2 * eL, height: 0.2, stroke: 'none', fill: 'black'},
+    {offsetX: leftOriginX - 3 * eL, offsetY: (depth - kdes), width: 2 * eL + (bf / 2 - tf / 2), height: 0.2, stroke: 'none', fill: 'black'},
     // bf text
-    {offsetX: (maxWidth - bf) - eL, offsetY: d + 2*eL, width: bf + 2*eL, height: 0.2, stroke: 'none', fill: 'black', text: 'bf', textPos: 'middle'},
-    {offsetX: (maxWidth - bf), offsetY: d + eL, width: 0.2, height: 2*eL, stroke: 'none', fill: 'black'},
-    {offsetX: maxWidth, offsetY: d + eL, width: 0.2, height: 2*eL, stroke: 'none', fill: 'black'},
+    {offsetX: leftOriginX - eL, offsetY: depth + 2 * eL, width: bf + 2 * eL, height: 0.2, stroke: 'none', fill: 'black', text: 'bf', textPos: 'middle'},
+    {offsetX: leftOriginX, offsetY: depth + eL, width: 0.2, height: 2 * eL, stroke: 'none', fill: 'black'},
+    {offsetX: maxWidth, offsetY: depth + eL, width: 0.2, height: 2 * eL, stroke: 'none', fill: 'black'},
     // tw text
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 - eL, offsetY: d/2, width: tw + 2*eL, height: 0.2, stroke: 'none', fill: 'black', text: 'tw', textPos: 'left'},
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 - 0.1, offsetY: d/2 - eL, width: 0.2, height: 2*eL, stroke: 'none', fill: 'black'},
-    {offsetX: (maxWidth - bf + tw/2) + (bf - tf)/2 + tw - 0.1, offsetY: d/2 - eL, width: 0.2, height: 2*eL, stroke: 'none', fill: 'black'}
+    {offsetX: leftOriginX + bf / 2 - tw / 2 - eL, offsetY: depth / 2, width: tw + 2 * eL, height: 0.2, stroke: 'none', fill: 'black', text: 'tw', textPos: 'left'},
+    {offsetX: leftOriginX + bf / 2 - tw / 2 - 0.1, offsetY: depth / 2 - eL, width: 0.2, height: 2 * eL, stroke: 'none', fill: 'black'},
+    {offsetX: leftOriginX + bf / 2 - tw / 2 + tw - 0.1, offsetY: depth / 2 - eL, width: 0.2, height: 2 * eL, stroke: 'none', fill: 'black'}
   ];
 
-  var drawings = rectangles.concat(annotationTWeb);
+  const drawings = rectangles.concat(annotationTWeb);
 
   mSvg.selectAll('.w-group.selected-beam.profile')
       .data(drawings)
@@ -122,8 +124,8 @@ function showBeamProfile(d){
         if (d.textPos === 'middle') return px(d.offsetX + d.width / 2);
       })
       .attr('y', d => {
-        if (d.textPos === 'right') return py(d.offsetY + d.height/2);
-        if (d.textPos === 'left') return py(d.offsetY + d.height/2);
+        if (d.textPos === 'right') return py(d.offsetY + d.height / 2);
+        if (d.textPos === 'left') return py(d.offsetY + d.height / 2);
         if (d.textPos === 'middle') return py(d.offsetY) + 10;
       })
       .attr('alignment-baseline', d => {

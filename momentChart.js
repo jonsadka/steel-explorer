@@ -58,7 +58,7 @@ function initializeMomentChart(){
       .attr('d', d => mLine(d.MnValues))
       .attr('stroke-width', 0)
       .attr('opacity', 1)
-    .transition().delay((d, i) => i * 80)
+    .transition().delay((d, i) => i * 60)
       .attr('opacity', NULL_OPACITY)
       .attr('stroke-width', 1)
 
