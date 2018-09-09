@@ -15,6 +15,22 @@ text {
   font: 10px sans-serif;
 }
 
+.warning-banner {
+  background-color: #c28783;
+  color: white;
+  font-size: 16px;
+  padding: 5px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+@media only screen and (min-width : 800px) {
+  .warning-banner {
+    display: none;
+  }
+}
+
 .chart-title {
   position: relative;
   margin-left: 20px;
