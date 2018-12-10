@@ -117,6 +117,11 @@
           <div class="label">Max Ix</div>
         </div> -->
 
+        <div class="input-container">
+          <input class="input-item" type="number" id="unbraced-length-input" min="0" onkeyup="updateLength()" onmousedown="updateLength()" onmouseup="updateLength()" placeholder="Add">
+          <div class="label">Length <span class="suffix">ft</span></div>
+        </div>
+
           <div class="input-container dropdown">
             <select class="input-item" name="saftey-factor" onchange="updateSafteyFactor()" id="saftey-factor-dropdown">
               <option value="unfactored" selected>Nominal</option>
@@ -138,13 +143,13 @@
     <div id="bottom-row">
     </div>
     <div class="attributions">
-      <a target="_blank" href="https://github.com/jonsadka/steel-explorer#assumptions">
+      <a target="_blank" rel="noopener noreferrer" href="https://github.com/jonsadka/steel-explorer#assumptions">
         Assumptions
       </a>
-      <a target="_blank" href="https://www.aisc.org/publications/steel-construction-manual-resources#37583">
+      <a target="_blank" rel="noopener noreferrer" href="https://www.aisc.org/publications/steel-construction-manual-resources#37583">
         Calculations
       </a>
-      <a target="_blank" href="https://www.aisc.org/publications/steel-construction-manual-resources#37584">
+      <a target="_blank" rel="noopener noreferrer" href="https://www.aisc.org/publications/steel-construction-manual-resources#37584">
         Data Attribution
       </a>
     </div>

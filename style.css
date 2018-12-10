@@ -73,7 +73,6 @@ text {
   padding-left: 60px;
 }
 .jon-sadka {
-  color: #D8D8D8;
   bottom: 2px;
   position: absolute;
   text-transform: none;
@@ -114,7 +113,7 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
 .secondary {
   color: #9B9B9B;
   font-size: 14px;
-  font-weight: 100;
+  font-weight: 200;
   letter-spacing: 3px;
   padding-top: 10px;
 }
@@ -187,7 +186,7 @@ tr:nth-child(2n):not(:last-of-type) .section-title {
   letter-spacing: 1px;
   fill: #9B9B9B;
   font-size: 10px;
-  font-weight: 100;
+  font-weight: 200;
 }
 
 .voronoi {
@@ -287,7 +286,7 @@ input {
   color: #878B9B;
   margin-top: 5px;
   font-size: 14px;
-  font-weight: 100;
+  font-weight: 200;
   letter-spacing: 3px;
   text-transform: uppercase;
 }
@@ -313,7 +312,7 @@ input {
 .suffix {
   color: #9B9B9B;
   font-size: 12px;
-  font-weight: 100;
+  font-weight: 200;
   letter-spacing: 3px;
   text-transform: none;
 }
@@ -352,7 +351,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 a {
-  color: #878B9B;
+  color: white;
   font-size: 11px;
   font-weight: 300;
   letter-spacing: 2px;

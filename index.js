@@ -94,25 +94,25 @@ function calculateProperties (beamGroup){
     // Lb expected in feet
     bm.MnFunction = function(Lb){
       if (Lb <= bm.Lp){
-        return bm.Mp;
+        return bm.Mp / 12;
       } else if (bm.Lp < Lb && Lb <= bm.Lr) { // [AISC 16.1-48 (F2-2)]
         return Math.min(
           bm.Mp,
           DEFAULT_Cb *
             (bm.Mp - (bm.Mp - 0.7 * DEFAULT_Fy * +bm.Sx) * (Lb - bm.Lp)/(bm.Lr - bm.Lp))
-        );
+        ) / 12;
       } else { // [AISC 16.1-47 (F2-4)]
         const Fcr =  // in ksi
           (DEFAULT_Cb * Math.pow(Math.PI, 2) * DEFAULT_E / Math.pow(Lb * 12 / +bm.rts, 2)) *
           Math.sqrt(
             1 + (0.078 * +bm.J * c / (+bm.Sx * +bm.ho) * Math.pow(Lb * 12/ +bm.rts, 2))
           );
-        return Math.min(bm.Mp, Fcr * +bm.Sx);
+        return Math.min(bm.Mp, Fcr * +bm.Sx) / 12;
       }
     }
     // Future optimization: Skip over every other point if you are in the straight line case (i.e. case 1)
     bm.MnValues = d3.range(0, MAX_UNBRACED, UNBRACED_STEP).map(length => {
-      return { length: length, Mn: bm.MnFunction(length) / 12 }
+      return { length: length, Mn: bm.MnFunction(length) }
     });
   })
 }
@@ -123,6 +123,12 @@ function validateBeam (d, options){
     // SHOULD TECHNICALLY INTERPOLATE
     if (USER_MOMENT_MAX && (+d.MnValues[d.MnValues.length - 1].Mn * USER_SAFTEY_FACTOR) > USER_MOMENT_MAX) return options.invalid;
     if (USER_MOMENT_MIN && (+d.MnValues[0].Mn * USER_SAFTEY_FACTOR) < USER_MOMENT_MIN) return options.invalid;
+
+    if (START_LENGTH) {
+      const beamMoment = d.MnFunction(START_LENGTH) * USER_SAFTEY_FACTOR;
+      if (beamMoment < USER_MOMENT_MIN) return options.invalid;
+    }
+
     passedValid = true;
   }
   if (USER_WEIGHT_MIN || USER_WEIGHT_MAX){
@@ -210,6 +216,17 @@ function updateSafteyFactor() {
   updateVisual();
 }
 
+function updateLength() {
+  const userLength = +document.getElementById('unbraced-length-input').value;
+  if (START_LENGTH === (userLength - 2)) return;
+  START_LENGTH = Math.max(0, userLength - 2);
+  const endLength = (userLength === 0) ? (MAX_UNBRACED - 1) : Math.min(MAX_UNBRACED - 1, userLength + 2);
+
+  SPECIAL = calculateSpecialProperties(W_BEAMS, {});
+
+  updateVisual();
+}
+
 function updateVisual(){
   SPECIAL = calculateSpecialProperties(W_BEAMS, {});
   filterBeams();
@@ -255,7 +272,6 @@ function hasFilterSelected() {
 }
 
 function calculateSpecialProperties(beams, options){
-  var startLength = START_LENGTH || 0;
   var endLength = MAX_UNBRACED;
   var maxMoment = !!USER_MOMENT_MAX ? Math.max(1, USER_MOMENT_MAX) : Infinity;
   var minMoment = !!USER_MOMENT_MIN ? Math.min(17200, USER_MOMENT_MIN) : 0;
@@ -287,7 +303,7 @@ function calculateSpecialProperties(beams, options){
 
       if (shouldUpdateMn){
         pv.Mn.Min = Math.min(pv.Mn.Min, cv.MnFunction(endLength) * USER_SAFTEY_FACTOR);
-        pv.Mn.Max = Math.max(pv.Mn.Max, cv.MnFunction(startLength) * USER_SAFTEY_FACTOR);
+        pv.Mn.Max = Math.max(pv.Mn.Max, cv.MnFunction(0) * USER_SAFTEY_FACTOR);
       }
       if (shouldUpdateW){
         pv.W.Min = Math.min(pv.W.Min, +cv.W);
@@ -356,10 +372,7 @@ function calculateSpecialProperties(beams, options){
   special.groupDimensions = Object.keys(groupDimensions).map(function(wGroup){
     groupDimensions[wGroup].key = wGroup;
     return groupDimensions[wGroup];
-  });;
-  // convert from k-in to k-ft
-  special.Mn.Min = special.Mn.Min / 12;
-  special.Mn.Max = special.Mn.Max / 12;
+  });
   //Add padding to x and y axis
   if (USER_MOMENT_MAX){
     special.Mn.boundMax = Math.ceil(special.Mn.Max + special.Mn.Max * 0.20);
